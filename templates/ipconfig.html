@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>IP Configuration</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <style>
+      body {
+        background-color: #282a36;
+        color: #f8f8f2;
+        padding: 20px;
+      }
+      h1 {
+        color: #50fa7b;
+      }
+      .list-group-item {
+        background-color: #44475a;
+        border-color: #6272a4;
+        color: #f8f8f2;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>IP Configuration & Client Information</h1>
+
+      <h2>Cloudflare Trace Data:</h2>
+      <ul class="list-group">
+        {% for key, value in trace.items() %}
+        <li class="list-group-item">{{ key }}: {{ value }}</li>
+        {% endfor %}
+      </ul>
+
+      <h2 class="mt-4">Cloudflare Geolocation Data:</h2>
+      <ul class="list-group">
+        {% for key, value in geo.items() %}
+        <li class="list-group-item">{{ key }}: {{ value }}</li>
+        {% endfor %}
+      </ul>
+      <div class="d-flex justify-content-end mt-4">
+        <button
+          onclick="location.href='{{ url_for('upload_file') }}'"
+          class="btn btn-custom"
+        >
+          Quay về trang chủ
+        </button>
+      </div>
+    </div>
+  </body>
+</html>

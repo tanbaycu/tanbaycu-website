@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Hình Ảnh Ngẫu Nhiên</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background-color: #1e1e2f; /* Nền tối */
+        color: #ffffff; /* Màu chữ sáng */
+        text-align: center;
+        margin: 0;
+        padding: 20px;
+        transition: background-color 0.3s ease;
+      }
+
+      h1 {
+        color: #50fa7b; /* Màu xanh lá */
+        font-size: 2.5rem;
+        margin-bottom: 20px;
+      }
+
+      .button-container {
+        margin-bottom: 20px;
+      }
+
+      button {
+        background-color: #6272a4; /* Nền xanh dương */
+        color: #ffffff; /* Màu chữ sáng */
+        border: none;
+        border-radius: 5px;
+        padding: 15px 30px;
+        cursor: pointer;
+        font-size: 18px;
+        transition: background-color 0.3s, transform 0.3s;
+        margin: 0 10px;
+      }
+
+      button:hover {
+        background-color: #44475a; /* Nền tối khi hover */
+        transform: translateY(-2px); /* Hiệu ứng nhấc lên */
+      }
+
+      .image-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+
+      img {
+        width: 100%;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Đổ bóng cho hình ảnh */
+        transition: transform 0.3s;
+        cursor: pointer; /* Thay đổi con trỏ khi hover */
+        object-fit: cover; /* Giữ tỷ lệ khung hình cho hình ảnh */
+      }
+
+      img:hover {
+        transform: scale(1.05); /* Phóng to hình ảnh khi hover */
+      }
+
+      /* CSS cho lớp mờ */
+      .overlay {
+        display: none; /* Ẩn lớp mờ ban đầu */
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0, 0, 0, 0.7); /* Màu mờ */
+        justify-content: center;
+        align-items: center;
+        z-index: 10; /* Đặt lớp mờ lên trên */
+      }
+
+      .overlay img {
+        max-width: 80%; /* Kích thước tối đa của hình ảnh phóng to */
+        max-height: 80%; /* Kích thước tối đa của hình ảnh phóng to */
+        border-radius: 10px;
+        object-fit: contain; /* Giữ tỷ lệ khung hình cho hình ảnh phóng to */
+      }
+
+      /* CSS cho spinner */
+      .spinner {
+        display: none;
+        border: 8px solid #44475a; /* Màu nền */
+        border-top: 8px solid #50fa7b; /* Màu xanh lá cho spinner */
+        border-radius: 50%;
+        width: 50px;
+        height: 50px;
+        animation: spin 1s linear infinite; /* Hiệu ứng quay */
+        margin: 20px auto; /* Căn giữa spinner */
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 2rem; /* Kích thước tiêu đề nhỏ hơn trên màn hình nhỏ */
+        }
+
+        button {
+          width: 100%; /* Đặt nút rộng 100% trên thiết bị di động */
+          margin: 5px 0; /* Căn giữa nút */
+        }
+      }
+    </style>
+  </head>
+  <body>
+
+    <div class="button-container">
+      <button id="fetch-images" onclick="fetchImages()">
+        Lấy Hình Ảnh Ngẫu Nhiên
+      </button>
+      <a href="{{ url_for('upload_file') }}">
+        <button>Quay Về Trang Chủ</button>
+      </a>
+    </div>
+
+    <div class="spinner" id="spinner"></div>
+    <!-- Spinner -->
+
+    <div class="image-grid" id="image-grid">
+      {% if images %}
+        {% for image in images %}
+          <img
+            src="{{ image }}"
+            alt="Random Image"
+            loading="lazy"
+            onclick="openModal(this.src)"
+          />
+        {% endfor %}
+      {% endif %}
+    </div>
+
+    <div class="overlay" id="overlay" onclick="closeModal()">
+      <img id="overlay-img" src="" alt="Enlarged Image" />
+    </div>
+
+    <script>
+      function fetchImages() {
+        const spinner = document.getElementById("spinner");
+        const imageGrid = document.getElementById("image-grid");
+        spinner.style.display = "block"; // Hiện spinner
+        imageGrid.innerHTML = ""; // Xóa hình ảnh trước đó
+
+        fetch("/random-image", { method: "POST" })
+          .then((response) => response.text())
+          .then((html) => {
+            document.body.innerHTML = html; // Cập nhật HTML mới
+            spinner.style.display = "none"; // Ẩn spinner
+          })
+          .catch((error) => {
+            console.error("Error fetching images:", error);
+            spinner.style.display = "none"; // Ẩn spinner trong trường hợp có lỗi
+          });
+      }
+
+      function openModal(src) {
+        const overlay = document.getElementById("overlay");
+        const overlayImg = document.getElementById("overlay-img");
+        overlayImg.src = src; // Đặt src của hình ảnh phóng to
+        overlay.style.display = "flex"; // Hiện lớp mờ
+      }
+
+      function closeModal() {
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "none"; // Ẩn lớp mờ
+      }
+    </script>
+  </body>
+</html>

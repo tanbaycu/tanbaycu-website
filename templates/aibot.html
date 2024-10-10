@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Chatbot</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap"
+      rel="stylesheet"
+    />
+
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <style>
+      /* Global reset */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Animations for gradients */
+      @keyframes gradientChange {
+        0% {
+          background: linear-gradient(135deg, #fbc2eb, #a6c0fe);
+        }
+        50% {
+          background: linear-gradient(135deg, #a6c0fe, #fbc2eb);
+        }
+        100% {
+          background: linear-gradient(135deg, #fbc2eb, #a6c0fe);
+        }
+      }
+
+      @keyframes gradientDarkChange {
+        0% {
+          background: linear-gradient(135deg, #2c3e50, #4ca1af);
+        }
+        50% {
+          background: linear-gradient(135deg, #4ca1af, #2c3e50);
+        }
+        100% {
+          background: linear-gradient(135deg, #2c3e50, #4ca1af);
+        }
+      }
+
+      /* Fullscreen layout */
+      body {
+        font-family: "Roboto", Arial, sans-serif;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        animation: gradientChange 15s infinite;
+        color: #333;
+        background: linear-gradient(135deg, #fbc2eb, #a6c0fe);
+      }
+
+      /* Main container */
+      .chat-container {
+        width: 200vw; /* Chiếm toàn bộ chiều rộng của cửa sổ trình duyệt */
+        height: 200vh; /* Chiếm toàn bộ chiều cao của cửa sổ trình duyệt */
+        max-width: 1180px;
+        max-height: 750px;
+        display: flex;
+        flex-direction: column;
+        animation: gradientChange 20s infinite;
+        border-radius: 12px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+      }
+
+      .chat-box {
+        flex: 1;
+        padding: 30px;
+        overflow-y: auto;
+        display: flex;
+        max-width: none;
+        max-height: none;
+        flex-direction: column;
+        animation: gradientChange 25s infinite;
+        gap: 10px; /* Space between messages */
+        background: linear-gradient(135deg, #e0f7fa, #b2dfdb, #cce3de);
+        border-radius: 15px;
+        box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.1);
+        position: relative; /* Enables positioning of child elements */
+        transition: background 0.3s ease;
+      }
+
+      /* Dark mode */
+      .dark-mode body {
+        background: linear-gradient(135deg, #2c3e50, #4ca1af);
+        animation: gradientDarkChange 15s infinite;
+        color: #ddd;
+      }
+
+      .dark-mode .chat-container {
+        background: linear-gradient(135deg, #34495e, #2c3e50);
+        animation: gradientDarkChange 20s infinite;
+      }
+
+      .dark-mode .chat-box {
+        background: linear-gradient(135deg, #2c3e50, #34495e);
+        box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
+
+      /* Styling for the menu icon */
+      .menu-icon {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        cursor: pointer;
+      }
+
+      /* Cấu hình menu dropdown */
+      .menu-dropdown {
+        position: absolute;
+        top: 60px; /* Điều chỉnh theo nhu cầu */
+        right: 20px; /* Căn lề với menu-icon */
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        padding: 10px;
+        background-color: #ffffff; /* Nền trắng cho menu dropdown */
+        border: 1px solid #ddd; /* Viền xám nhạt */
+        border-radius: 10px; /* Góc bo tròn nhiều hơn */
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2); /* Đổ bóng sâu hơn */
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 1000; /* Đảm bảo menu xuất hiện trên các yếu tố khác */
+      }
+
+      /* Hiển thị menu dropdown */
+      .menu-dropdown.show {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      /* Cấu hình nút trong menu dropdown */
+      .menu-dropdown .menu-dropdown-btn {
+        padding: 12px 16px;
+        border: none;
+        background-color: #f8f9fa; /* Nền sáng cho các nút trong menu dropdown */
+        border-radius: 8px;
+        cursor: pointer;
+        color: #333; /* Màu chữ tối */
+        font-size: 14px;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      /* Hiệu ứng hover cho nút trong menu dropdown */
+      .menu-dropdown .menu-dropdown-btn:hover {
+        background-color: #e9ecef;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+      }
+
+      /* Hiệu ứng khi nhấn nút trong menu dropdown */
+      .menu-dropdown .menu-dropdown-btn:active {
+        background-color: #dee2e6;
+      }
+
+      /* Hiệu ứng khi gửi tin nhắn */
+      .message {
+        transition: all 0.3s ease;
+      }
+
+      /* Hiển thị thời gian gửi tin nhắn */
+      .message-time {
+        font-size: 12px;
+        color: #888;
+        margin-top: 4px;
+        text-align: right;
+      }
+
+      /* Thông báo tin nhắn mới */
+      .notification {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #ff5722; /* Màu nền nổi bật */
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 8px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+        display: none;
+        z-index: 1000;
+        font-size: 14px;
+        font-weight: 500;
+        text-align: center;
+        transform: translateY(100%);
+        transition: transform 0.4s ease, opacity 0.4s ease;
+        opacity: 0;
+      }
+
+      .notification.active {
+        display: block;
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .notification.active {
+        animation: slideIn 0.4s ease-out;
+      }
+
+      .notification .close-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: rgba(255, 255, 255, 0.2);
+        border: none;
+        border-radius: 50%;
+        width: 20px;
+        height: 20px;
+        color: #fff;
+        font-size: 14px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .notification .close-btn:hover {
+        background: rgba(255, 255, 255, 0.4);
+      }
+
+      /* Message styling */
+      .message {
+        max-width: 75%;
+        padding: 12px 18px;
+        border-radius: 16px;
+        font-size: 16px;
+        line-height: 1.5;
+        position: relative;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(10px);
+      }
+
+      /* User message alignment */
+      .message.user {
+        align-self: flex-end;
+        background: linear-gradient(
+          135deg,
+          #00c6ff,
+          #0072ff
+        ); /* Bright and vibrant gradient */
+        color: #ffffff;
+        border-radius: 16px;
+        padding: 12px 18px;
+        animation: slideInRight 0.5s ease;
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.3); /* More pronounced shadow for a glamorous effect */
+        max-width: 75%;
+        position: relative;
+      }
+
+      /* Show edit icon on hover */
+      .message.user:hover .edit-icon {
+        display: inline; /* Show on hover */
+      }
+
+      /* Bot message alignment */
+      .message.bot {
+        align-self: flex-start;
+        background: linear-gradient(
+          135deg,
+          #ffffff,
+          #f1f1f1
+        ); /* Light gradient for bot messages */
+        color: #333;
+        border: 1px solid #e0e0e0;
+        border-radius: 16px;
+        padding: 12px 18px;
+        animation: slideInLeft 0.5s ease;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Slight shadow for depth */
+        max-width: 75%;
+        position: relative;
+        margin-bottom: 10px; /* Space between messages */
+        padding-top: 25px; /* Space for bot name */
+      }
+
+      /* Bot name styling */
+      .message.bot::before {
+        content: "Trợ lý ảo của Tân 7 Cú";
+        font-weight: bold;
+        color: #007bff; /* Bot name color */
+        position: absolute;
+        top: -10px; /* Move the name above the message */
+        left: 10px;
+        font-size: 14px; /* Adjust size as needed */
+        background: #fff; /* Background color */
+        padding: 2px 6px; /* Padding around the name */
+        border-radius: 5px; /* Rounded corners for the name background */
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Shadow for name background */
+      }
+
+      /* Smooth message animations */
+      @keyframes slideInRight {
+        from {
+          transform: translateX(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          transform: translateX(-20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      /* Enhanced text formatting */
+      .message b,
+      .message strong {
+        font-weight: bold;
+      }
+
+      .message i,
+      .message em {
+        font-style: italic;
+      }
+
+      .message u {
+        text-decoration: underline;
+      }
+
+      .message ul {
+        padding-left: 20px;
+        list-style-type: disc;
+      }
+
+      .message ol {
+        padding-left: 20px;
+        list-style-type: decimal;
+      }
+
+      .message pre {
+        background-color: #f1f1f1;
+        padding: 12px;
+        border-radius: 8px;
+        overflow-x: auto;
+        font-family: monospace;
+      }
+
+      /* Input section */
+      .input-container {
+        display: flex;
+        padding: 15px;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #a8dadc, #cce3de, #e0f7fa, #b2dfdb);
+        /* border-top: 1px solid #ddd;  // Đã xóa */
+      }
+
+      /* Input box */
+      input[type="text"] {
+        flex: 1;
+        padding: 14px 18px;
+        border-radius: 25px;
+        border: 1px solid #ddd;
+        font-size: 15px;
+        outline: none;
+        background: linear-gradient(135deg, #ffffff, #f1f1f1);
+        color: #333;
+        transition: border-color 0.2s ease, box-shadow 0.2s ease,
+          background 0.3s ease;
+      }
+
+      input[type="text"]:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        background: linear-gradient(135deg, #e0f7fa, #b2dfdb);
+      }
+
+      /* Send button */
+      button {
+        margin-left: 10px;
+        background: linear-gradient(135deg, #f0f1f2, #f3f4f5);
+        color: rgb(25, 24, 24);
+        padding: 12px 20px;
+        border-radius: 25px;
+        border: none;
+        font-size: 15px;
+        cursor: pointer;
+        transition: background 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      button:hover {
+        background: linear-gradient(135deg, #939799, #888c8e);
+        box-shadow: 0 4px 12px rgba(0, 123, 255, 0.3);
+      }
+
+      /* Chế độ tối */
+      .dark-mode .input-container {
+        background: linear-gradient(135deg, #333333, #444444, #555555, #666666);
+        border-top: 1px solid #666666;
+      }
+
+      .dark-mode input[type="text"] {
+        background: linear-gradient(135deg, #555555, #666666);
+        color: #ddd;
+        border-color: #444;
+      }
+
+      .dark-mode input[type="text"]:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 8px rgba(0, 123, 255, 0.3);
+        background: linear-gradient(135deg, #666666, #777777);
+      }
+
+      .dark-mode button {
+        background: linear-gradient(135deg, #28a745, #218838);
+      }
+
+      .dark-mode button:hover {
+        background: linear-gradient(135deg, #218838, #1c7430);
+      }
+
+      .typing-indicator {
+        padding: 10px;
+        color: #050f98;
+        font-style: italic;
+        display: none; /* Ẩn mặc định */
+        text-align: left; /* Căn trái */
+        margin-bottom: 10px; /* Khoảng cách dưới */
+        border: none; /* Loại bỏ đường viền */
+        background-color: transparent; /* Loại bỏ nền */
+        box-shadow: none; /* Loại bỏ đổ bóng */
+        position: relative; /* Đảm bảo không có lớp phủ từ vị trí */
+        z-index: auto; /* Đảm bảo không có lớp phủ từ z-index */
+        overflow: visible; /* Đảm bảo không có lớp phủ từ overflow */
+      }
+
+      .message-container {
+        position: relative;
+        padding: 10px;
+        /* Additional styling as needed */
+      }
+
+      .edit-icon {
+        position: absolute;
+        top: 50%; /* Center vertically relative to the message content */
+        left: -30px; /* Position it outside to the left */
+        transform: translateY(-50%); /* Center the icon vertically */
+        width: 20px; /* Adjust size as needed */
+        height: 20px; /* Adjust size as needed */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: #1d1919; /* Ensure the icon color is visible */
+        z-index: 10; /* Ensure it appears above other elements */
+      }
+
+      .edit-icon svg {
+        width: 100%; /* Scale SVG to fit the container */
+        height: 100%; /* Scale SVG to fit the container */
+      }
+
+      .typing-indicator.show {
+        display: block;
+        opacity: 1;
+      }
+      /* Container chứa các phần tử */
+      .sidebar-buttons {
+        position: fixed;
+        top: 20px;
+        left: 20px; /* Vị trí bắt đầu của container */
+        display: flex; /* Sử dụng Flexbox để sắp xếp các phần tử */
+        align-items: center; /* Căn chỉnh theo chiều dọc */
+        gap: 20px; /* Khoảng cách giữa các phần tử */
+        z-index: 1000;
+      }
+
+      /* Sidebar Icon */
+      .sidebar-icon {
+        cursor: pointer;
+        transition: transform 0.2s ease-in-out;
+      }
+
+      .sidebar-icon:hover {
+        transform: scale(1.1); /* Nhấn mạnh hiệu ứng hover */
+      }
+
+      .sidebar-icon svg {
+        fill: none;
+        stroke: #1d1919;
+        stroke-width: 3;
+        stroke-linecap: round;
+        stroke-linejoin: round;
+        width: 35px;
+        height: 35px;
+      }
+
+      /* New Chat Button */
+      .sidebar-new-chat {
+        border: none;
+        padding: 10px;
+        cursor: pointer;
+        border-radius: 5px;
+        font-size: 14px;
+        transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+      }
+
+      .sidebar-new-chat:hover {
+        transform: scale(1.05); /* Hiệu ứng hover nhẹ nhàng */
+      }
+
+      .sidebar-new-chat svg {
+        width: 25px;
+        height: 25px;
+      }
+
+      /* Sidebar Styling */
+      .sidebar {
+        width: 300px; /* Tăng chiều rộng để tạo cảm giác rộng rãi hơn */
+        background-color: #1e2a38; /* Màu nền tối hơn với sắc thái xanh */
+        color: #ecf0f1; /* Màu chữ sáng để nổi bật trên nền tối */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.6); /* Bóng đổ mạnh hơn để nổi bật hơn */
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100%;
+        overflow-y: auto;
+        transform: translateX(-100%);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        z-index: 1000;
+      }
+
+      /* Hiệu ứng mở sidebar */
+      .sidebar.open {
+        transform: translateX(0);
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7); /* Bóng đổ mạnh mẽ hơn khi mở */
+      }
+
+      /* Sidebar header styling */
+      .sidebar-header {
+        padding: 20px;
+        background-color: #233140; /* Màu nền header sâu hơn với sắc thái xanh đậm */
+        border-bottom: 2px solid #3498db; /* Đường viền xanh dương nổi bật */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: relative; /* Để nút đóng nằm trên header */
+      }
+
+      /* Close button in the sidebar */
+      .sidebar-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: #e74c3c;
+        color: #fff;
+        border: none;
+        border-radius: 50%;
+        width: 35px; /* Tăng kích thước để dễ sử dụng */
+        height: 35px;
+        font-size: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease; /* Hiệu ứng hover với biến đổi kích thước */
+      }
+
+      .sidebar-close:hover {
+        background: #c0392b;
+        transform: scale(1.1); /* Tăng kích thước khi hover */
+      }
+
+      /* Sidebar chat item */
+      .chat-item {
+        padding: 15px 20px; /* Thêm padding để tạo cảm giác dễ chịu hơn */
+        border-bottom: 1px solid #34495e; /* Đường viền nhẹ với màu sắc tương đồng */
+        cursor: pointer;
+        color: #ecf0f1;
+        transition: background-color 0.3s ease, padding-left 0.3s ease,
+          padding-right 0.3s ease; /* Hiệu ứng hover với thay đổi padding */
+        display: flex;
+        align-items: center; /* Căn giữa các phần tử con */
+      }
+
+      .chat-item.active {
+        background-color: #2980b9; /* Màu nền khi active với sắc thái xanh dương sáng */
+        padding-left: 25px;
+        padding-right: 25px;
+      }
+
+      .chat-item:hover {
+        background-color: #3498db; /* Màu nền khi hover với sắc thái xanh dương nổi bật */
+        padding-left: 20px;
+        padding-right: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- SVG Icon for Sidebar Toggle -->
+    <div id="menu-toggle" class="menu-icon">
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        width="35"
+        height="35"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#1d1919"
+        stroke-width="1.5"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      >
+        <rect x="3" y="3" width="7" height="7"></rect>
+        <rect x="14" y="3" width="7" height="7"></rect>
+        <rect x="14" y="14" width="7" height="7"></rect>
+        <rect x="3" y="14" width="7" height="7"></rect>
+      </svg>
+    </div>
+
+    <div id="menu-dropdown" class="menu-dropdown hidden">
+      <button id="toggle-theme-btn" class="menu-dropdown-btn">
+        Chuyển sang chế độ tối
+      </button>
+      <button id="new-chat-btn" class="menu-dropdown-btn">
+        Trò chuyện mới
+      </button>
+      <button id="home-btn" class="menu-dropdown-btn">Về trang chủ</button>
+    </div>
+
+    <div class="sidebar-buttons">
+      <div id="sidebar-new-chat" class="sidebar-new-chat">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="25"
+          height="25"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#1d1919"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <g fill="none" fill-rule="evenodd">
+            <path
+              d="M18 14v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8c0-1.1.9-2 2-2h5M15 3h6v6M10 14L20.2 3.8"
+            />
+          </g>
+        </svg>
+      </div>
+      <div class="sidebar-icon">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="35"
+          height="35"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="#1d1919"
+          stroke-width="3"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="8" y1="6" x2="21" y2="6"></line>
+          <line x1="8" y1="12" x2="21" y2="12"></line>
+          <line x1="8" y1="18" x2="21" y2="18"></line>
+          <line x1="3" y1="6" x2="3.01" y2="6"></line>
+          <line x1="3" y1="12" x2="3.01" y2="12"></line>
+          <line x1="3" y1="18" x2="3.01" y2="18"></line>
+        </svg>
+      </div>
+    </div>
+
+    <div class="sidebar">
+      <button class="sidebar-close">&times;</button>
+      <div class="sidebar-header">
+        <h2>Chats</h2>
+      </div>
+      <ul class="chat-list">
+        <li class="chat-item">Chat 1</li>
+        <li class="chat-item active">Chat 2</li>
+        <!-- Add more chat items as needed -->
+      </ul>
+    </div>
+
+    <div class="chat-container">
+      <div id="chat-box" class="chat-box"></div>
+      <div id="typing-indicator" class="typing-indicator">
+        The bot is typing...
+      </div>
+      <div class="input-container">
+        <input
+          type="text"
+          id="user-input"
+          placeholder="Enter your message..."
+          autocomplete="off"
+        />
+        <button onclick="sendMessage()">Send</button>
+      </div>
+    </div>
+
+    <div class="notification">New message received</div>
+    <div class="message-container">
+      <div class="message-content">
+        <!-- Message content here -->
+      </div>
+      <span class="edit-icon">
+        <!-- SVG will be added here by JavaScript -->
+      </span>
+    </div>
+
+    <script>
+      // Function to scroll chat box to bottom
+      function scrollToBottom() {
+        const chatBox = document.getElementById("chat-box");
+        chatBox.scrollTop = chatBox.scrollHeight;
+      }
+
+      // Function to append message to chat box
+      function appendMessage(content, fromUser) {
+        const chatBox = document.getElementById("chat-box");
+        const messageDiv = document.createElement("div");
+        messageDiv.className = fromUser ? "message user" : "message bot";
+
+        const messageContent = document.createElement("div");
+        messageContent.className = "message-content";
+        messageContent.innerHTML = marked.parse(content); // Convert Markdown to HTML
+
+        if (fromUser) {
+          const editIcon = document.createElement("span");
+          editIcon.className = "edit-icon";
+          editIcon.innerHTML = `
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1d1919" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="14 2 18 6 7 17 3 17 3 13 14 2"></polygon>
+              <line x1="3" y1="22" x2="21" y2="22"></line>
+            </svg>
+          `;
+          editIcon.onclick = function () {
+            editMessage(messageContent, messageDiv);
+          };
+          messageDiv.appendChild(editIcon); // Add the edit icon to the message
+        }
+
+        messageDiv.appendChild(messageContent);
+
+        const timestampDiv = document.createElement("div");
+        timestampDiv.className = "message-time";
+        const currentTime = new Date().toLocaleTimeString([], {
+          hour: "2-digit",
+          minute: "2-digit"
+        });
+        timestampDiv.textContent = currentTime;
+
+        messageDiv.appendChild(timestampDiv);
+
+        chatBox.appendChild(messageDiv);
+
+        scrollToBottom();
+      }
+
+      // Function to show typing indicator
+      function showTypingIndicator() {
+        const typingIndicator = document.getElementById("typing-indicator");
+        typingIndicator.style.display = "block";
+      }
+
+      // Function to hide typing indicator
+      function hideTypingIndicator() {
+        const typingIndicator = document.getElementById("typing-indicator");
+        typingIndicator.style.display = "none";
+      }
+      // Function to toggle dark mode and save preference
+      function toggleDarkMode() {
+        document.body.classList.toggle("dark-mode");
+
+        const toggleThemeBtn = document.getElementById("toggle-theme-btn");
+        if (document.body.classList.contains("dark-mode")) {
+          toggleThemeBtn.textContent = "Chuyển sang chế độ sáng";
+          localStorage.setItem("theme", "dark");
+        } else {
+          toggleThemeBtn.textContent = "Chuyển sang chế độ tối";
+          localStorage.setItem("theme", "light");
+        }
+      }
+
+      // Load theme preference on page load
+      document.addEventListener("DOMContentLoaded", () => {
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme === "dark") {
+          document.body.classList.add("dark-mode");
+          document.getElementById("toggle-theme-btn").textContent =
+            "Chuyển sang chế độ sáng";
+        }
+      });
+
+      // Attach event listener to the button
+      document
+        .getElementById("toggle-theme-btn")
+        .addEventListener("click", toggleDarkMode);
+
+      // Function to send a message
+      function sendMessage() {
+        const userInput = document.getElementById("user-input").value;
+        if (userInput.trim() === "") return; // Don't send if input is empty
+
+        appendMessage(userInput, true); // Append user's message to chat
+
+        // Show typing indicator
+        showTypingIndicator();
+
+        // Simulate bot's response delay
+        setTimeout(() => {
+          fetch("/message", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ message: userInput })
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              appendMessage(data.response, false); // Append bot's response
+              document.getElementById("user-input").value = ""; // Clear input field
+              showNotification(); // Show new message notification
+              hideTypingIndicator(); // Hide typing indicator
+              saveChatHistory(); // Save chat history to local storage
+            })
+            .catch((error) => {
+              console.error("Error:", error); // Log error if any
+              hideTypingIndicator(); // Hide typing indicator if error
+            });
+        }, 500); // Delay before bot responds
+      }
+
+      // Function to edit a message
+      function editMessage(messageContent, messageDiv) {
+        const currentMessage = messageContent.textContent.trim();
+        const userInput = document.getElementById("user-input");
+
+        // Set input value to the current message to edit
+        userInput.value = currentMessage;
+
+        // Remove old message after editing starts
+        messageDiv.remove();
+
+        // Focus on input box for editing
+        userInput.focus();
+      }
+
+      // Function to show a notification
+      function showNotification() {
+        const notification = document.querySelector(".notification");
+        notification.classList.add("active");
+        setTimeout(() => {
+          notification.classList.remove("active");
+        }, 3000);
+      }
+      document
+        .getElementById("user-input")
+        .addEventListener("keypress", function (e) {
+          if (e.key === "Enter") {
+            sendMessage();
+            e.preventDefault(); // Ngăn chặn gửi form
+          }
+        });
+
+      // Function to save chat history to local storage
+      function saveChatHistory() {
+        const chatBox = document.getElementById("chat-box");
+        const messages = Array.from(chatBox.children).map((messageDiv) => {
+          const content =
+            messageDiv.querySelector(".message-content").innerHTML;
+          const fromUser = messageDiv.classList.contains("user");
+          return { content, fromUser };
+        });
+        localStorage.setItem("chatHistory", JSON.stringify(messages));
+      }
+
+      // Function to load chat history from local storage
+      function loadChatHistory() {
+        const chatHistory =
+          JSON.parse(localStorage.getItem("chatHistory")) || [];
+        chatHistory.forEach((message) => {
+          appendMessage(message.content, message.fromUser);
+        });
+      }
+
+      // Function to start a new chat
+      function startNewChat() {
+        // Clear chat box
+        document.getElementById("chat-box").innerHTML = "";
+
+        // Clear chat history from local storage
+        localStorage.removeItem("chatHistory");
+
+        // Send request to clear history on server
+        fetch("/clear-history", { method: "POST" })
+          .then((response) => response.json())
+          .then((data) => {
+            console.log("History cleared:", data);
+          })
+          .catch((error) => {
+            console.error("Error clearing history:", error);
+          });
+      }
+
+      // Event listeners for DOM content loaded
+      document.addEventListener("DOMContentLoaded", () => {
+        // Load chat history when page loads
+        loadChatHistory();
+
+        // Sidebar toggle functionality
+        const sidebarIcon = document.querySelector(".sidebar-icon");
+        const sidebar = document.querySelector(".sidebar");
+        const sidebarClose = document.querySelector(".sidebar-close");
+        const sidebarNewChat = document.getElementById("sidebar-new-chat");
+
+        sidebarIcon.addEventListener("click", () => {
+          sidebar.classList.toggle("open");
+          sidebarIcon.classList.toggle(
+            "hidden",
+            sidebar.classList.contains("open")
+          );
+          sidebarNewChat.classList.toggle(
+            "hidden",
+            sidebar.classList.contains("open")
+          );
+        });
+
+        sidebarClose.addEventListener("click", () => {
+          sidebar.classList.remove("open");
+          sidebarIcon.classList.remove("hidden");
+          sidebarNewChat.classList.remove("hidden");
+        });
+
+        document.addEventListener("click", (event) => {
+          if (
+            !sidebar.contains(event.target) &&
+            !sidebarIcon.contains(event.target) &&
+            sidebar.classList.contains("open")
+          ) {
+            sidebar.classList.remove("open");
+            sidebarIcon.classList.remove("hidden");
+            sidebarNewChat.classList.remove("hidden");
+          }
+        });
+
+        sidebarNewChat.addEventListener("click", startNewChat);
+
+        // Menu toggle functionality
+        const menuIcon = document.getElementById("menu-toggle");
+        const dropdownMenu = document.getElementById("menu-dropdown");
+
+        menuIcon.addEventListener("click", () => {
+          dropdownMenu.classList.toggle("show");
+        });
+
+        document.addEventListener("click", (event) => {
+          if (
+            !dropdownMenu.contains(event.target) &&
+            !menuIcon.contains(event.target)
+          ) {
+            dropdownMenu.classList.remove("show");
+          }
+        });
+      });
+      document
+        .getElementById("home-btn")
+        .addEventListener("click", function () {
+          window.location.href = "{{ url_for('upload_file') }}";
+        });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>QR Code Generator</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+      body {
+        font-family: "Arial", sans-serif;
+        background: linear-gradient(to right, #2c3e50, #3498db);
+        color: #ffffff;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+      }
+
+      h1 {
+        font-size: 3em;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+        animation: fadeIn 1s;
+        text-align: center;
+      }
+
+      .container {
+        background-color: rgba(44, 62, 80, 0.9);
+        border-radius: 15px;
+        padding: 40px 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        width: 90%;
+        max-width: 500px;
+        text-align: center;
+        animation: bounceIn 1s;
+      }
+
+      input[type="text"] {
+        width: calc(100% - 22px);
+        padding: 15px;
+        border: none;
+        border-radius: 5px;
+        background-color: #34495e;
+        color: #ffffff;
+        font-size: 1.1em;
+        margin-bottom: 20px;
+        transition: border 0.3s ease;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      }
+
+      input[type="text"]:focus {
+        outline: none;
+        border: 2px solid #00cfff;
+      }
+
+      .button-container {
+        display: flex;
+        flex-direction: column;
+        gap: 15px; /* Space between buttons */
+        margin-top: 20px;
+      }
+
+      button {
+        background-color: #00cfff;
+        color: #ffffff;
+        border: none;
+        padding: 12px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 1em;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        position: relative;
+        overflow: hidden;
+      }
+
+      button:hover {
+        background-color: #008f9b;
+        transform: scale(1.05);
+      }
+
+      button:after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 300%;
+        height: 300%;
+        background: rgba(255, 255, 255, 0.2);
+        border-radius: 50%;
+        transition: width 0.5s ease, height 0.5s ease, top 0.5s ease,
+          left 0.5s ease;
+        z-index: 0;
+        opacity: 0;
+      }
+
+      button:hover:after {
+        width: 100%;
+        height: 100%;
+        top: 0;
+        left: 0;
+        opacity: 1;
+      }
+
+      button span {
+        position: relative;
+        z-index: 1;
+      }
+
+      #qrCode {
+        margin-top: 20px;
+        display: none; /* Initially hide the QR Code */
+      }
+
+      footer {
+        margin-top: 20px;
+        font-size: 0.9em;
+        color: #aaaaaa;
+      }
+
+      .home-button {
+        background-color: #e74c3c;
+      }
+
+      .home-button:hover {
+        background-color: #c0392b;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes bounceIn {
+        from {
+          transform: scale(0.5);
+          opacity: 0;
+        }
+        to {
+          transform: scale(1);
+          opacity: 1;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <h1>QR Code Generator</h1>
+    <div class="container">
+      <input
+        type="text"
+        id="dataInput"
+        placeholder="Nhập dữ liệu để tạo QR Code"
+      />
+      <div class="button-container">
+        <button id="generateButton"><span>Tạo QR Code</span></button>
+        <button
+          class="home-button"
+          onclick="window.location.href='{{ url_for('upload_file') }}'"
+        >
+          <span>Quay về trang chủ</span>
+        </button>
+      </div>
+      <div id="qrCode"></div>
+    </div>
+
+    <script>
+      $(document).ready(function () {
+        $("#generateButton").click(function () {
+          const data = $("#dataInput").val();
+          if (data) {
+            const qrCodeUrl = `https://api.stakdek.de/api/qr/gen?data=${encodeURIComponent(
+              data
+            )}`;
+            $("#qrCode")
+              .html(
+                `<img src="${qrCodeUrl}" alt="QR Code" style="width: 200px; height: 200px; margin-top: 20px;">`
+              )
+              .show();
+            $("#generateButton")
+              .html("<span>Làm mới</span>")
+              .off("click")
+              .click(function () {
+                location.reload(); // Reload the page to reset the form
+              });
+          } else {
+            alert("Vui lòng nhập dữ liệu!");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

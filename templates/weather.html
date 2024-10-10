@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Information</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        background-color: #1b1b1f; /* Màu nền tối hơn */
+        color: #f0f0f0; /* Màu chữ sáng cho dễ đọc */
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      .header {
+        background: linear-gradient(
+          90deg,
+          #007acc,
+          #00d4ff
+        ); /* Màu gradient cho header */
+        color: #ffffff;
+        padding: 20px;
+        width: 100%;
+        text-align: center;
+        font-size: 2em;
+        border-bottom: 2px solid #444; /* Đường viền cho sự phân cách */
+      }
+
+      .container {
+        max-width: 800px; /* Chiều rộng tối đa cho nội dung */
+        width: 100%;
+        background-color: #2b2b30; /* Nền của thẻ */
+        border-radius: 12px; /* Bo góc */
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5); /* Đổ bóng cho chiều sâu */
+        margin: 20px;
+        padding: 20px; /* Padding bên trong thẻ */
+      }
+
+      .weather-card {
+        background-color: #3c3c42; /* Nền thẻ thông tin thời tiết */
+        border-radius: 10px; /* Bo góc */
+        padding: 15px; /* Padding cho nội dung */
+        margin: 10px 0; /* Khoảng cách giữa các thẻ */
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Đổ bóng cho chiều sâu */
+        transition: transform 0.3s, box-shadow 0.3s; /* Hiệu ứng chuyển tiếp */
+      }
+
+      .weather-card:hover {
+        transform: translateY(-5px); /* Nâng nhẹ khi hover */
+        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Đổ bóng mạnh hơn */
+      }
+
+      .card-title {
+        font-size: 1.5em; /* Kích thước tiêu đề */
+        color: #00d4ff; /* Màu sắc nổi bật */
+        margin-bottom: 10px; /* Khoảng cách dưới tiêu đề */
+      }
+
+      .card-info {
+        display: flex;
+        justify-content: space-between; /* Khoảng cách giữa các phần tử */
+        font-size: 1.2em; /* Kích thước chữ thông tin */
+        margin-bottom: 10px; /* Khoảng cách dưới thông tin */
+      }
+
+      .footer {
+        margin-top: auto; /* Đẩy footer xuống dưới */
+        background-color: #444; /* Nền footer */
+        color: #ffffff;
+        text-align: center;
+        padding: 10px;
+        width: 100%;
+      }
+
+      .button {
+        background: linear-gradient(
+          90deg,
+          #007acc,
+          #00d4ff
+        ); /* Gradient cho nút */
+        color: #ffffff; /* Màu chữ trắng */
+        border: none; /* Không có viền */
+        border-radius: 8px; /* Bo góc */
+        padding: 10px 20px; /* Padding cho nút */
+        cursor: pointer; /* Con trỏ biến thành tay khi hover */
+        font-size: 1.2em; /* Kích thước chữ nút */
+        transition: background 0.3s; /* Hiệu ứng chuyển tiếp nền */
+        margin: 20px 0; /* Khoảng cách cho sự phân cách */
+      }
+
+      .button:hover {
+        background: linear-gradient(
+          90deg,
+          #00d4ff,
+          #007acc
+        ); /* Gradient ngược khi hover */
+      }
+
+      .input-field {
+        padding: 10px; /* Padding cho input */
+        border-radius: 8px; /* Bo góc */
+        border: 2px solid #00d4ff; /* Màu viền */
+        background-color: #2b2b30; /* Nền input */
+        color: #f8f8f2; /* Màu chữ trong input */
+        width: 100%; /* Chiều rộng đầy đủ */
+        margin-bottom: 20px; /* Khoảng cách dưới input */
+      }
+
+      .input-field::placeholder {
+        color: #f8f8f2; /* Màu chữ placeholder */
+        opacity: 0.7; /* Mờ đi một chút */
+      }
+
+      table {
+        width: 100%; /* Chiều rộng đầy đủ */
+        margin-top: 20px; /* Khoảng cách cho sự phân cách */
+        border-collapse: collapse; /* Gộp viền */
+      }
+
+      th,
+      td {
+        padding: 12px; /* Padding cho ô trong bảng */
+        text-align: left; /* Căn trái chữ */
+        border-bottom: 1px solid #444; /* Viền dưới */
+      }
+
+      th {
+        background-color: #444; /* Nền cho đầu bảng */
+        color: #ffffff; /* Màu chữ cho đầu bảng */
+      }
+
+      tr:hover {
+        background-color: #3c3c42; /* Hiệu ứng hover cho dòng */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">Weather Information</div>
+    <div class="container">
+      <button id="get-location" class="button">Get My Location</button>
+
+      <form id="location-form" method="POST" style="display: none">
+        <input type="hidden" name="latitude" id="latitude" />
+        <input type="hidden" name="longitude" id="longitude" />
+        <button type="submit" class="button">Get Weather</button>
+      </form>
+
+      {% if current_weather %}
+      <div class="weather-card">
+        <h2 class="card-title">
+          Current Weather in {{ current_weather.city }}
+        </h2>
+        <div class="card-info">
+          <span>Temperature: {{ current_weather.temperature }} °C</span>
+          <span>Description: {{ current_weather.description }}</span>
+        </div>
+        <div class="card-info">
+          <span>Humidity: {{ current_weather.humidity }}%</span>
+          <span>Wind Speed: {{ current_weather.wind_speed }} m/s</span>
+        </div>
+      </div>
+      {% elif error %}
+      <p>{{ error }}</p>
+      {% endif %} {% if forecast_info %}
+      <h2>Forecast for the Next 5 Hours</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Time</th>
+            <th>Temperature (°C)</th>
+            <th>Description</th>
+            <th>Humidity (%)</th>
+            <th>Wind Speed (m/s)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for forecast in forecast_info %}
+          <tr>
+            <td>{{ forecast.time }}</td>
+            <td>{{ forecast.temperature }}</td>
+            <td>{{ forecast.description }}</td>
+            <td>{{ forecast.humidity }}</td>
+            <td>{{ forecast.wind_speed }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+    </div>
+
+    <script>
+      document
+        .getElementById("get-location")
+        .addEventListener("click", function () {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+              function (position) {
+                document.getElementById("latitude").value =
+                  position.coords.latitude;
+                document.getElementById("longitude").value =
+                  position.coords.longitude;
+                document.getElementById("location-form").style.display =
+                  "block"; // Hiển thị form sau khi lấy vị trí
+              },
+              function () {
+                alert("Unable to retrieve your location.");
+              }
+            );
+          } else {
+            alert("Geolocation is not supported by this browser.");
+          }
+        });
+    </script>
+  </body>
+</html>

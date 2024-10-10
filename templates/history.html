@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{{ title }}</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <style>
+      /* Resetting margins and paddings */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      /* Styling for the body */
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: #282a36; /* Dark theme background */
+        color: #f8f8f2; /* Light text for better contrast */
+        padding: 20px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        min-height: 100vh;
+      }
+
+      /* Main container with subtle shadow and rounded corners */
+      .container {
+        width: 100%;
+        max-width: 900px;
+        background-color: #44475a; /* Slightly lighter background for content */
+        border-radius: 15px;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.3);
+        padding: 40px 30px;
+        transition: all 0.3s ease;
+      }
+
+      /* Slight elevation effect on hover */
+      .container:hover {
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.4);
+        transform: translateY(-3px);
+      }
+
+      /* Navbar styling */
+      .navbar {
+        background-color: #50fa7b; /* Bright green for contrast */
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 20px;
+        border-radius: 12px;
+      }
+
+      /* Navbar links styling */
+      .navbar a {
+        color: #282a36; /* Dark text on light navbar */
+        text-decoration: none;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 10px 15px;
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+
+      /* Hover effect for navbar links */
+      .navbar a:hover {
+        background-color: rgba(255, 255, 255, 0.2);
+        border-radius: 8px;
+      }
+
+      /* Page title styling */
+      h1 {
+        text-align: center;
+        margin-bottom: 30px;
+        color: #50fa7b; /* Title color matching navbar */
+        font-size: 28px;
+        letter-spacing: 1px;
+      }
+
+      /* History container with clear spacing */
+      .history-container {
+        list-style-type: none;
+        padding: 0;
+        margin-top: 20px;
+      }
+
+      /* Individual history items */
+      .history-item {
+        padding: 15px 0;
+        border-bottom: 1px solid #6272a4; /* Border in a lighter tone */
+        font-size: 18px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* Remove border for the last item */
+      .history-item:last-child {
+        border-bottom: none;
+      }
+
+      /* Styling links in history */
+      .history-item a {
+        color: #8be9fd; /* Light blue for links */
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      /* Hover effect for history links */
+      .history-item a:hover {
+        color: #50fa7b; /* Match hover color with navbar green */
+        text-decoration: underline;
+      }
+
+      /* Custom button styling */
+      .btn-custom {
+        display: inline-block;
+        padding: 12px 25px;
+        background-color: #50fa7b;
+        color: #282a36;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      /* Button hover effect */
+      .btn-custom:hover {
+        background-color: #4bf66f;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+      }
+
+      /* Center align elements */
+      .text-center {
+        text-align: center;
+        margin-top: 40px;
+      }
+
+      /* Media query for responsiveness */
+      @media (max-width: 768px) {
+        .container {
+          padding: 20px;
+        }
+        .navbar {
+          flex-direction: column;
+        }
+        .navbar a {
+          margin-bottom: 10px;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <!-- Navbar -->
+      <div class="navbar">
+        <a href="/">Trang chủ</a>
+        <a href="/upload-history">Lịch sử tải lên</a>
+        <a href="/download-history">Lịch sử tải xuống</a>
+      </div>
+
+      <h1>{{ title }}</h1>
+
+      <ul class="history-container">
+        {% for item in history %}
+        <li class="history-item">
+          {% if 'http' in item %}
+          <a href="{{ item }}" target="_blank">{{ item }}</a>
+          {% else %} {{ item }} {% endif %}
+        </li>
+        {% else %}
+        <li class="history-item">Không có dữ liệu nào.</li>
+        {% endfor %}
+      </ul>
+
+      <!-- Centered button -->
+      <div class="text-center">
+        <button class="btn-custom">Thực hiện hành động</button>
+      </div>
+    </div>
+  </body>
+</html>
