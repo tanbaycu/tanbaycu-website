@@ -1,4 +1,3 @@
-google-generative-ai
 requests
 yt-dlp
 deep-translator
