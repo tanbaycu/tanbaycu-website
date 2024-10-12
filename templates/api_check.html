@@ -1,151 +1,250 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kiểm Tra API</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-    />
-    <style>
-      body {
-        background-color: #282a36;
-        color: #f8f8f2;
-        padding: 20px;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Kiểm Tra API</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <style>
+    /* Reset toàn bộ thuộc tính mặc định */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Roboto", sans-serif;
+      background-color: #282a36;
+      /* Màu nền tối hơn */
+      color: #f8f8f2;
+      /* Màu chữ sáng cho dễ đọc */
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    /* Header */
+    .header {
+      background: linear-gradient(90deg, #007acc, #00d4ff);
+      /* Màu gradient cho header */
+      color: #ffffff;
+      padding: 20px;
+      width: 100%;
+      text-align: center;
+      font-size: 2em;
+      border-bottom: 2px solid #444;
+      /* Đường viền cho sự phân cách */
+    }
+
+    /* Container */
+    .container {
+      margin-top: 50px;
+      /* Khoảng cách trên */
+      border-radius: 10px;
+      /* Bo góc */
+      padding: 30px;
+      /* Padding bên trong thẻ */
+      background-color: #44475a;
+      /* Nền của thẻ */
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+      /* Đổ bóng cho chiều sâu */
+      width: 90%;
+      /* Chiều rộng 90% cho mọi màn hình */
+      max-width: 800px;
+      /* Chiều rộng tối đa cho nội dung */
+    }
+
+    /* Nút */
+    .btn-custom {
+      background-color: #50fa7b;
+      /* Màu nền nút */
+      color: #282a36;
+      /* Màu chữ nút */
+      border-radius: 5px;
+      /* Bo góc */
+      text-align: center;
+      /* Căn giữa nội dung */
+      text-decoration: none;
+      /* Không gạch chân */
+      display: inline-block;
+      /* Hiển thị dưới dạng khối */
+      padding: 10px 20px;
+      /* Padding cho nút */
+      transition: background-color 0.3s;
+      /* Hiệu ứng chuyển tiếp nền */
+      max-width: 200px;
+      /* Chiều rộng tối đa cho nút */
+      width: 100%;
+      /* Độ rộng 100% cho nút trên màn hình nhỏ */
+      margin: 10px 0;
+      /* Khoảng cách trên/dưới */
+    }
+
+    .btn-custom:hover {
+      background-color: #4bf66f;
+      /* Màu nền khi hover */
+    }
+
+    /* Response */
+    .response {
+      margin-top: 20px;
+      /* Khoảng cách trên */
+      background-color: #6272a4;
+      /* Nền của phản hồi */
+      padding: 10px;
+      /* Padding cho nội dung */
+      border-radius: 5px;
+      /* Bo góc */
+      color: #f8f8f2;
+      /* Màu chữ phản hồi */
+      width: 100%;
+      /* Độ rộng đầy đủ */
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+      .header {
+        font-size: 1.8em;
+        /* Giảm kích thước chữ header */
       }
+    }
+
+    @media (max-width: 992px) {
+      .header {
+        font-size: 1.6em;
+        /* Giảm kích thước chữ header */
+      }
+
       .container {
-        margin-top: 50px;
-        border-radius: 10px;
-        padding: 30px;
-        background-color: #44475a;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        padding: 20px;
+        /* Giảm padding cho container */
       }
+
       .btn-custom {
-        background-color: #50fa7b;
-        color: #282a36;
-        border-radius: 5px;
-        text-align: center;
-        text-decoration: none;
-        display: inline-block;
-        padding: 10px 20px;
-        transition: background-color 0.3s;
-        max-width: 200px;
+        padding: 8px 16px;
+        /* Giảm padding cho nút */
+        font-size: 1em;
+        /* Giảm kích thước chữ nút */
       }
-      .btn-custom:hover {
-        background-color: #4bf66f;
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        font-size: 1.4em;
+        /* Giảm kích thước chữ header */
       }
+
+      .container {
+        padding: 15px;
+        /* Giảm padding cho container */
+      }
+
       .response {
-        margin-top: 20px;
-        background-color: #6272a4;
-        padding: 10px;
-        border-radius: 5px;
-        color: #f8f8f2;
+        padding: 8px;
+        /* Giảm padding cho phản hồi */
       }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h2 class="text-center">Kiểm Tra API</h2>
-      <form id="api-form">
-        <div class="mb-3">
-          <label for="url" class="form-label">Nhập URL API:</label>
-          <input
-            type="url"
-            class="form-control"
-            id="url"
-            name="url"
-            placeholder="Ví dụ: https://example.com/api"
-            required
-          />
-        </div>
-        <div class="mb-3">
-          <label for="method" class="form-label">Chọn phương thức:</label>
-          <select class="form-select" id="method">
-            <option value="GET">GET</option>
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-            <option value="DELETE">DELETE</option>
-          </select>
-        </div>
-        <div class="mb-3">
-          <label for="payload" class="form-label">Nội dung (nếu có):</label>
-          <textarea
-            class="form-control"
-            id="payload"
-            name="payload"
-            rows="3"
-            placeholder='{"key": "value"}'
-          ></textarea>
-        </div>
-        <button type="submit" class="btn btn-custom w-100">Gửi yêu cầu</button>
-      </form>
-      <div
-        id="loading"
-        style="display: none; text-align: center; margin-top: 20px"
-      >
-        <i
-          class="fas fa-spinner fa-spin"
-          style="font-size: 24px; color: #50fa7b"
-        ></i>
-        <p>Đang xử lý yêu cầu...</p>
+    }
+
+    @media (max-width: 576px) {
+      .header {
+        font-size: 1.2em;
+        /* Giảm kích thước chữ header */
+      }
+
+      .btn-custom {
+        padding: 6px 12px;
+        /* Giảm padding cho nút */
+        font-size: 0.9em;
+        /* Giảm kích thước chữ nút */
+      }
+
+      .response {
+        padding: 6px;
+        /* Giảm padding cho phản hồi */
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2 class="text-center">Kiểm Tra API</h2>
+    <form id="api-form">
+      <div class="mb-3">
+        <label for="url" class="form-label">Nhập URL API:</label>
+        <input type="url" class="form-control" id="url" name="url" placeholder="Ví dụ: https://example.com/api"
+          required />
       </div>
-      <div class="response" id="response" style="display: none"></div>
-      <a href="{{ url_for('homepage') }}" class="btn btn-custom w-100 mt-3"
-        >Quay trở về trang chủ</a
-      >
+      <div class="mb-3">
+        <label for="method" class="form-label">Chọn phương thức:</label>
+        <select class="form-select" id="method">
+          <option value="GET">GET</option>
+          <option value="POST">POST</option>
+          <option value="PUT">PUT</option>
+          <option value="DELETE">DELETE</option>
+        </select>
+      </div>
+      <div class="mb-3">
+        <label for="payload" class="form-label">Nội dung (nếu có):</label>
+        <textarea class="form-control" id="payload" name="payload" rows="3" placeholder='{"key": "value"}'></textarea>
+      </div>
+      <button type="submit" class="btn btn-custom w-100">Gửi yêu cầu</button>
+    </form>
+    <div id="loading" style="display: none; text-align: center; margin-top: 20px">
+      <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #50fa7b"></i>
+      <p>Đang xử lý yêu cầu...</p>
     </div>
+    <div class="response" id="response" style="display: none"></div>
+    <a href="{{ url_for('homepage') }}" class="btn btn-custom w-100 mt-3">Quay trở về trang chủ</a>
+  </div>
 
-    <script>
-      document
-        .getElementById("api-form")
-        .addEventListener("submit", async function (e) {
-          e.preventDefault();
-          const url = document.getElementById("url").value;
-          const method = document.getElementById("method").value;
-          const payload = document.getElementById("payload").value;
+  <script>
+    document
+      .getElementById("api-form")
+      .addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const url = document.getElementById("url").value;
+        const method = document.getElementById("method").value;
+        const payload = document.getElementById("payload").value;
 
-          const responseDiv = document.getElementById("response");
-          const loadingDiv = document.getElementById("loading");
-          responseDiv.style.display = "none"; // Ẩn phần phản hồi trước khi gửi yêu cầu
-          loadingDiv.style.display = "block"; // Hiển thị loading
+        const responseDiv = document.getElementById("response");
+        const loadingDiv = document.getElementById("loading");
+        responseDiv.style.display = "none"; // Ẩn phần phản hồi trước khi gửi yêu cầu
+        loadingDiv.style.display = "block"; // Hiển thị loading
 
-          try {
-            const response = await fetch("/api-check", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded"
-              },
-              body: new URLSearchParams({
-                url: url,
-                method: method,
-                payload: payload
-              })
-            });
+        try {
+          const response = await fetch("/api-check", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: new URLSearchParams({
+              url: url,
+              method: method,
+              payload: payload
+            })
+          });
 
-            const data = await response.json();
-            responseDiv.innerHTML = `<h5>Phản hồi:</h5><pre>${JSON.stringify(
-              data,
-              null,
-              2
-            )}</pre>`;
-            responseDiv.style.display = "block";
-          } catch (error) {
-            responseDiv.innerHTML = `<h5>Lỗi:</h5><pre>${error.message}</pre>`;
-            responseDiv.style.display = "block";
-          } finally {
-            loadingDiv.style.display = "none"; // Ẩn loading khi hoàn tất
-          }
-        });
-    </script>
-  </body>
+          const data = await response.json();
+          responseDiv.innerHTML = `<h5>Phản hồi:</h5><pre>${JSON.stringify(
+            data,
+            null,
+            2
+          )}</pre>`;
+          responseDiv.style.display = "block";
+        } catch (error) {
+          responseDiv.innerHTML = `<h5>Lỗi:</h5><pre>${error.message}</pre>`;
+          responseDiv.style.display = "block";
+        } finally {
+          loadingDiv.style.display = "none"; // Ẩn loading khi hoàn tất
+        }
+      });
+  </script>
+</body>
+
 </html>
