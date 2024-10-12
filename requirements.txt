@@ -1,4 +1,1 @@
-requests
-yt-dlp
-deep-translator
 Flask
