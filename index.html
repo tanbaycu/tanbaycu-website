@@ -16,73 +16,45 @@
     <meta name="robots" content="index, follow" />
 
     <style>
-        /* Reset cơ bản */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        /* Thiết lập cho body */
         body {
             font-family: "Roboto", sans-serif;
-            /* Font chữ hiện đại */
             background-color: #282a36;
-            /* Màu nền tối theo chủ đề Dracula */
             color: #f8f8f2;
-            /* Màu chữ sáng cho dễ đọc */
+            margin: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: flex-start;
             min-height: 100vh;
-            /* Đảm bảo chiều cao tối thiểu */
             padding: 20px;
-            /* Padding cho body */
         }
 
-        /* Navbar */
         .navbar {
             background-color: #6272a4;
-            /* Màu nền cho navbar */
             padding: 15px;
             position: fixed;
-            /* Giữ navbar ở đầu trang */
             width: 100%;
             top: 0;
             z-index: 1000;
             display: flex;
             justify-content: center;
-            /* Căn giữa các liên kết */
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            /* Đổ bóng cho navbar */
+            box-sizing: border-box;
         }
 
-        /* Liên kết trong navbar */
         .navbar a {
             color: #f8f8f2;
-            /* Màu chữ cho liên kết */
             text-decoration: none;
-            /* Bỏ gạch chân */
             font-size: 1rem;
-            /* Kích thước chữ */
             font-weight: 500;
-            /* Độ đậm chữ */
             margin: 0 15px;
-            /* Khoảng cách giữa các liên kết */
             transition: color 0.3s, transform 0.2s;
-            /* Hiệu ứng chuyển tiếp */
         }
 
-        /* Hiệu ứng hover cho liên kết */
         .navbar a:hover {
             color: #50fa7b;
-            /* Màu khi hover */
             transform: scale(1.1);
-            /* Tăng kích thước khi hover */
         }
 
-        /* Menu bar */
         .menu-bar {
             display: flex;
             gap: 10px;
@@ -91,236 +63,151 @@
             right: 30px;
         }
 
-        /* Nút trong menu bar */
         .menu-button {
             background: linear-gradient(135deg, #6272a4, #44475a);
-            /* Gradient cho nút */
             color: #f8f8f2;
-            /* Màu chữ */
             border: 2px solid transparent;
-            /* Viền cho nút */
             padding: 12px 20px;
-            /* Padding cho nút */
             cursor: pointer;
-            /* Con trỏ khi hover */
             border-radius: 8px;
-            /* Bo góc */
             font-size: 16px;
-            /* Kích thước chữ */
             transition: background 0.3s, transform 0.2s, border 0.3s;
-            /* Hiệu ứng chuyển tiếp */
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            /* Đổ bóng cho nút */
         }
 
-        /* Hiệu ứng hover cho nút menu */
         .menu-button:hover {
             background: linear-gradient(135deg, #44475a, #6272a4);
-            /* Đổi màu khi hover */
             border: 2px solid #f8f8f2;
-            /* Thay đổi viền khi hover */
             transform: scale(1.05);
-            /* Tăng kích thước khi hover */
         }
 
-        /* Nội dung dropdown */
         .dropdown-content {
             display: none;
-            /* Ẩn nội dung dropdown */
             position: absolute;
-            /* Đặt vị trí tuyệt đối */
             right: 0;
             top: 50px;
             background-color: #44475a;
-            /* Nền cho dropdown */
             border: 1px solid #6272a4;
-            /* Viền cho dropdown */
             min-width: 200px;
-            /* Chiều rộng tối thiểu */
             box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            /* Đổ bóng cho dropdown */
             border-radius: 8px;
-            /* Bo góc */
             z-index: 1;
-            /* Đưa dropdown lên trên */
         }
 
-        /* Liên kết trong dropdown */
         .dropdown-content a {
             color: #f8f8f2;
-            /* Màu chữ cho liên kết */
             padding: 12px 20px;
-            /* Padding cho liên kết */
             text-decoration: none;
-            /* Bỏ gạch chân */
             display: block;
-            /* Hiển thị dạng khối */
             transition: background-color 0.3s;
-            /* Hiệu ứng chuyển tiếp */
         }
 
-        /* Hiệu ứng hover cho liên kết trong dropdown */
         .dropdown-content a:hover {
             background-color: #6272a4;
-            /* Màu khi hover */
             border-radius: 8px;
-            /* Bo góc */
         }
 
-        /* Header */
         .header {
             text-align: center;
-            /* Căn giữa văn bản */
             margin-top: 100px;
-            /* Khoảng cách cho header */
+            /* Adjusted for fixed navbar */
             padding: 20px;
-            /* Padding cho header */
             box-sizing: border-box;
-            /* Đảm bảo padding được tính vào tổng chiều rộng */
         }
 
-        /* Tiêu đề trong header */
         .header h1 {
             font-size: 2.5rem;
-            /* Kích thước chữ lớn */
             color: #50fa7b;
-            /* Màu chữ cho tiêu đề */
         }
 
-        /* Nội dung trong header */
         .header p {
             font-size: 1.25rem;
-            /* Kích thước chữ cho nội dung */
             color: #bd93f9;
-            /* Màu chữ cho nội dung */
             margin: 10px 0;
-            /* Khoảng cách trên và dưới */
         }
 
-        /* Container cho các nút hành động */
         .button-container {
             display: flex;
-            /* Hiển thị dạng flex */
             flex-wrap: wrap;
-            /* Cho phép bọc dòng */
             gap: 15px;
-            /* Khoảng cách giữa các nút */
             justify-content: center;
-            /* Căn giữa */
             margin-top: 20px;
-            /* Khoảng cách trên cho button-container */
         }
 
-        /* Nút hành động */
         .action-button {
             background: linear-gradient(135deg, #6272a4, #44475a);
-            /* Gradient cho nút */
             color: #f8f8f2;
-            /* Màu chữ cho nút */
             padding: 15px 25px;
-            /* Padding cho nút */
             font-size: 1rem;
-            /* Kích thước chữ cho nút */
             font-weight: 500;
-            /* Độ đậm chữ cho nút */
             border-radius: 8px;
-            /* Bo góc */
             text-decoration: none;
-            /* Bỏ gạch chân */
             transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
-            /* Hiệu ứng chuyển tiếp */
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            /* Đổ bóng cho nút */
         }
 
-        /* Hiệu ứng hover cho nút hành động */
         .action-button:hover {
             background: linear-gradient(135deg, #44475a, #6272a4);
-            /* Đổi màu khi hover */
             transform: translateY(-5px);
-            /* Di chuyển lên khi hover */
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
-            /* Đổ bóng mạnh hơn khi hover */
         }
 
-        /* Footer */
         .footer {
             margin-top: auto;
-            /* Đẩy footer xuống dưới */
             text-align: center;
-            /* Căn giữa văn bản */
             padding: 10px;
-            /* Padding cho footer */
             color: #f8f8f2;
-            /* Màu chữ cho footer */
             font-size: 0.875rem;
-            /* Kích thước chữ cho footer */
         }
 
-        /* Media Queries cho tính đáp ứng */
+        /* Media Queries for Responsiveness */
         @media (max-width: 768px) {
             .navbar a {
                 font-size: 0.9rem;
-                /* Giảm kích thước chữ cho navbar */
                 margin: 0 10px;
-                /* Giảm khoảng cách giữa các liên kết */
             }
 
             .header h1 {
                 font-size: 2rem;
-                /* Giảm kích thước chữ cho tiêu đề */
             }
 
             .header p {
                 font-size: 1rem;
-                /* Giảm kích thước chữ cho nội dung */
             }
 
             .action-button {
                 padding: 12px 20px;
-                /* Giảm padding cho nút */
                 font-size: 0.9rem;
-                /* Giảm kích thước chữ cho nút */
             }
         }
 
         @media (max-width: 480px) {
             .navbar {
                 flex-direction: column;
-                /* Đặt các liên kết trong navbar thành cột */
                 align-items: center;
-                /* Căn giữa các liên kết */
             }
 
             .header h1 {
                 font-size: 1.75rem;
-                /* Giảm kích thước chữ cho tiêu đề */
             }
 
             .header p {
                 font-size: 0.9rem;
-                /* Giảm kích thước chữ cho nội dung */
             }
 
             .menu-bar {
                 right: 10px;
-                /* Điều chỉnh vị trí cho menu bar */
                 top: 50px;
-                /* Điều chỉnh vị trí cho menu bar */
             }
 
             .button-container {
                 flex-direction: column;
-                /* Đặt các nút thành cột */
                 gap: 10px;
-                /* Khoảng cách giữa các nút */
             }
 
             .action-button {
                 padding: 10px 15px;
-                /* Giảm padding cho nút */
                 font-size: 0.85rem;
-                /* Giảm kích thước chữ cho nút */
             }
         }
 
