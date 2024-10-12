@@ -1,144 +1,178 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Về Chúng Tôi</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-    />
-    <style>
-      body {
-        background-color: #282a36;
-        color: #f8f8f2;
-        font-family: "Roboto", sans-serif;
-      }
-      .container {
-        margin-top: 100px;
-        border-radius: 10px;
-        padding: 30px;
-        background-color: #44475a;
-        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-      }
-      .section-title {
-        font-size: 2em;
-        margin-bottom: 20px;
-        color: #50fa7b;
-        text-align: center;
-      }
-      .service {
-        margin-bottom: 30px;
-        padding: 20px;
-        border: 1px solid #6272a4;
-        border-radius: 10px;
-        transition: transform 0.3s;
-      }
-      .service:hover {
-        transform: translateY(-5px);
-      }
-      .btn-custom {
-        background-color: #50fa7b;
-        color: #282a36;
-      }
-      .btn-custom:hover {
-        background-color: #4bf66f;
-      }
-      .footer {
-        text-align: center;
-        margin-top: 40px;
-        color: #6272a4;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h2 class="section-title">Về Chúng Tôi</h2>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Về Chúng Tôi</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <style>
+    body {
+      background-color: #282a36;
+      color: #f8f8f2;
+      font-family: "Roboto", sans-serif;
+    }
+
+    .container {
+      margin-top: 100px;
+      border-radius: 10px;
+      padding: 30px;
+      background-color: #44475a;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    }
+
+    .section-title {
+      font-size: 2em;
+      margin-bottom: 20px;
+      color: #50fa7b;
+      text-align: center;
+    }
+
+    .service {
+      margin-bottom: 30px;
+      padding: 20px;
+      border: 1px solid #6272a4;
+      border-radius: 10px;
+      transition: transform 0.3s;
+    }
+
+    .service:hover {
+      transform: translateY(-5px);
+    }
+
+    .btn-custom {
+      background-color: #50fa7b;
+      color: #282a36;
+    }
+
+    .btn-custom:hover {
+      background-color: #4bf66f;
+    }
+
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #6272a4;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2 class="section-title">Về Chúng Tôi</h2>
+    <p>
+      Chúng tôi phát triển các công cụ và giải pháp giúp người dùng dễ dàng
+      thực hiện nhiều tác vụ trực tuyến với sự đơn giản và tiện lợi.
+    </p>
+
+    <h3 class="section-title">Các Dịch Vụ Chúng Tôi Cung Cấp</h3>
+
+    <div class="service">
+      <h4>Upload Tệp</h4>
       <p>
-        Chúng tôi phát triển các công cụ và giải pháp giúp người dùng dễ dàng
-        thực hiện nhiều tác vụ trực tuyến với sự đơn giản và tiện lợi.
+        Dịch vụ cho phép bạn upload các tệp lên GoFile và Pixeldrain một
+        cách dễ dàng và nhanh chóng.
       </p>
-
-      <h3 class="section-title">Các Dịch Vụ Chúng Tôi Cung Cấp</h3>
-
-      <div class="service">
-        <h4>Chat với Gemini</h4>
-        <p>
-          Gemini là một chatbot AI hỗ trợ người dùng trong các cuộc trò chuyện
-          thông minh, cung cấp thông tin và giải đáp thắc mắc một cách nhanh
-          chóng và chính xác.
-        </p>
-      </div>
-
-      <div class="service">
-        <h4>Rút Gọn Liên Kết</h4>
-        <p>
-          Dịch vụ rút gọn link của chúng tôi giúp bạn biến những URL dài dòng
-          thành các liên kết ngắn gọn, dễ nhớ và thuận tiện để chia sẻ.
-        </p>
-      </div>
-
-      <div class="service">
-        <h4>Kiểm Tra API</h4>
-        <p>
-          Công cụ kiểm tra API giúp bạn dễ dàng xác minh và xem thông tin chi
-          tiết về các yêu cầu HTTP, bao gồm trạng thái phản hồi và dữ liệu trả
-          về từ các API.
-        </p>
-      </div>
-
-      <div class="service">
-        <h4>Tạo Mã QRCODE</h4>
-        <p>
-          Chúng tôi cung cấp công cụ tạo mã QR, cho phép bạn tạo mã QR nhanh
-          chóng từ văn bản hoặc liên kết để sử dụng trong các tình huống thực
-          tiễn như quảng cáo hoặc thanh toán.
-        </p>
-      </div>
-
-      <div class="service">
-        <h4>Chạy Python Trực Tuyến</h4>
-        <p>
-          Dịch vụ này giúp bạn thực thi mã Python trực tiếp trên trình duyệt, hỗ
-          trợ các tác vụ từ cơ bản đến phức tạp mà không cần cài đặt môi trường
-          lập trình riêng.
-        </p>
-      </div>
-
-      <div class="service">
-        <h4>Facts Ngẫu Nhiên</h4>
-        <p>
-          Hãy khám phá những sự thật thú vị về các chủ đề đa dạng, từ động vật
-          đến những con số, giúp bạn mở rộng kiến thức theo cách vui vẻ và thú
-          vị.
-        </p>
-      </div>
-
-      <div class="service">
-        <h4>Kiểm Tra Địa Chỉ IP</h4>
-        <p>
-          Công cụ này cung cấp thông tin chi tiết về địa chỉ IP của bạn, bao gồm
-          vị trí địa lý, nhà cung cấp dịch vụ, và các thông tin liên quan khác
-          để bạn dễ dàng theo dõi và quản lý.
-        </p>
-      </div>
-
-      <div class="text-center">
-        <a href="{{ url_for('homepage') }}" class="btn btn-custom"
-          >Về trang chủ</a
-        >
-      </div>
     </div>
 
-    <div class="footer">
-      <p>&copy; 2024 - Dự án web thập cẩm | Designed by Me with Flask and ❤️ </p>
+    <div class="service">
+      <h4>Rút Gọn Liên Kết</h4>
+      <p>
+        Biến những URL dài dòng thành các liên kết ngắn gọn với TinyURL và
+        v.gd, giúp bạn dễ dàng chia sẻ hơn.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Kiểm Tra API</h4>
+      <p>
+        Xác minh và xem thông tin chi tiết về các yêu cầu HTTP với công cụ
+        kiểm tra API của chúng tôi.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Tạo Mã QRCODE</h4>
+      <p>
+        Tạo mã QR từ văn bản hoặc liên kết, lý tưởng cho quảng cáo và thanh
+        toán.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Chạy Python Trực Tuyến</h4>
+      <p>
+        Thực thi mã Python trực tiếp trên trình duyệt với một số hạn chế,
+        giúp bạn thử nghiệm dễ dàng.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Facts Ngẫu Nhiên</h4>
+      <p>
+        Khám phá những sự thật thú vị về nhiều chủ đề khác nhau từ JokeAPI
+        và UselessAPI.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Kiểm Tra Địa Chỉ IP</h4>
+      <p>
+        Cung cấp thông tin chi tiết về địa chỉ IP của bạn, bao gồm vị trí và
+        nhà cung cấp dịch vụ.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Dự Báo Thời Tiết</h4>
+      <p>
+        Nhận thông tin thời tiết chính xác với dịch vụ dự báo từ OpenWeatherMap.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Tải Video</h4>
+      <p>
+        Tải video từ nhiều nguồn khác nhau bằng công cụ yt-dlp, giúp bạn lưu
+        trữ nội dung yêu thích.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Hiển Thị Ảnh Ngẫu Nhiên</h4>
+      <p>
+        Khám phá hình ảnh ngẫu nhiên thông qua API của chúng tôi, mang đến
+        những trải nghiệm thú vị.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Tin Tức Mới Nhất</h4>
+      <p>
+        Cập nhật thông tin mới nhất từ các nguồn tin tức bằng cách sử dụng
+        API tin tức.
+      </p>
+    </div>
+
+    <div class="service">
+      <h4>Toán Học với Newton API</h4>
+      <p>
+        Thực hiện các phép toán phức tạp một cách dễ dàng với API Newton
+        chuyên dụng của chúng tôi.
+      </p>
+    </div>
+
+    <div class="text-center">
+      <a href="{{ url_for('homepage') }}" class="btn btn-custom">Về trang chủ</a>
+    </div>
   </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+  <div class="footer">
+    <p>&copy; 2024 - Dự án web thập cẩm | Designed by Me with Flask and ❤️ </p>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>
