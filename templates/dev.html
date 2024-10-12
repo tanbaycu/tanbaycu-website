@@ -8,6 +8,11 @@
         href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
         rel="stylesheet"
     />
+    <link
+        rel="icon"
+        type="image/x-icon"
+        href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <style>
         body {
             font-family: "Roboto", sans-serif;
@@ -55,19 +60,95 @@
             max-width: 900px;
             margin-top: 20px;
         }
+        .menu-bar {
+            margin-bottom: 20px;
+        }
+        .menu-button {
+            background-color: #50fa7b;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-weight: bold;
+            color: #282a36;
+            border-radius: 5px;
+        }
+        .dropdown-content {
+            display: none; /* Initially hidden */
+            position: absolute;
+            background-color: #44475a;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            z-index: 1;
+            margin-top: 5px;
+        }
+        .dropdown-content a {
+            color: #f8f8f2;
+            text-decoration: none;
+            padding: 12px 16px;
+            display: block;
+            transition: background 0.3s;
+        }
+        .dropdown-content a:hover {
+            background-color: #6272a4;
+        }
+        .crossed {
+            text-decoration: line-through; /* Gạch ngang */
+        }
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/about-me">About Me</a>
-        <a href="/dev">Dev</a>
-    </div>
     <div class="content">
         <h1>Dev</h1>
         <p>
-            12/10/2024 - xfd458shd(thường xuyên)
+            Chào mừng bạn đến với trang Dev của tôi! Dưới đây là một số ứng dụng mà tôi đã phát triển và các dự án mà tôi đang thực hiện.
         </p>
+        <div class="projects">
+            <h2>Các ứng dụng của tôi</h2>
+            <ul>
+                <li>
+                    <strong><del>Chat với Gemini</del>:</strong> Đang triển khai lại
+                </li>
+                <li>
+                    <strong>Upload tệp:</strong> Một công cụ đơn giản cho phép người dùng tải lên và lưu trữ tệp trên máy chủ, giúp dễ dàng chia sẻ và quản lý dữ liệu.
+                </li>
+                <li>
+                    <strong>Rút gọn link:</strong> Ứng dụng giúp người dùng rút gọn các liên kết dài thành các liên kết ngắn hơn, dễ chia sẻ hơn trên các nền tảng truyền thông xã hội.
+                </li>
+                <li>
+                    <strong>Kiểm tra API:</strong> Một công cụ hữu ích để kiểm tra các API, cho phép người dùng gửi yêu cầu và xem phản hồi một cách dễ dàng.
+                </li>
+                <li>
+                    <strong>Tạo mã QRCODE:</strong> Ứng dụng giúp người dùng tạo mã QR từ các liên kết hoặc nội dung mà họ muốn chia sẻ, rất tiện lợi cho việc truyền tải thông tin.
+                </li>
+                <li>
+                    <strong><del>Trình chạy Python:</del></strong> Do là sử dụng domain của Vercel nên bị hạn chế quyền khai thác tệp.
+                </li>
+                <li>
+                    <strong>Fact:</strong> Ứng dụng cung cấp các sự thật thú vị và ngẫu nhiên, giúp người dùng mở rộng kiến thức của mình.
+                </li>
+                <li>
+                    <strong>IP check:</strong> Một công cụ giúp người dùng kiểm tra địa chỉ IP của mình và thu thập thông tin liên quan.
+                </li>
+                <li>
+                    <strong>Dự báo thời tiết:</strong> Ứng dụng cung cấp thông tin thời tiết theo thời gian thực và dự báo cho các khu vực khác nhau.
+                </li>
+                <li>
+                    <strong>Download Video:</strong> Công cụ cho phép người dùng tải video từ nhiều nguồn khác nhau về thiết bị của mình.
+                </li>
+                <li>
+                    <strong>Random Image:</strong> Ứng dụng hiển thị hình ảnh ngẫu nhiên từ nhiều nguồn khác nhau, mang đến trải nghiệm thú vị.
+                </li>
+                <li>
+                    <strong>Tin tức:</strong> Ứng dụng cung cấp tin tức mới nhất từ nhiều lĩnh vực khác nhau, giúp người dùng cập nhật thông tin nhanh chóng.
+                </li>
+                <li>
+                    <strong>Làm toán:</strong> Một công cụ giúp người dùng thực hiện các phép toán phức tạp một cách dễ dàng và chính xác.
+                </li>
+                <li>
+                    <strong>About:</strong> Trang giới thiệu về tôi và những điều tôi đang làm.
+                </li>
+            </ul>
+        </div>
     </div>
+    
 </body>
 </html>

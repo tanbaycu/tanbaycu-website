@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About Me</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+        rel="stylesheet"
+    />
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: #282a36;
+            color: #f8f8f2;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        h1 {
+            color: #50fa7b;
+            margin-bottom: 20px;
+        }
+        p {
+            text-align: justify;
+            max-width: 800px;
+            line-height: 1.6;
+        }
+        .navbar {
+            background-color: #6272a4;
+            padding: 15px;
+            text-align: center;
+            width: 100%;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar a {
+            color: #f8f8f2;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+        .navbar a:hover {
+            color: #50fa7b;
+        }
+        .content {
+            padding: 20px;
+            background-color: #44475a;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            max-width: 900px;
+            margin-top: 20px;
+        }
+        .profile-image {
+            max-width: 100%;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/about-me">About Me</a>
+        <a href="/dev">Dev</a>
+    </div>
+    <div class="content">
+        <h1>About Me</h1>
+        <p>
+            Đồng 7 Tấn
+        </p>
+        <!-- Chèn ảnh -->
+        <img class="profile-image" src="https://i.postimg.cc/FKZ89zP6/z5906034867696-6f6332fb9cb28352af6298a593d7d690.jpg" alt="Đệ tử ruột" />
+    </div>
+</body>
+</html>
