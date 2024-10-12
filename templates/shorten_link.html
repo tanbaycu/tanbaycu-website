@@ -53,18 +53,22 @@
     /* Tiêu đề */
     h2 {
       text-align: center;
-      font-size: 2em;
+      font-size: 2.5em;
+      /* Tăng kích thước chữ */
       margin-bottom: 20px;
       text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
       /* Bóng chữ cho tiêu đề */
       cursor: pointer;
       /* Con trỏ chuột */
-      transition: color 0.3s ease;
+      transition: color 0.3s ease, transform 0.3s;
+      /* Thêm hiệu ứng chuyển động */
     }
 
     h2:hover {
       color: #50fa7b;
       /* Màu khi hover */
+      transform: scale(1.05);
+      /* Nổi lên khi hover */
     }
 
     /* Nút bấm tùy chỉnh */
@@ -84,7 +88,8 @@
       /* Hiển thị dạng khối */
       width: 100%;
       /* Độ rộng 100% cho nút */
-      transition: background-color 0.3s, transform 0.3s;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      /* Thêm hiệu ứng bóng */
       font-size: 1.2em;
       /* Kích thước chữ lớn */
       margin-top: 15px;
@@ -102,7 +107,8 @@
 
     /* URL rút gọn */
     .short-url {
-      font-size: 1.3em;
+      font-size: 1.5em;
+      /* Tăng kích thước chữ */
       font-weight: bold;
       margin-top: 20px;
       color: #8be9fd;
@@ -139,7 +145,8 @@
       padding: 10px 20px;
       text-decoration: none;
       border-radius: 10px;
-      transition: background-color 0.3s, transform 0.3s;
+      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
+      /* Hiệu ứng cho nút */
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       /* Bóng đổ cho nút */
     }
@@ -152,20 +159,28 @@
     }
 
     /* Responsive */
-    @media (max-width: 768px) {
+    @media (max-width: 1024px) {
       .container {
-        max-width: 90%;
+        max-width: 95%;
+        /* Giảm chiều rộng cho màn hình nhỏ hơn */
         padding: 20px;
         margin-top: 20px;
       }
 
       h2 {
-        font-size: 1.8em;
+        font-size: 2em;
         /* Giảm kích thước chữ */
       }
 
       .short-url {
-        font-size: 1.2em;
+        font-size: 1.3em;
+        /* Giảm kích thước chữ */
+      }
+    }
+
+    @media (max-width: 768px) {
+      h2 {
+        font-size: 1.8em;
         /* Giảm kích thước chữ */
       }
     }
@@ -176,11 +191,12 @@
       }
 
       h2 {
-        font-size: 1.6em;
+        font-size: 1.5em;
+        /* Giảm kích thước chữ */
       }
 
       .btn-custom {
-        font-size: 1.1em;
+        font-size: 1em;
         /* Giảm kích thước chữ */
       }
 
@@ -196,6 +212,26 @@
         /* Độ rộng 100% cho nút */
         padding: 12px 15px;
         /* Đệm thêm cho nút */
+      }
+    }
+
+    /* Thêm hiệu ứng cho nút */
+    .button {
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      /* Hiệu ứng cho nút */
+    }
+
+    /* Hiệu ứng bóng đổ cho tất cả nút */
+    .button:hover {
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
+      /* Bóng đổ cho nút khi hover */
+    }
+
+    /* Cải tiến cho container trên màn hình lớn */
+    @media (min-width: 768px) {
+      .container {
+        margin-top: 80px;
+        /* Khoảng cách trên cho màn hình lớn hơn */
       }
     }
   </style>
