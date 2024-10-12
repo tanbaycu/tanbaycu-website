@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Trang chủ</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background-color: #282a36;
+            color: #f8f8f2;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #6272a4;
+            padding: 15px;
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            justify-content: center;
+        }
+
+        .navbar a {
+            color: #f8f8f2;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            margin: 0 15px;
+            transition: color 0.3s, transform 0.2s;
+        }
+
+        .navbar a:hover {
+            color: #50fa7b;
+            transform: scale(1.1);
+        }
+
+        /* Menu Bar */
+        .menu-bar {
+            display: flex;
+            gap: 10px;
+            position: fixed;
+            top: 60px;
+            right: 30px;
+        }
+
+        .menu-button {
+            background: linear-gradient(135deg, #6272a4, #44475a);
+            color: #f8f8f2;
+            border: 2px solid transparent;
+            padding: 12px 20px;
+            cursor: pointer;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: background 0.3s, transform 0.2s, border 0.3s;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .menu-button:hover {
+            background: linear-gradient(135deg, #44475a, #6272a4);
+            border: 2px solid #f8f8f2;
+            transform: scale(1.05);
+        }
+
+        /* Dropdown Menu */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            right: 0;
+            top: 50px;
+            background-color: #44475a;
+            border: 1px solid #6272a4;
+            min-width: 200px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            z-index: 1;
+        }
+
+        .dropdown-content a {
+            color: #f8f8f2;
+            padding: 12px 20px;
+            text-decoration: none;
+            display: block;
+            transition: background-color 0.3s;
+        }
+
+        .dropdown-content a:hover {
+            background-color: #6272a4;
+            border-radius: 8px;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            margin-top: 80px;
+            /* To adjust the spacing for the fixed navbar */
+        }
+
+        .header h1 {
+            font-size: 48px;
+            color: #50fa7b;
+        }
+
+        .header p {
+            font-size: 18px;
+            color: #bd93f9;
+            margin: 10px 0;
+        }
+
+        /* Button Section */
+        .button-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #6272a4, #44475a);
+            color: #f8f8f2;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-button:hover {
+            background: linear-gradient(135deg, #44475a, #6272a4);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 10px;
+            color: #f8f8f2;
+            font-size: 14px;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar -->
+    <div class="navbar">
+        <a href="/">Home</a>
+        <a href="/about-me">About me</a>
+        <a href="/dev">Docs</a>
+    </div>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Welcome to My Awesome Site</h1>
+        <p>Explore various tools and features right at your fingertips!</p>
+    </div>
+
+    <!-- Button Section -->
+    <div class="button-container">
+        <a href="/upload_file" class="action-button">Upload File</a>
+        <a href="/shorten-link" class="action-button">Shorten Link</a>
+        <a href="/api-check" class="action-button">API Checker</a>
+        <a href="/qrcode" class="action-button">QR Code Generator</a>
+    </div>
+
+    <!-- Menu Button and Dropdown -->
+    <div class="menu-bar" id="menu-bar-1">
+        <button class="menu-button">Menu</button>
+        <div class="dropdown-content" id="dropdown-content-1">
+            <a href="/aibot-chat">Chat với Gemini</a>
+            <a href="/upload_file">Upload tệp</a>
+            <a href="/shorten-link">Rút gọn link</a>
+            <a href="/api-check">Kiểm tra API</a>
+            <a href="/qrcode">Tạo mã QRCODE</a>
+            <a href="/clipython">Trình chạy Python</a>
+            <a href="/facts">Fact</a>
+            <a href="/ipconfig">IP check</a>
+            <a href="/weather">Dự báo thời tiết</a>
+            <a href="/urldownload">Download Video</a>
+            <a href="/random-image">Random Image</a>
+            <a href="/news">Tin tức</a>
+            <a href="/math">Làm toán</a>
+            <a href="/about">About</a>
+        </div>
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>&copy; 2024 - My Custom Web App | Designed by Me</p>
+    </div>
+
+    <script>
+        const menuButton = document.querySelector(".menu-button");
+        const dropdownContent = document.querySelector(".dropdown-content");
+
+        menuButton.addEventListener("click", () => {
+            dropdownContent.style.display =
+                dropdownContent.style.display === "block" ? "none" : "block";
+        });
+    </script>
+</body>
+
+</html>

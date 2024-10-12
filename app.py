@@ -20,6 +20,7 @@ from flask import (
     url_for,
     get_flashed_messages,
     jsonify,
+    send_file,
 )
 
 app = Flask(__name__)
@@ -166,6 +167,16 @@ def shorten_url_vgd(long_url):
         return None
 
 
+@app.route("/about-me")
+def about_me():
+    return render_template("about_me.html")
+
+
+@app.route("/dev")
+def dev():
+    return render_template("dev.html")
+
+
 @app.route("/shorten-link", methods=["GET", "POST"])
 def shorten_link():
     if request.method == "POST":
@@ -228,7 +239,12 @@ def upload_to_pixeldrain(file_path):
             return f"Error decoding JSON response: {e}"
 
 
-@app.route("/", methods=["GET", "POST"])
+@app.route("/")
+def homepage():
+    return send_file("index.html")
+
+
+@app.route("/upload_file", methods=["GET", "POST"])
 def upload_file():
     if request.method == "POST":
         if "file" not in request.files:
@@ -757,13 +773,12 @@ def news():
     return render_template("news.html", articles=articles)
 
 
-
-@app.route('/math', methods=['GET', 'POST'])
+@app.route("/math", methods=["GET", "POST"])
 def math_operation():
-    if request.method == 'POST':
+    if request.method == "POST":
         # Get operation and expression from the form data
-        operation = request.form['operation']
-        expression = request.form['expression']
+        operation = request.form["operation"]
+        expression = request.form["expression"]
 
         # URL encode the expression
         encoded_expression = requests.utils.quote(expression)
@@ -777,13 +792,19 @@ def math_operation():
         # Check if the request was successful
         if response.status_code == 200:
             result = response.json()
-            return render_template('math.html', result=result['result'], expression=expression, operation=operation)
+            return render_template(
+                "math.html",
+                result=result["result"],
+                expression=expression,
+                operation=operation,
+            )
         else:
             error = "Invalid request or operation"
-            return render_template('math.html', error=error)
+            return render_template("math.html", error=error)
 
     # Render the form for GET request
-    return render_template('math.html')
+    return render_template("math.html")
+
 
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
