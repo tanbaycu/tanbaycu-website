@@ -323,6 +323,33 @@
                 /* Giảm kích thước chữ cho nút */
             }
         }
+
+        .social-icons {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            /* Khoảng cách giữa các biểu tượng */
+        }
+
+        .social-icons a {
+            color: white;
+            /* Màu biểu tượng */
+            transition: transform 0.2s;
+        }
+
+        .social-icons a:hover {
+            transform: scale(1.2);
+            /* Hiệu ứng phóng to khi di chuột */
+        }
+
+        .social-icons svg {
+            width: 24px;
+            height: 24px;
+            /* Kích thước biểu tượng */
+        }
     </style>
 </head>
 
@@ -370,7 +397,22 @@
 
     <!-- Footer Section -->
     <div class="footer">
-        <p>&copy; 2024 - Dự án web thập cẩm | Designed by Me with Flask and ❤️ </p>
+        <p>&copy; 2024 - Dự án web multi-task | Designed by Me with Flask and ❤️ </p>
+    </div>
+    <div class="social-icons">
+        <a href="https://github.com/tanbaycu" target="_blank" aria-label="GitHub">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
+                <path
+                    d="M12 .5C5.372.5 0 5.872 0 12.5c0 5.244 3.388 9.688 8.128 11.285.594.109.816-.257.816-.571 0-.283-.01-1.307-.02-2.38-3.313.718-4.015-1.602-4.015-1.602-.541-1.375-1.319-1.742-1.319-1.742-1.08-.739.082-.725.082-.725 1.195.084 1.826 1.227 1.826 1.227 1.063 1.818 2.785 1.293 3.465.988.107-.771.416-1.293.757-1.591-2.665-.303-5.467-1.332-5.467-5.93 0-1.313.469-2.387 1.237-3.227-.124-.303-.537-1.523.117-3.176 0 0 1.008-.322 3.301 1.227a11.545 11.545 0 0 1 3.004-.404c1.022.004 2.042.139 3.004.404 2.293-1.549 3.301-1.227 3.301-1.227.655 1.653.241 2.873.118 3.176.77.84 1.237 1.914 1.237 3.227 0 4.615-2.806 5.62-5.476 5.91.428.371.81 1.1.81 2.219 0 1.604-.015 2.895-.015 3.287 0 .317.221.685.824.571C20.612 22.188 24 17.744 24 12.5 24 5.872 18.628.5 12 .5z" />
+            </svg>
+        </a>
+        <a href="https://www.facebook.com/tanbaycu.404s/" target="_blank" aria-label="Facebook">
+            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="#ffffff">
+                <path
+                    d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm4 7.278V4.5h-2.286c-2.1 0-3.428 1.6-3.428 3.889v1.667H8v2.777h2.286V19.5h2.857v-6.667h2.286L16 10.056h-2.857V8.944c0-1.11.572-1.666 1.714-1.666H16z" />
+            </svg>
+        </a>
+
     </div>
 
     <script>
