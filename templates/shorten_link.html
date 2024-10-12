@@ -1,191 +1,255 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Rút gọn URL</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-    />
-    <style>
-      body {
-        background-color: #282a36; /* Màu nền tối theo chủ đề Dracula */
-        color: #f8f8f2; /* Màu chữ */
-        font-family: "Roboto", sans-serif; /* Font chữ hiện đại */
-        overflow-x: hidden; /* Ẩn thanh cuộn ngang */
-      }
 
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rút gọn URL</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <style>
+    /* Tổng thể body */
+    body {
+      background-color: #282a36;
+      /* Màu nền tối theo chủ đề Dracula */
+      color: #f8f8f2;
+      /* Màu chữ */
+      font-family: "Roboto", sans-serif;
+      /* Font chữ hiện đại */
+      overflow-x: hidden;
+      /* Ẩn thanh cuộn ngang */
+      margin: 0;
+      padding: 0;
+    }
+
+    /* Container chính */
+    .container {
+      margin: 50px auto;
+      /* Tự động căn giữa */
+      max-width: 600px;
+      /* Chiều rộng tối đa cho container */
+      border-radius: 15px;
+      padding: 20px;
+      background-color: #44475a;
+      /* Màu nền cho container */
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+      position: relative;
+      /* Định vị cho nút */
+      transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
+      width: 90%;
+      /* Chiều rộng 90% cho màn hình nhỏ */
+    }
+
+    /* Hover hiệu ứng cho container */
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8);
+      /* Bóng đổ khi hover */
+      background-color: #4d5b8e;
+      /* Màu nền khi hover */
+    }
+
+    /* Tiêu đề */
+    h2 {
+      text-align: center;
+      font-size: 2em;
+      margin-bottom: 20px;
+      text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7);
+      /* Bóng chữ cho tiêu đề */
+      cursor: pointer;
+      /* Con trỏ chuột */
+      transition: color 0.3s ease;
+    }
+
+    h2:hover {
+      color: #50fa7b;
+      /* Màu khi hover */
+    }
+
+    /* Nút bấm tùy chỉnh */
+    .btn-custom {
+      background-color: #50fa7b;
+      /* Màu nút */
+      color: #282a36;
+      /* Màu chữ */
+      border-radius: 10px;
+      /* Bo góc */
+      padding: 12px;
+      text-align: center;
+      /* Căn giữa chữ trong nút */
+      text-decoration: none;
+      /* Bỏ gạch chân */
+      display: block;
+      /* Hiển thị dạng khối */
+      width: 100%;
+      /* Độ rộng 100% cho nút */
+      transition: background-color 0.3s, transform 0.3s;
+      font-size: 1.2em;
+      /* Kích thước chữ lớn */
+      margin-top: 15px;
+      /* Khoảng cách phía trên */
+    }
+
+    .btn-custom:hover {
+      background-color: #4bf66f;
+      /* Màu nút khi hover */
+      transform: translateY(-3px);
+      /* Hiệu ứng di chuyển lên */
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5);
+      /* Tăng bóng đổ khi hover */
+    }
+
+    /* URL rút gọn */
+    .short-url {
+      font-size: 1.3em;
+      font-weight: bold;
+      margin-top: 20px;
+      color: #8be9fd;
+      /* Màu chữ URL */
+      text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      /* Bóng chữ cho URL */
+      word-wrap: break-word;
+      /* Ngắt dòng nếu URL dài */
+      text-align: center;
+      /* Căn giữa */
+    }
+
+    /* Footer */
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      color: #6272a4;
+      font-size: 0.9em;
+      /* Kích thước chữ nhỏ hơn */
+    }
+
+    /* Nút về trang chủ */
+    .home-button-custom {
+      position: absolute;
+      bottom: 30px;
+      right: 30px;
+      text-align: right;
+      z-index: 1;
+    }
+
+    .home-button-custom .button {
+      background-color: #6272a4;
+      color: #f8f8f2;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 10px;
+      transition: background-color 0.3s, transform 0.3s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      /* Bóng đổ cho nút */
+    }
+
+    .home-button-custom .button:hover {
+      background-color: #555;
+      transform: translateY(-3px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      /* Bóng đổ tăng khi hover */
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
       .container {
-        margin-top: 100px;
-        border-radius: 15px;
-        padding: 40px;
-        background-color: #44475a; /* Màu nền cho container */
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-        position: relative; /* Để đặt vị trí cho nút "Về trang chủ" */
-        overflow: hidden; /* Để chứa hiệu ứng */
-        transition: transform 0.3s, box-shadow 0.3s, background-color 0.3s;
-      }
-
-      .container:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.8); /* Tăng bóng khi hover */
-        background-color: #4d5b8e; /* Thay đổi màu nền khi hover */
+        max-width: 90%;
+        padding: 20px;
+        margin-top: 20px;
       }
 
       h2 {
-        text-align: center;
-        font-size: 2em;
-        margin-bottom: 20px;
-        text-shadow: 1px 1px 5px rgba(0, 0, 0, 0.7); /* Bóng chữ cho tiêu đề */
-        cursor: pointer; /* Thêm con trỏ chuột */
-      }
-
-      .btn-custom {
-        background-color: #50fa7b; /* Màu nút */
-        color: #282a36;
-        border-radius: 10px; /* Bo góc */
-        text-align: center; /* Căn giữa chữ trong nút */
-        text-decoration: none; /* Bỏ gạch chân */
-        display: inline-block; /* Hiển thị dưới dạng khối */
-        padding: 12px 20px; /* Đệm cho nút */
-        transition: background-color 0.3s, transform 0.3s; /* Hiệu ứng chuyển màu */
-        max-width: 200px; /* Đặt chiều rộng tối đa cho nút */
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* Bóng cho nút */
-        margin: 0 auto; /* Căn giữa nút */
-        font-size: 1.2em; /* Kích thước chữ trong nút */
-      }
-
-      .btn-custom:hover {
-        background-color: #4bf66f; /* Màu nút khi hover */
-        transform: translateY(-3px); /* Di chuyển lên khi hover */
-        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.5); /* Tăng bóng khi hover */
+        font-size: 1.8em;
+        /* Giảm kích thước chữ */
       }
 
       .short-url {
-        font-size: 1.5em;
-        font-weight: bold;
-        margin-top: 20px;
-        color: #8be9fd; /* Màu chữ của short URL */
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5); /* Bóng chữ cho short URL */
+        font-size: 1.2em;
+        /* Giảm kích thước chữ */
+      }
+    }
+
+    @media (max-width: 576px) {
+      .container {
+        padding: 15px;
       }
 
-      .footer {
-        text-align: center;
-        margin-top: 40px;
-        color: #6272a4; /* Màu cho footer */
+      h2 {
+        font-size: 1.6em;
+      }
+
+      .btn-custom {
+        font-size: 1.1em;
+        /* Giảm kích thước chữ */
       }
 
       .home-button-custom {
-        position: absolute; /* Để định vị nút */
-        bottom: 30px; /* Cách dưới của container */
-        right: 30px; /* Cách bên phải của container */
-        text-align: right; /* Căn phải */
-        z-index: 1; /* Đảm bảo nút ở trên cùng */
+        position: relative;
+        /* Đưa nút về vị trí tĩnh trên thiết bị nhỏ */
+        text-align: center;
+        margin-top: 20px;
       }
 
       .home-button-custom .button {
-        background-color: #6272a4; /* Màu nền của nút */
-        color: #f8f8f2; /* Màu chữ */
-        padding: 10px 20px; /* Đệm cho nút */
-        text-decoration: none; /* Bỏ gạch chân */
-        border-radius: 10px; /* Bo góc */
-        transition: background-color 0.3s, transform 0.3s; /* Hiệu ứng chuyển màu */
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3); /* Bóng cho nút */
+        width: 100%;
+        /* Độ rộng 100% cho nút */
+        padding: 12px 15px;
+        /* Đệm thêm cho nút */
       }
+    }
+  </style>
+</head>
 
-      .home-button-custom .button:hover {
-        background-color: #555; /* Màu nền khi hover */
-        transform: translateY(-3px); /* Di chuyển lên khi hover */
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5); /* Tăng bóng khi hover */
-      }
-
-      /* Hiệu ứng cho container */
-      @keyframes float {
-        0% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px);
-        }
-        100% {
-          transform: translateY(0);
-        }
-      }
-
-      .container {
-        animation: float 5s ease-in-out infinite; /* Thêm hiệu ứng nổi */
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h2 id="title">Rút gọn URL</h2>
-      <form id="urlForm" method="POST" onsubmit="return validateForm()">
-        <div class="mb-3">
-          <label for="long_url" class="form-label">Nhập URL dài của bạn:</label>
-          <input
-            type="url"
-            class="form-control"
-            id="long_url"
-            name="long_url"
-            placeholder="Ví dụ: https://example.com"
-            required
-          />
-        </div>
-        <button type="submit" class="btn btn-custom w-100">Rút gọn</button>
-      </form>
-
-      {% if short_url %}
-      <div class="short-url text-center mt-4">
-        <h4>URL rút gọn của bạn:</h4>
-        <a href="{{ short_url }}" target="_blank" style="color: #50fa7b"
-          >{{ short_url }}</a
-        >
-        <h4 class="mt-3">QR Code của bạn:</h4>
-        <img
-          src="https://api.stakdek.de/api/qr/gen?data={{ short_url }}"
-          alt="QR Code"
-          style="width: 200px; height: 200px; margin-top: 20px"
-        />
+<body>
+  <div class="container">
+    <h2 id="title">Rút gọn URL</h2>
+    <form id="urlForm" method="POST" onsubmit="return validateForm()">
+      <div class="mb-3">
+        <label for="long_url" class="form-label">Nhập URL dài của bạn:</label>
+        <input type="url" class="form-control" id="long_url" name="long_url" placeholder="Ví dụ: https://example.com"
+          required />
       </div>
-      {% endif %} {% with messages = get_flashed_messages() %} {% if messages %}
-      <div class="alert alert-danger mt-3" role="alert">{{ messages[0] }}</div>
-      {% endif %} {% endwith %}
+      <button type="submit" class="btn btn-custom w-100">Rút gọn</button>
+    </form>
+
+    {% if short_url %}
+    <div class="short-url text-center mt-4">
+      <h4>URL rút gọn của bạn:</h4>
+      <a href="{{ short_url }}" target="_blank" style="color: #50fa7b">{{ short_url }}</a>
+      <h4 class="mt-3">QR Code của bạn:</h4>
+      <img src="https://api.stakdek.de/api/qr/gen?data={{ short_url }}" alt="QR Code"
+        style="width: 200px; height: 200px; margin-top: 20px" />
     </div>
+    {% endif %} {% with messages = get_flashed_messages() %} {% if messages %}
+    <div class="alert alert-danger mt-3" role="alert">{{ messages[0] }}</div>
+    {% endif %} {% endwith %}
+  </div>
 
-    <div class="home-button-custom">
-      <a href="{{ url_for('homepage') }}" class="button">Về trang chủ</a>
-    </div>
+  <div class="home-button-custom">
+    <a href="{{ url_for('homepage') }}" class="button">Về trang chủ</a>
+  </div>
 
-    <script>
-      document.getElementById("title").onclick = function () {
-        document.getElementById("urlForm").reset(); // Xóa toàn bộ dữ liệu trong biểu mẫu
-        const shortUrlDiv = document.querySelector(".short-url");
-        if (shortUrlDiv) {
-          shortUrlDiv.innerHTML = ""; // Xóa kết quả hiển thị
-        }
-      };
-
-      function validateForm() {
-        const longUrlInput = document.getElementById("long_url").value;
-        if (!longUrlInput) {
-          alert("Vui lòng nhập URL dài!");
-          return false;
-        }
-        return true; // Trả về true nếu hợp lệ
+  <script>
+    document.getElementById("title").onclick = function () {
+      document.getElementById("urlForm").reset(); // Xóa toàn bộ dữ liệu trong biểu mẫu
+      const shortUrlDiv = document.querySelector(".short-url");
+      if (shortUrlDiv) {
+        shortUrlDiv.innerHTML = ""; // Xóa kết quả hiển thị
       }
-    </script>
+    };
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-  </body>
+    function validateForm() {
+      const longUrlInput = document.getElementById("long_url").value;
+      if (!longUrlInput) {
+        alert("Vui lòng nhập URL dài!");
+        return false;
+      }
+      return true; // Trả về true nếu hợp lệ
+    }
+  </script>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>
