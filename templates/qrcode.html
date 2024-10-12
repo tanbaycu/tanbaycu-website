@@ -11,161 +11,238 @@
     body {
       font-family: "Arial", sans-serif;
       background-color: #000000;
+      /* Màu nền đen */
       color: #333;
+      /* Màu chữ tối cho độ tương phản */
       display: flex;
       justify-content: center;
+      align-items: center;
+      /* Center vertically */
       height: 100vh;
       margin: 0;
       text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
     }
 
     .container {
-      display: flex;
-      flex-direction: column;
-      width: 95%;
+      display: grid;
+      grid-template-columns: 1fr;
+      /* 1 column for mobile */
+      width: 90%;
       max-width: 1200px;
       margin: 20px auto;
       border-radius: 15px;
       overflow: hidden;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-      background-color: #fff;
+      background-color: #ffffff;
+      /* Màu nền cho khung chứa */
     }
 
+    /* Styling for input form and result form */
     .input-form,
     .result-form {
       padding: 20px;
-      flex: 1;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
     }
 
+    /* Specific styles for the input form */
     .input-form {
       background-color: #ffffff;
-      padding: 40px 30px;
+      /* Màu nền cho khung nhập liệu */
+      padding: 40px 20px;
+      /* Padding adjusted for mobile */
       animation: bounceIn 1s;
     }
 
+    /* Specific styles for the result form */
     .result-form {
       background-color: #e9f7ef;
+      /* Màu nền xanh lá cho khung kết quả */
       color: #333;
       border-top: 2px solid #28a745;
+      /* Đường viền xanh lá */
       opacity: 0;
+      /* Ban đầu ẩn với độ mờ */
       transition: opacity 0.5s ease;
     }
 
+    /* Class to show result form */
     .result-form.visible {
       opacity: 1;
+      /* Hiện khi có kết quả */
     }
 
+    /* Input and select styles */
     input[type="text"],
     select {
       width: 100%;
-      max-width: 100%;
+      /* Full width for inputs */
       padding: 15px;
+      /* Comfortable padding */
       border: 1px solid #ced4da;
+      /* Đường viền cho trường nhập liệu */
       border-radius: 5px;
+      /* Bo góc cho trường nhập liệu */
       background-color: #f1f1f1;
+      /* Màu nền cho trường nhập liệu */
       color: #333;
-      font-size: 1.1em;
+      /* Màu chữ */
+      font-size: 1em;
+      /* Font size for better readability */
       margin-bottom: 20px;
+      /* Space between inputs */
       transition: border 0.3s ease;
       box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      /* Shadow for input */
     }
 
+    /* Focus styles for inputs */
     input[type="text"]:focus,
     select:focus {
       outline: none;
+      /* Remove outline */
       border: 2px solid #28a745;
+      /* Màu viền khi focus */
     }
 
+    /* Button styles */
     button {
       background-color: #28a745;
+      /* Màu nút xanh lá */
       color: #ffffff;
+      /* Màu chữ nút */
       border: none;
+      /* Remove border */
       padding: 15px 25px;
+      /* Kích thước nút thoải mái */
       border-radius: 8px;
+      /* Bo góc cho nút */
       cursor: pointer;
+      /* Change cursor */
       font-size: 1.1em;
+      /* Font size for button */
       font-weight: bold;
+      /* Bold font for button */
       transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.2s;
+      /* Smooth transition */
       box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      /* Bóng đổ cho nút */
     }
 
+    /* Hover and active button effects */
     button:hover {
       background-color: #218838;
+      /* Màu khi hover */
       transform: translateY(-2px);
+      /* Nổi khi hover */
       box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+      /* Bóng đổ mạnh hơn khi hover */
     }
 
+    button:active {
+      transform: translateY(0);
+      /* Trở lại vị trí ban đầu khi nhấn */
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+      /* Giảm bóng đổ khi nhấn */
+    }
+
+    /* Styles for QR Code */
     #qrCode {
       margin-top: 20px;
+      /* Space above QR Code */
       display: none;
+      /* Ban đầu ẩn mã QR */
       text-align: center;
+      /* Center QR Code */
     }
 
+    /* Download link styles */
     #downloadLink {
       margin-top: 10px;
+      /* Space above download link */
       color: #28a745;
+      /* Màu liên kết tải về */
       text-decoration: none;
+      /* Không gạch chân */
     }
 
+    /* Footer styles */
     footer {
       margin-top: 20px;
+      /* Space above footer */
       font-size: 0.9em;
+      /* Font size for footer */
       color: #aaaaaa;
+      /* Màu chữ footer */
     }
 
-    /* Responsive Design */
-    @media only screen and (max-width: 768px) {
+    /* Responsive Design for larger screens */
+    @media only screen and (min-width: 768px) {
       .container {
-        flex-direction: column;
+        grid-template-columns: 1fr 1fr;
+        /* Two columns for tablets and larger */
       }
 
       .input-form,
       .result-form {
-        width: 100%;
-        padding: 20px;
+        padding: 40px;
+        /* Padding for larger devices */
       }
 
       button {
-        width: 100%;
+        width: auto;
+        /* Reset width for buttons */
       }
     }
 
+    /* Responsive Design for mobile devices */
     @media only screen and (max-width: 480px) {
       body {
         height: auto;
+        /* Allow body height to adjust */
         padding: 10px;
+        /* Padding for body */
       }
 
       input[type="text"],
       select {
         font-size: 1em;
+        /* Adjust font size for inputs */
         padding: 12px;
+        /* Adjust padding for inputs */
       }
 
       button {
         padding: 12px;
+        /* Adjust button padding */
         font-size: 1em;
+        /* Adjust button font size */
       }
 
       .container {
         margin: 10px auto;
+        /* Adjust margin for container */
         box-shadow: none;
+        /* Remove shadow for better mobile performance */
       }
     }
 
+    /* Animation for form appearance */
     @keyframes bounceIn {
       from {
         transform: scale(0.5);
+        /* Start small */
         opacity: 0;
+        /* Start hidden */
       }
 
       to {
         transform: scale(1);
+        /* End at original size */
         opacity: 1;
+        /* End visible */
       }
     }
   </style>
