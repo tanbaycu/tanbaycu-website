@@ -1,7 +1,7 @@
 # Clipython
 nhóm nhà phát triển /10/10/2024
 
-![API](https://postimg.cc/R3ShpVL6) 
+![Mô tả ảnh](https://postimg.cc/rzZf2dNL)
 
 ## Các tính năng
 
