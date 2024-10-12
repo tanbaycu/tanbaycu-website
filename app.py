@@ -1,7 +1,7 @@
 import os
 import random
 import base64
-import google.generativeai as genai
+# import google.generativeai as genai
 import json
 import requests
 import yt_dlp
@@ -30,8 +30,8 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 app.secret_key = "28a03d4e9561e85914da8e57f55f5bbe"
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100MB
-api_key = "AIzaSyCSz6oCSnlQnpFKVFjZc421IDWjoVRwQaM"
-genai.configure(api_key=api_key)
+# api_key = "AIzaSyCSz6oCSnlQnpFKVFjZc421IDWjoVRwQaM"
+# genai.configure(api_key=api_key)
 
 PIXELDRAIN_API_KEY = "fba3e1f5-269b-4758-8e44-78326d0d7d95"
 RETRY_LIMIT = 3
@@ -39,7 +39,7 @@ RETRY_LIMIT = 3
 upload_history = []
 download_history = []
 
-
+"""
 def convert_chat_history(history):
     converted_history = []
     for message in history:
@@ -77,6 +77,7 @@ model = genai.GenerativeModel(
 # Khởi tạo phiên trò chuyện với lịch sử đã chuyển đổi
 chat_session = model.start_chat(history=chat_history)
 
+"""
 
 # Hàm xác thực URL
 def validate_url(url):
@@ -318,7 +319,7 @@ def download_history_page():
     )
 
 
-@app.route("/aibot-chat", methods=["GET"])
+"""@app.route("/aibot-chat", methods=["GET"])
 def aibot_chat():
     return render_template("aibot.html")
 
@@ -356,7 +357,7 @@ def clear_history():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
+"""
 @app.route("/about")
 def about():
     return render_template("about.html")  # Tạo trang about.html

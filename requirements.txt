@@ -1,5 +1,3 @@
 Flask
-google-auth
-google-api-python-client
 deep-translator
 yt-dlp
