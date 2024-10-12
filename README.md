@@ -1,6 +1,8 @@
 # Clipython
 nhóm nhà phát triển /10/10/2024
 
+![API](https://postimg.cc/R3ShpVL6) 
+
 ## Các tính năng
 
 ## Cài đặt
@@ -31,7 +33,3 @@ nhóm nhà phát triển /10/10/2024
 - `templates/`: Chứa các tệp HTML cho giao diện người dùng.
 - `static/`: Chứa các tài nguyên tĩnh như favicon và CSS.
 - `geminimath.json`: Dữ liệu cần thiết cho một số tính năng trong ứng dụng.
-
-
-
-

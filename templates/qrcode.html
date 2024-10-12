@@ -13,63 +13,79 @@
     <style>
       body {
         font-family: "Arial", sans-serif;
-        background: linear-gradient(to right, #2c3e50, #3498db);
-        color: #ffffff;
+        background-color: #000000; /* Màu nền đen */ /* Màu nền trắng sáng */
+        color: #333; /* Màu chữ tối cho độ tương phản */
+        display: flex;
+        justify-content: center;
+        height: 100vh;
+        margin: 0;
+        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      .container {
+        display: flex;
+        width: 90%;
+        max-width: 1200px;
+        margin: auto;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      .input-form {
+        background-color: #ffffff; /* Màu nền cho khung nhập liệu */
+        padding: 40px 30px;
+        flex: 1;
+        animation: bounceIn 1s;
+      }
+
+      .result-form {
+        background-color: #e9f7ef; /* Màu nền xanh lá cho khung kết quả */
+        color: #333;
+        padding: 40px 30px;
+        flex: 1;
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        height: 100vh;
-        margin: 0;
-        text-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+        border-left: 2px solid #28a745; /* Đường viền xanh lá */
+        opacity: 0; /* Ban đầu ẩn với độ mờ */
+        transition: opacity 0.5s ease;
       }
 
-      h1 {
-        font-size: 3em;
-        margin-bottom: 20px;
-        letter-spacing: 2px;
-        animation: fadeIn 1s;
-        text-align: center;
+      .result-form.visible {
+        opacity: 1; /* Hiện khi có kết quả */
       }
 
-      .container {
-        background-color: rgba(44, 62, 80, 0.9);
-        border-radius: 15px;
-        padding: 40px 30px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        width: 90%;
-        max-width: 500px;
-        text-align: center;
-        animation: bounceIn 1s;
-      }
-
-      input[type="text"] {
+      input[type="text"],
+      select {
         width: calc(100% - 22px);
         padding: 15px;
-        border: none;
+        border: 1px solid #ced4da; /* Đường viền cho trường nhập liệu */
         border-radius: 5px;
-        background-color: #34495e;
-        color: #ffffff;
+        background-color: #f1f1f1; /* Màu nền cho trường nhập liệu */
+        color: #333;
         font-size: 1.1em;
         margin-bottom: 20px;
         transition: border 0.3s ease;
-        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
       }
 
-      input[type="text"]:focus {
+      input[type="text"]:focus,
+      select:focus {
         outline: none;
-        border: 2px solid #00cfff;
+        border: 2px solid #28a745; /* Màu viền khi focus */
       }
 
       .button-container {
         display: flex;
         flex-direction: column;
-        gap: 15px; /* Space between buttons */
+        gap: 15px;
         margin-top: 20px;
       }
 
       button {
-        background-color: #00cfff;
+        background-color: #28a745; /* Màu nút xanh lá */
         color: #ffffff;
         border: none;
         padding: 12px 20px;
@@ -77,37 +93,14 @@
         cursor: pointer;
         font-size: 1em;
         transition: background-color 0.3s ease, transform 0.2s ease;
-        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
         position: relative;
         overflow: hidden;
       }
 
       button:hover {
-        background-color: #008f9b;
+        background-color: #218838; /* Màu nút khi hover */
         transform: scale(1.05);
-      }
-
-      button:after {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 300%;
-        height: 300%;
-        background: rgba(255, 255, 255, 0.2);
-        border-radius: 50%;
-        transition: width 0.5s ease, height 0.5s ease, top 0.5s ease,
-          left 0.5s ease;
-        z-index: 0;
-        opacity: 0;
-      }
-
-      button:hover:after {
-        width: 100%;
-        height: 100%;
-        top: 0;
-        left: 0;
-        opacity: 1;
       }
 
       button span {
@@ -117,32 +110,20 @@
 
       #qrCode {
         margin-top: 20px;
-        display: none; /* Initially hide the QR Code */
+        display: none; /* Ban đầu ẩn mã QR */
+        text-align: center;
+      }
+
+      #downloadLink {
+        margin-top: 10px;
+        color: #28a745; /* Màu liên kết tải về */
+        text-decoration: none;
       }
 
       footer {
         margin-top: 20px;
         font-size: 0.9em;
         color: #aaaaaa;
-      }
-
-      .home-button {
-        background-color: #e74c3c;
-      }
-
-      .home-button:hover {
-        background-color: #c0392b;
-      }
-
-      @keyframes fadeIn {
-        from {
-          opacity: 0;
-          transform: translateY(-20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
       }
 
       @keyframes bounceIn {
@@ -158,44 +139,75 @@
     </style>
   </head>
   <body>
-    <h1>QR Code Generator</h1>
     <div class="container">
-      <input
-        type="text"
-        id="dataInput"
-        placeholder="Nhập dữ liệu để tạo QR Code"
-      />
-      <div class="button-container">
-        <button id="generateButton"><span>Tạo QR Code</span></button>
-        <button
-          class="home-button"
-          onclick="window.location.href='{{ url_for('upload_file') }}'"
-        >
-          <span>Quay về trang chủ</span>
-        </button>
+      <div class="input-form">
+        <h1 id="title">QR Code Generator</h1>
+        <input
+          type="text"
+          id="dataInput"
+          placeholder="Nhập dữ liệu để tạo QR Code"
+        />
+        <select id="qrSize">
+          <option value="200">Size: 200x200</option>
+          <option value="300">Size: 300x300</option>
+          <option value="400">Size: 400x400</option>
+        </select>
+        <select id="qrFormat">
+          <option value="png">Format: PNG</option>
+          <option value="jpg">Format: JPG</option>
+          <option value="svg">Format: SVG</option>
+        </select>
+        <div class="button-container">
+          <button id="generateButton"><span>Tạo QR Code</span></button>
+          <button
+            class="home-button"
+            onclick="window.location.href='{{ url_for('upload_file') }}'"
+          >
+            <span>Quay về trang chủ</span>
+          </button>
+        </div>
       </div>
-      <div id="qrCode"></div>
+      <div class="result-form" id="resultForm">
+        <h2>Kết quả</h2>
+        <div id="qrCode"></div>
+        <a id="downloadLink" style="display:none;">Tải về QR Code</a>
+      </div>
     </div>
 
     <script>
       $(document).ready(function () {
+        // Reload data when title is clicked
+        $("#title").click(function () {
+          $("#dataInput").val(""); // Clear the input
+          $("#qrCode").hide(); // Hide QR Code
+          $("#downloadLink").hide(); // Hide download link
+          $("#resultForm").removeClass("visible"); // Hide the result form
+        });
+
         $("#generateButton").click(function () {
           const data = $("#dataInput").val();
+          const size = $("#qrSize").val();
+          const format = $("#qrFormat").val();
+
           if (data) {
             const qrCodeUrl = `https://api.stakdek.de/api/qr/gen?data=${encodeURIComponent(
               data
-            )}`;
+            )}&size=${size}&format=${format}`;
             $("#qrCode")
               .html(
-                `<img src="${qrCodeUrl}" alt="QR Code" style="width: 200px; height: 200px; margin-top: 20px;">`
+                `<img src="${qrCodeUrl}" alt="QR Code" style="width: ${size}px; height: ${size}px; margin-top: 20px;">`
               )
               .show();
-            $("#generateButton")
-              .html("<span>Làm mới</span>")
-              .off("click")
-              .click(function () {
-                location.reload(); // Reload the page to reset the form
-              });
+
+            // Set up download link
+            $("#downloadLink")
+              .attr("href", qrCodeUrl)
+              .attr("download", `QRCode.${format}`)
+              .text("Tải về QR Code")
+              .show();
+
+            // Show the result form
+            $("#resultForm").addClass("visible");
           } else {
             alert("Vui lòng nhập dữ liệu!");
           }

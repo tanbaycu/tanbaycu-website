@@ -35,9 +35,6 @@ genai.configure(api_key=api_key)
 PIXELDRAIN_API_KEY = "fba3e1f5-269b-4758-8e44-78326d0d7d95"
 RETRY_LIMIT = 3
 
-TINYURL_API = "http://tinyurl.com/api-create.php?url="
-ONEPT_API = "https://csclub.uwaterloo.ca/~phthakka/1pt-express/addURL.php?url="
-
 upload_history = []
 download_history = []
 
@@ -89,60 +86,83 @@ def validate_url(url):
     return re.match(regex, url) is not None
 
 
-# Hàm gửi yêu cầu tới dịch vụ rút gọn URL
 def send_request(long_url):
-    # Kiểm tra xem URL có hợp lệ không
     if validate_url(long_url):
-        # Chọn ngẫu nhiên giữa 1pt.co và TinyURL để rút gọn
-        if random.choice([True, False]):
-            # Sử dụng 1pt.co
-            return shorten_url_1pt(long_url)
-        else:
-            # Sử dụng TinyURL
+        choice = random.choice(["TinyURL", "isgd", "vgd"])
+
+        if choice == "isgd":
+            return shorten_url_isgd(long_url)
+        elif choice == "TinyURL":
             return shorten_url_tinyurl(long_url)
+        elif choice == "vgd":
+            return shorten_url_vgd(long_url)
     else:
         print("Invalid URL!")
         return None
 
 
-def shorten_url_1pt(long_url):
+def shorten_url_isgd(long_url):
     try:
+        # URL encode the long URL
         encoded_long_url = requests.utils.quote(long_url)
-        request_url = f"{ONEPT_API}{encoded_long_url}"
+        # Construct the request URL for is.gd
+        request_url = f"https://is.gd/create.php?format=simple&url={encoded_long_url}"
 
-        # Gửi yêu cầu GET tới dịch vụ 1pt.co
+        # Send the GET request to is.gd
         response = requests.get(request_url)
 
-        # Kiểm tra mã trạng thái phản hồi
-        if response.status_code == 201:  # Thay đổi ở đây để kiểm tra mã trạng thái 201
-            data = response.json()
-            if "short" in data:
-                returned_short_url = (
-                    f"https://1pt.co/{data['short']}"  # Chỉnh sửa ở đây
-                )
-                return returned_short_url
-            else:
-                print("No short URL returned from 1pt.co")
-                return None
+        # Check for successful response
+        if response.status_code == 200:
+            # The response should be the shortened URL in plain text
+            return response.text.strip()
         else:
             print(f"Error: {response.status_code} - {response.text}")
             return None
     except requests.exceptions.RequestException as e:
-        # Xử lý lỗi yêu cầu
-        print(f"Error while shortening URL with 1pt.co: {e}")
+        # Handle request errors
+        print(f"Error while shortening URL with is.gd: {e}")
         return None
 
 
-# Hàm rút gọn URL với TinyURL
 def shorten_url_tinyurl(long_url):
     try:
-        # Gửi yêu cầu GET tới dịch vụ TinyURL
-        response = requests.get(TINYURL_API + long_url)
-        response.raise_for_status()  # Ném ngoại lệ nếu có lỗi
-        return response.text  # Trả về URL rút gọn
+        # URL encode the long URL
+        encoded_long_url = requests.utils.quote(long_url, safe="")
+        # Construct the request URL for TinyURL
+        request_url = f"http://tinyurl.com/api-create.php?url={encoded_long_url}"
+
+        # Send the GET request to TinyURL
+        response = requests.get(request_url)
+        response.raise_for_status()  # Raise an exception for 4xx/5xx errors
+
+        # Return the shortened URL in plain text
+        return response.text.strip()
     except requests.exceptions.RequestException as e:
-        # Xử lý lỗi yêu cầu
+        # Handle request errors
         print(f"Error while shortening URL with TinyURL: {e}")
+        return None
+
+
+def shorten_url_vgd(long_url):
+    try:
+        # URL encode the long URL
+        encoded_long_url = requests.utils.quote(long_url, safe="")
+        # Construct the request URL for v.gd
+        request_url = f"https://v.gd/create.php?format=simple&url={encoded_long_url}"
+
+        # Send the GET request to v.gd
+        response = requests.get(request_url)
+
+        # Check for successful response
+        if response.status_code == 200:
+            # The response should be the shortened URL in plain text
+            return response.text.strip()
+        else:
+            print(f"Error: {response.status_code} - {response.text}")
+            return None
+    except requests.exceptions.RequestException as e:
+        # Handle request errors
+        print(f"Error while shortening URL with v.gd: {e}")
         return None
 
 
@@ -426,6 +446,7 @@ def run_python_code_temp():
 
     return jsonify({"output": output})
 
+
 @app.route("/install-library", methods=["POST"])
 def install_library():
     data = request.json
@@ -437,9 +458,13 @@ def install_library():
     try:
         # Cài đặt thư viện bằng pip
         subprocess.check_call([sys.executable, "-m", "pip", "install", library_name])
-        return jsonify({"message": f"Thư viện {library_name} đã được cài đặt thành công."})
+        return jsonify(
+            {"message": f"Thư viện {library_name} đã được cài đặt thành công."}
+        )
     except subprocess.CalledProcessError as e:
         return jsonify({"error": f"Lỗi khi cài đặt thư viện: {str(e)}"}), 500
+
+
 # Route để hiển thị trang facts.html
 @app.route("/facts", methods=["GET"])
 def facts_page():
@@ -731,6 +756,34 @@ def news():
 
     return render_template("news.html", articles=articles)
 
+
+
+@app.route('/math', methods=['GET', 'POST'])
+def math_operation():
+    if request.method == 'POST':
+        # Get operation and expression from the form data
+        operation = request.form['operation']
+        expression = request.form['expression']
+
+        # URL encode the expression
+        encoded_expression = requests.utils.quote(expression)
+
+        # Form the API URL
+        url = f"https://newton.now.sh/api/v2/{operation}/{encoded_expression}"
+
+        # Send a request to Newton API
+        response = requests.get(url)
+
+        # Check if the request was successful
+        if response.status_code == 200:
+            result = response.json()
+            return render_template('math.html', result=result['result'], expression=expression, operation=operation)
+        else:
+            error = "Invalid request or operation"
+            return render_template('math.html', error=error)
+
+    # Render the form for GET request
+    return render_template('math.html')
 
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
