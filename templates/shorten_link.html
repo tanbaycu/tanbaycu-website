@@ -130,32 +130,44 @@
       /* Kích thước chữ nhỏ hơn */
     }
 
-    /* Nút về trang chủ */
-    .home-button-custom {
-      position: absolute;
-      bottom: 30px;
-      right: 30px;
-      text-align: right;
-      z-index: 1;
+    .home-button-container {
+      text-align: center;
+      /* Căn giữa */
+      margin-top: 30px;
+      /* Khoảng cách từ trên */
     }
 
-    .home-button-custom .button {
-      background-color: #6272a4;
-      color: #f8f8f2;
-      padding: 10px 20px;
-      text-decoration: none;
+    .home-button {
+      display: inline-block;
+      /* Hiển thị dạng khối */
+      background-color: #50fa7b;
+      /* Màu nền */
+      color: #282a36;
+      /* Màu chữ */
+      padding: 15px 25px;
+      /* Đệm cho nút */
       border-radius: 10px;
-      transition: background-color 0.3s, transform 0.3s, box-shadow 0.3s;
-      /* Hiệu ứng cho nút */
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      /* Bóng đổ cho nút */
+      /* Bo góc */
+      text-decoration: none;
+      /* Bỏ gạch chân */
+      font-size: 1.2em;
+      /* Kích thước chữ */
+      transition: background-color 0.3s, transform 0.3s;
+      /* Hiệu ứng chuyển màu */
     }
 
-    .home-button-custom .button:hover {
-      background-color: #555;
-      transform: translateY(-3px);
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+    .home-button:hover {
+      background-color: #4bf66f;
+      /* Màu nền khi hover */
+      transform: scale(1.05);
+      /* Phóng to nhẹ khi hover */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       /* Bóng đổ tăng khi hover */
+    }
+
+    .home-button i {
+      margin-right: 8px;
+      /* Khoảng cách giữa icon và chữ */
     }
 
     /* Responsive */
@@ -208,8 +220,6 @@
       }
 
       .home-button-custom .button {
-        width: 100%;
-        /* Độ rộng 100% cho nút */
         padding: 12px 15px;
         /* Đệm thêm cho nút */
       }
@@ -262,9 +272,14 @@
     {% endif %} {% endwith %}
   </div>
 
-  <div class="home-button-custom">
-    <a href="{{ url_for('homepage') }}" class="button">Về trang chủ</a>
+  <div class="home-button-container">
+    <a href="{{ url_for('homepage') }}" class="home-button">
+      <i class="fas fa-home"></i> Về trang chủ
+    </a>
   </div>
+  <footer>
+    <div style="text-align: center; margin-top: 20px;">© 2024 | Shorten-URL</div>
+  </footer>
 
   <script>
     document.getElementById("title").onclick = function () {
