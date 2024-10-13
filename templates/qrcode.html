@@ -25,6 +25,8 @@
       box-sizing: border-box;
       text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
       /* Hiệu ứng đổ bóng cho chữ */
+      overflow: auto;
+      /* Thêm thanh cuộn */
     }
 
     .container {
@@ -42,6 +44,10 @@
       /* Nền của container */
       transition: transform 0.3s ease;
       /* Hiệu ứng khi hover */
+      max-height: 90vh;
+      /* Chiều cao tối đa */
+      overflow-y: auto;
+      /* Thêm thanh cuộn dọc */
     }
 
     .input-form,
@@ -222,8 +228,8 @@
       </select>
       <div class="button-container">
         <button id="generateButton">Tạo QR Code</button>
-        <button class="home-button" onclick="window.location.href='{{ url_for('homepage') }}'">Quay
-          về trang chủ</button>
+        <button class="home-button" onclick="window.location.href='{{ url_for('homepage') }}'">Quay về trang
+          chủ</button>
       </div>
     </div>
     <div class="result-form" id="resultForm">
@@ -248,16 +254,15 @@
       function resetForm() {
         $("#dataInput").val(""); // Xóa dữ liệu nhập
         $("#qrCode").hide(); // Ẩn QR code
-        $("#downloadLink").hide(); // Ẩn liên kết tải về
-        $("#resultForm").removeClass("visible"); // Xóa lớp visible
+        $("#downloadLink").hide(); // Ẩn link tải về
+        $("#resultForm").removeClass("visible"); // Ẩn phần kết quả
       }
 
-      // Khi nhấn vào tiêu đề, reset form
+      // Sự kiện click cho tiêu đề
       $("#title").click(function () {
         resetForm();
       });
 
-      // Khi nhấn nút Tạo QR Code
       $("#generateButton").click(function () {
         const data = $("#dataInput").val();
         const size = $("#qrSize").val();
