@@ -1,411 +1,395 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dracula-Themed File Uploader</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-    />
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        font-family: "Roboto", sans-serif;
-        background-color: #282a36;
-        color: #f8f8f2;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        min-height: 100vh;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dracula-Themed File Uploader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Roboto", sans-serif;
+      background-color: #282a36;
+      color: #f8f8f2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 0 10px;
+      /* Thêm padding cho body */
+    }
+
+    /* Navbar */
+    .navbar {
+      background-color: #6272a4;
+      display: flex;
+      justify-content: center;
+      padding: 10px 0;
+      /* Thay đổi padding */
+      position: fixed;
+      width: 100%;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .navbar a {
+      color: #f8f8f2;
+      text-decoration: none;
+      font-size: 18px;
+      font-weight: 500;
+      margin: 0 20px;
+      /* Điều chỉnh khoảng cách */
+      transition: color 0.3s;
+    }
+
+    .navbar a:hover {
+      color: #50fa7b;
+    }
+
+    .header {
+      font-size: 30px;
+      /* Giảm kích thước chữ */
+      color: #f8f8f2;
+      background: linear-gradient(45deg, #50fa7b, #ff79c6);
+      padding: 20px;
+      /* Thay đổi padding */
+      margin-top: 70px;
+      /* Thay đổi khoảng cách */
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+      width: 100%;
+      max-width: 600px;
+      text-align: center;
+      /* Căn giữa chữ */
+    }
+
+    .menu-bar {
+      position: fixed;
+      top: 15px;
+      right: 15px;
+      display: flex;
+      gap: 10px;
+      z-index: 2000;
+    }
+
+    .menu-button {
+      background: linear-gradient(135deg, #6272a4, #44475a);
+      color: #f8f8f2;
+      border: 2px solid transparent;
+      padding: 10px 15px;
+      /* Điều chỉnh padding */
+      cursor: pointer;
+      border-radius: 8px;
+      font-size: 14px;
+      /* Giảm kích thước chữ */
+      transition: background 0.3s, transform 0.2s, border 0.3s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+      /* Giảm độ đổ bóng */
+    }
+
+    .menu-button:hover {
+      background: linear-gradient(135deg, #44475a, #6272a4);
+      border: 2px solid #f8f8f2;
+      transform: scale(1.05);
+    }
+
+    /* Container */
+    .container {
+      width: 100%;
+      max-width: 600px;
+      background-color: #44475a;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      margin-top: 20px;
+      padding: 20px;
+      position: relative;
+    }
+
+    /* Chat Box */
+    .chat-box {
+      padding: 20px;
+      max-height: 400px;
+      overflow-y: auto;
+      background-color: #44475a;
+      border-top: 2px solid #50fa7b;
+      border-radius: 10px;
+      /* Thêm bo tròn */
+    }
+
+    .chat-message {
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: 15px;
+      animation: fadeIn 0.3s ease-in-out;
+    }
+
+    .chat-bubble {
+      background-color: #6272a4;
+      padding: 15px 20px;
+      border-radius: 20px;
+      max-width: 75%;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+      color: #f8f8f2;
+      position: relative;
+      transition: background-color 0.3s;
+    }
+
+    .chat-bubble:hover {
+      background-color: #50fa7b;
+      color: #282a36;
+    }
+
+    .chat-bubble.upload-response {
+      background-color: #bd93f9;
+    }
+
+    /* Chat Form */
+    .chat-form {
+      display: flex;
+      padding: 15px;
+      /* Giảm padding */
+      background-color: #44475a;
+      position: relative;
+      border-radius: 10px;
+      /* Bo tròn cho chat form */
+    }
+
+    input[type="file"] {
+      flex: 1;
+      border: 2px solid #50fa7b;
+      padding: 10px;
+      /* Giảm padding */
+      font-size: 16px;
+      border-radius: 10px;
+      margin-right: 10px;
+      /* Điều chỉnh khoảng cách */
+      outline: none;
+      transition: border-color 0.3s;
+      background-color: #282a36;
+      color: #f8f8f2;
+      height: 40px;
+      /* Giảm chiều cao */
+    }
+
+    input[type="file"]:hover {
+      border-color: #ff79c6;
+    }
+
+    button {
+      background: linear-gradient(135deg, #50fa7b, #00bfff);
+      color: #282a36;
+      border: 2px solid transparent;
+      padding: 10px 15px;
+      /* Giảm padding */
+      font-size: 16px;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.3s, border 0.3s;
+      height: 40px;
+      /* Giảm chiều cao */
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    button:hover {
+      background: linear-gradient(135deg, #ff79c6, #ffb3ff);
+      border: 2px solid #282a36;
+      transform: translateY(-2px);
+    }
+
+    /* Hiệu ứng fadeIn cho nút */
+    @keyframes fadeIn {
+      0% {
+        opacity: 0;
+        transform: translateY(10px);
       }
 
-      /* Navbar */
-      .navbar {
-        background-color: #6272a4;
-        display: flex;
-        justify-content: center;
-        padding: 15px;
-        position: fixed;
-        width: 100%;
-        top: 0;
-        z-index: 1000;
+      100% {
+        opacity: 1;
+        transform: translateY(0);
       }
+    }
+
+    .chat-form.dragover {
+      border: 2px dashed #50fa7b;
+      background-color: #6272a4;
+    }
+
+    footer {
+      text-align: center;
+      margin-top: auto;
+      /* Đẩy footer xuống dưới */
+      padding: 15px;
+      /* Thêm padding cho footer */
+      color: #f8f8f2;
+      /* Màu chữ footer */
+    }
+
+    /* Responsive styles */
+    @media (max-width: 768px) {
       .navbar a {
-        color: #f8f8f2;
-        text-decoration: none;
-        font-size: 18px;
-        font-weight: 500;
-        margin: 0 15px;
-        transition: color 0.3s;
-      }
-      .navbar a:hover {
-        color: #50fa7b;
+        font-size: 14px;
       }
 
       .header {
-        font-size: 36px; /* Tăng kích thước chữ */
-        color: #f8f8f2; /* Màu chữ */
-        background: linear-gradient(45deg, #50fa7b, #ff79c6); /* Gradient nền */
-        padding: 25px;
-        font-size: 28px;
-        font-weight: 500;
-        margin-top: 60px;
-        border-radius: 10px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        width: calc(100% - 40px);
-        max-width: 600px;
-        animation: slideIn 1s ease-in-out forwards, bounce 2s infinite;
-        transform: translateY(-20px); /* Di chuyển lên một chút */
+        font-size: 20px;
+        padding: 10px;
       }
 
-      @keyframes slideIn {
-        0% {
-          transform: translateY(-100%); /* Bắt đầu từ trên */
-          opacity: 0;
-        }
-        100% {
-          transform: translateY(0);
-          opacity: 1;
-        }
-      }
-
-      @keyframes bounce {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-10px); /* Nhảy lên */
-        }
-      }
-
-      .menu-bar {
-        position: fixed; /* Đặt vị trí cố định để giữ nó ở góc trên cùng */
-        top: 15px; /* Đặt khoảng cách từ đỉnh */
-        right: 15px; /* Đặt khoảng cách từ bên phải */
-        display: flex; /* Sử dụng flexbox để các nút nằm bên cạnh nhau */
-        gap: 10px; /* Khoảng cách giữa các nút */
-        z-index: 2000; /* Đảm bảo menu nằm trên các phần tử khác */
-      }
-
-      .menu-button {
-        background: linear-gradient(
-          135deg,
-          #6272a4,
-          #44475a
-        ); /* Gradient màu nền */
-        color: #f8f8f2; /* Màu chữ */
-        border: 2px solid transparent; /* Đường viền mặc định */
-        padding: 12px 20px; /* Khoảng cách bên trong */
-        cursor: pointer; /* Hiển thị con trỏ chuột */
-        border-radius: 8px; /* Bo tròn các góc */
-        font-size: 16px; /* Kích thước chữ trong nút */
-        transition: background 0.3s, transform 0.2s, border 0.3s; /* Hiệu ứng chuyển đổi */
-        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Đổ bóng cho nút */
-      }
-
-      .menu-button:hover {
-        background: linear-gradient(
-          135deg,
-          #44475a,
-          #6272a4
-        ); /* Đổi gradient khi hover */
-        border: 2px solid #f8f8f2; /* Đổi màu viền khi hover */
-        transform: scale(1.05); /* Tăng kích thước nhẹ khi hover */
-      }
-
-      .dropdown-content {
-        display: none; /* Ẩn dropdown mặc định */
-        position: absolute; /* Đặt vị trí tuyệt đối */
-        right: 0; /* Đẩy dropdown sang bên phải */
-        background-color: #f9f9f9; /* Màu nền của dropdown */
-        min-width: 160px; /* Chiều rộng tối thiểu */
-        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* Đổ bóng cho dropdown */
-        z-index: 1; /* Đảm bảo nó nằm trên các phần tử khác */
-        border-radius: 8px; /* Bo tròn các góc của dropdown */
-      }
-
-      .dropdown-content a {
-        color: #333; /* Màu chữ */
-        padding: 12px 20px; /* Khoảng cách bên trong */
-        text-decoration: none; /* Không gạch chân */
-        display: block; /* Hiển thị block */
-        transition: background-color 0.3s; /* Hiệu ứng chuyển đổi màu nền */
-      }
-
-      .dropdown-content a:hover {
-        background-color: #e0e0e0; /* Màu nền khi hover trên item */
-        border-radius: 8px; /* Bo tròn các góc của item khi hover */
-      }
-
-      /* Container */
-      .container {
-        width: 100%;
-        max-width: 600px;
-        background-color: #44475a;
-        border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-        overflow: hidden;
-        margin-top: 20px;
-        transition: transform 0.3s, box-shadow 0.3s;
-        position: relative; /* Thêm vị trí tương đối để sử dụng pseudo-element */
-        padding: 20px; /* Thêm padding cho nội dung bên trong */
-      }
-
-      .container::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(
-          45deg,
-          rgba(80, 250, 123, 0.2),
-          rgba(255, 121, 198, 0.2)
-        );
-        z-index: 0; /* Đưa gradient ra phía sau */
-        transition: opacity 0.3s;
-        opacity: 0; /* Ẩn gradient khi chưa hover */
-      }
-
-      .container:hover::before {
-        opacity: 1; /* Hiện gradient khi hover */
-      }
-
-      .container:hover {
-        transform: scale(1.02);
-        box-shadow: 0 8px 40px rgba(0, 0, 0, 0.8); /* Tăng bóng khi hover */
-      }
-
-      .container > * {
-        position: relative; /* Đưa các phần tử con lên trên gradient */
-        z-index: 1; /* Đảm bảo nội dung không bị ẩn */
-        color: #f8f8f2; /* Màu chữ sáng hơn */
-        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7); /* Thêm bóng cho chữ */
-      }
-
-      /* Chat Box */
       .chat-box {
-        padding: 20px;
-        max-height: 400px;
-        overflow-y: auto;
-        background-color: #44475a;
-        border-top: 2px solid #50fa7b;
+        padding: 10px;
       }
-      .chat-message {
-        display: flex;
-        align-items: flex-end;
-        margin-bottom: 15px;
-        animation: fadeIn 0.3s ease-in-out;
-      }
+
       .chat-bubble {
-        background-color: #6272a4;
-        padding: 15px 20px;
-        border-radius: 20px;
-        max-width: 75%;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
-        color: #f8f8f2;
-        position: relative;
-        transition: background-color 0.3s;
-      }
-      .chat-bubble:hover {
-        background-color: #50fa7b;
-        color: #282a36;
-      }
-      .chat-bubble.upload-response {
-        background-color: #bd93f9;
+        padding: 8px 10px;
+        max-width: 90%;
+        /* Tăng chiều rộng chat bubble trên thiết bị nhỏ */
       }
 
-      /* Chat Form */
-      .chat-form {
-        display: flex;
-        padding: 20px;
-        background-color: #44475a;
-        position: relative;
-      }
-      input[type="file"] {
-        flex: 1;
-        border: 2px solid #50fa7b;
-        padding: 12px;
-        font-size: 16px;
-        border-radius: 10px;
-        margin-right: 15px;
-        outline: none;
-        transition: border-color 0.3s;
-        background-color: #282a36;
-        color: #f8f8f2;
-        height: 50px; /* Increased height */
-      }
-      input[type="file"]:hover {
-        border-color: #ff79c6;
-      }
+      input[type="file"],
       button {
-        background: linear-gradient(
-          135deg,
-          #50fa7b,
-          #00bfff
-        ); /* Gradient màu nền */
-        color: #282a36; /* Màu chữ */
-        border: 2px solid transparent; /* Đường viền mặc định */
-        padding: 12px 20px; /* Khoảng cách bên trong */
-        font-size: 16px; /* Kích thước chữ */
-        border-radius: 10px; /* Bo tròn các góc */
-        cursor: pointer; /* Hiển thị con trỏ chuột */
-        transition: background 0.3s, transform 0.3s, border 0.3s; /* Hiệu ứng chuyển đổi */
-        height: 50px; /* Chiều cao nút */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Đổ bóng cho nút */
+        font-size: 12px;
+        padding: 8px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .navbar {
+        padding: 5px;
       }
 
-      button:hover {
-        background: linear-gradient(
-          135deg,
-          #ff79c6,
-          #ffb3ff
-        ); /* Đổi gradient khi hover */
-        border: 2px solid #282a36; /* Đổi màu viền khi hover */
-        transform: translateY(-2px); /* Tăng chiều cao khi hover */
+      .header {
+        font-size: 18px;
+        padding: 8px;
       }
 
-      /* Hiệu ứng fadeIn cho nút */
-      @keyframes fadeIn {
-        0% {
-          opacity: 0;
-          transform: translateY(10px);
-        }
-        100% {
-          opacity: 1;
-          transform: translateY(0);
-        }
+      .chat-form {
+        flex-direction: column;
+        /* Đặt các phần tử trên cùng một cột */
+        align-items: stretch;
+        /* Chiều rộng đầy đủ */
       }
-      .chat-form.dragover {
-        border: 2px dashed #50fa7b;
-        background-color: #6272a4;
+
+      input[type="file"] {
+        margin-right: 0;
+        /* Không còn khoảng cách bên phải */
+        margin-bottom: 10px;
+        /* Thêm khoảng cách bên dưới */
       }
-    </style>
-  </head>
-  <body>
-    <header>
-      <h1>Tải Lên Tệp</h1>
-    </header>
-    <div class="navbar">
-      <a href="/">Home</a>
-      <a href="/upload-history">Upload History</a>
-      <a href="/download-history">Download History</a>
+    }
+  </style>
+</head>
+
+<body>
+  
+  <div class="navbar">
+    <a href="/">Home</a>
+    <a href="/upload-history">Upload History</a>
+    <a href="/download-history">Download History</a>
+  </div>
+
+  <!-- Header -->
+  <div class="header">Dracula File Uploader</div>
+
+  <div class="container">
+    <!-- Chat Box -->
+    <div class="chat-box" id="chat-box">
+      <div class="chat-message">
+        <div class="chat-bubble">Upload a file and I'll take care of it!</div>
+      </div>
+      {% with messages = get_flashed_messages() %} {% if messages %}
+      <div class="chat-message">
+        <div class="chat-bubble upload-response">{{ messages[0] }}</div>
+      </div>
+      {% endif %} {% endwith %} {% if response %}
+      <div class="chat-message">
+        <div class="chat-bubble upload-response">{{ response }}</div>
+      </div>
+      {% endif %}
     </div>
 
-    <!-- Header -->
-    <div class="header">Dracula File Uploader</div>
-
-    <div class="container">
-      <!-- Chat Box -->
-      <div class="chat-box" id="chat-box">
-        <div class="chat-message">
-          <div class="chat-bubble">Upload a file and I'll take care of it!</div>
-        </div>
-        {% with messages = get_flashed_messages() %} {% if messages %}
-        <div class="chat-message">
-          <div class="chat-bubble upload-response">{{ messages[0] }}</div>
-        </div>
-        {% endif %} {% endwith %} {% if response %}
-        <div class="chat-message">
-          <div class="chat-bubble upload-response">{{ response }}</div>
-        </div>
-        {% endif %}
-      </div>
-
-      <div class="chat-form" id="file-drop-area">
-        <form
-          method="POST"
-          enctype="multipart/form-data"
-          id="upload-form"
-          style="width: 100%"
-        >
-          <input
-            type="file"
-            name="file"
-            id="file-input"
-            accept=".jpg,.jpeg,.png,.gif,.pdf"
-            required
-          />
-          <button type="submit">Upload</button>
-        </form>
-      </div>
+    <div class="chat-form" id="file-drop-area">
+      <form method="POST" enctype="multipart/form-data" id="upload-form" style="width: 100%">
+        <input type="file" name="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.pdf" required />
+        <button type="submit">Upload</button>
+      </form>
     </div>
+  </div>
+  <footer>
+    <div style="text-align: center; margin-top: 20px;">© 2024 | Upload File</div>
+  </footer>
 
-    <script>
-      const chatBox = document.getElementById("chat-box");
-      chatBox.scrollTop = chatBox.scrollHeight;
+  <script>
+    const chatBox = document.getElementById("chat-box");
+    chatBox.scrollTop = chatBox.scrollHeight;
 
-      const dropArea = document.getElementById("file-drop-area");
-      const fileInput = document.getElementById("file-input");
-      const uploadForm = document.getElementById("upload-form");
+    const dropArea = document.getElementById("file-drop-area");
+    const fileInput = document.getElementById("file-input");
+    const uploadForm = document.getElementById("upload-form");
 
-      // Highlight the drop area when dragging files over it
-      dropArea.addEventListener("dragover", (event) => {
-        event.preventDefault();
-        dropArea.classList.add("dragover");
+    // Highlight the drop area when dragging files over it
+    dropArea.addEventListener("dragover", (event) => {
+      event.preventDefault();
+      dropArea.classList.add("dragover");
+    });
+
+    // Remove highlight when leaving drop area
+    dropArea.addEventListener("dragleave", () => {
+      dropArea.classList.remove("dragover");
+    });
+
+    // Handle file drop
+    dropArea.addEventListener("drop", (event) => {
+      event.preventDefault();
+      dropArea.classList.remove("dragover");
+
+      if (event.dataTransfer.files.length) {
+        fileInput.files = event.dataTransfer.files;
+        uploadForm.submit(); // Auto-submit the form when a file is dropped
+      }
+    });
+
+    // Handle paste event (Ctrl+V)
+    document.addEventListener("paste", (event) => {
+      const items = event.clipboardData.items;
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].kind === "file") {
+          const file = items[i].getAsFile();
+          fileInput.files = new DataTransfer().files; // Reset file input
+          const dataTransfer = new DataTransfer();
+          dataTransfer.items.add(file);
+          fileInput.files = dataTransfer.files;
+          uploadForm.submit(); // Auto-submit the form when a file is pasted
+          break;
+        }
+      }
+    });
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const menuButton = document.getElementById("menu-bar-1");
+      const dropdownContent = document.getElementById("dropdown-content-1");
+
+      menuButton.addEventListener("click", function () {
+        dropdownContent.style.display =
+          dropdownContent.style.display === "block" ? "none" : "block";
       });
 
-      // Remove highlight when leaving drop area
-      dropArea.addEventListener("dragleave", () => {
-        dropArea.classList.remove("dragover");
-      });
-
-      // Handle file drop
-      dropArea.addEventListener("drop", (event) => {
-        event.preventDefault();
-        dropArea.classList.remove("dragover");
-
-        if (event.dataTransfer.files.length) {
-          fileInput.files = event.dataTransfer.files;
-          uploadForm.submit(); // Auto-submit the form when a file is dropped
+      // Close dropdown if clicking outside of it
+      window.addEventListener("click", function (event) {
+        if (!menuButton.contains(event.target)) {
+          dropdownContent.style.display = "none";
         }
       });
+    });
+  </script>
+</body>
 
-      // Handle paste event (Ctrl+V)
-      document.addEventListener("paste", (event) => {
-        const items = event.clipboardData.items;
-        for (let i = 0; i < items.length; i++) {
-          if (items[i].kind === "file") {
-            const file = items[i].getAsFile();
-            fileInput.files = new DataTransfer().files; // Reset file input
-            const dataTransfer = new DataTransfer();
-            dataTransfer.items.add(file);
-            fileInput.files = dataTransfer.files;
-            uploadForm.submit(); // Auto-submit the form when a file is pasted
-            break;
-          }
-        }
-      });
-
-      document.addEventListener("DOMContentLoaded", function () {
-        const menuButton = document.getElementById("menu-bar-1");
-        const dropdownContent = document.getElementById("dropdown-content-1");
-
-        menuButton.addEventListener("click", function () {
-          dropdownContent.style.display =
-            dropdownContent.style.display === "block" ? "none" : "block";
-        });
-
-        // Close dropdown if clicking outside of it
-        window.addEventListener("click", function (event) {
-          if (!menuButton.contains(event.target)) {
-            dropdownContent.style.display = "none";
-          }
-        });
-      });
-    </script>
-  </body>
 </html>
