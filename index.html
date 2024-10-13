@@ -1,130 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trang Chủ - Công Cụ Hữu Ích Trực Tuyến</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/jpeg"
-        href="https://i.postimg.cc/ZqdPcMNx/z5893949853973-6df6c782602aebfcd9e959330e1531ce.jpg" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Trang Chủ - Công Cụ Hữu Ích Trực Tuyến</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
+            rel="stylesheet" />
+        <link rel="icon" type="image/jpeg"
+            href="https://i.postimg.cc/ZqdPcMNx/z5893949853973-6df6c782602aebfcd9e959330e1531ce.jpg" />
 
-    <meta name="description"
-        content="Khám phá công cụ và tính năng tuyệt vời trên trang web của tôi. Tải lên tệp, rút gọn liên kết và nhiều hơn nữa!" />
-    <meta name="keywords" content="tải lên tệp, rút gọn liên kết, tạo mã QR, kiểm tra API, dự báo thời tiết" />
-    <meta name="author" content="Tân 7 Cú" />
-    <meta name="robots" content="index, follow" />
+        <meta name="description"
+            content="Khám phá công cụ và tính năng tuyệt vời trên trang web của tôi. Tải lên tệp, rút gọn liên kết và nhiều hơn nữa!" />
+        <meta name="keywords"
+            content="tải lên tệp, rút gọn liên kết, tạo mã QR, kiểm tra API, dự báo thời tiết" />
+        <meta name="author" content="Tân 7 Cú" />
+        <meta name="robots" content="index, follow" />
 
-    <style>
-        body {
-            font-family: "Roboto", sans-serif;
-            background-color: #282a36;
-            color: #f8f8f2;
-            margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: flex-start;
-            min-height: 100vh;
-        }
+        <style>
+            body {
+                font-family: "Roboto", sans-serif;
+                background: linear-gradient(135deg, #282a36 0%, #6272a4 100%);
+                color: #f8f8f2;
+                margin: 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: flex-start;
+                min-height: 100vh;
+                padding-top: 60px; /* Added padding to avoid overlap with navbar */
+                background-size: 200% 200%;
+                animation: gradient 10s ease infinite; /* Add gradient animation */
+            }
+    
+            @keyframes gradient {
+                0% { background-position: 0% 50%; }
+                50% { background-position: 100% 50%; }
+                100% { background-position: 0% 50%; }
+            }
 
         /* Navbar */
-        .navbar {
-            background-color: #6272a4;
-            padding: 15px;
-            position: fixed;
-            width: 100%;
-            top: 0;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;
-        }
+.navbar {
+    background-color: #6272a4;
+    padding: 10px 20px; /* Giảm padding để làm cho navbar gọn gàng hơn */
+    position: fixed;
+    width: 100%;
+    top: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center; /* Căn giữa các mục theo chiều dọc */
+    justify-content: space-between; /* Đặt không gian giữa các mục */
+}
 
-        .navbar a {
-            color: #f8f8f2;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: 500;
-            margin: 0 15px;
-            transition: color 0.3s, transform 0.2s;
-        }
 
-        .navbar a:hover {
-            color: #50fa7b;
-            transform: scale(1.1);
-        }
+/* Links in Navbar */
+.navbar a {
+    color: #f8f8f2;
+    text-decoration: none;
+    font-size: 18px;
+    font-weight: 500;
+    margin-right: 20px; /* Khoảng cách giữa các liên kết */
+}
 
-        /* Menu Bar */
-        .menu-bar {
-            display: flex;
-            gap: 10px;
-            position: fixed;
-            top: 60px;
-            right: 30px;
-        }
+.navbar a:last-child {
+    margin-right: 0; /* Không có khoảng cách cho liên kết cuối cùng */
+}
 
-        .menu-button {
-            background: linear-gradient(135deg, #6272a4, #44475a);
-            color: #f8f8f2;
-            border: 2px solid transparent;
-            padding: 12px 20px;
-            cursor: pointer;
-            border-radius: 8px;
-            font-size: 16px;
-            transition: background 0.3s, transform 0.2s, border 0.3s;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-        }
 
-        .menu-button:hover {
-            background: linear-gradient(135deg, #44475a, #6272a4);
-            border: 2px solid #f8f8f2;
-            transform: scale(1.05);
-        }
+.navbar a svg {
+    width: 30px;
+    height: 30px;
+    vertical-align: middle;
+    margin-right: 10px; /* Tạo khoảng cách nhỏ giữa các biểu tượng */
+}
 
-        /* Dropdown Menu */
-        .dropdown-content {
-            display: none;
-            position: absolute;
-            right: 0;
-            top: 50px;
-            background-color: #44475a;
-            border: 1px solid #6272a4;
-            min-width: 200px;
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            z-index: 1;
-        }
+.navbar a:hover svg {
+    stroke: #50fa7b; /* Đổi màu biểu tượng khi hover */
+    transform: scale(1.1); /* Phóng to nhẹ khi hover */
+}
 
-        .dropdown-content a {
-            color: #f8f8f2;
-            padding: 12px 20px;
-            text-decoration: none;
-            display: block;
-            transition: background-color 0.3s;
-        }
 
-        .dropdown-content a:hover {
-            background-color: #6272a4;
-            border-radius: 8px;
-        }
 
-        /* Header */
-        .header {
-            text-align: center;
-            margin-top: 80px;
-            /* To adjust the spacing for the fixed navbar */
-        }
+        
 
-        .header h1 {
-            font-size: 48px;
-            color: #50fa7b;
-        }
+       /* Off-canvas menu - Hidden by default */
+.off-canvas-menu {
+    position: fixed;
+    top: 0;
+    left: -300px; /* Start off-screen */
+    width: 250px;
+    height: 100%;
+    background-color: #44475a;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.5);
+    transition: left 0.4s ease; /* Smooth slide effect */
+    z-index: 2000;
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+}
 
-        .header p {
-            font-size: 18px;
-            color: #bd93f9;
-            margin: 10px 0;
-        }
+/* Add padding and smooth hover effect */
+.off-canvas-menu a {
+    color: #f8f8f2;
+    padding: 12px 15px; /* Increased padding for a better touch target */
+    text-decoration: none;
+    transition: background-color 0.3s, padding-left 0.3s, transform 0.3s; /* Smooth transition */
+}
+
+/* Hover effect with padding adjustment */
+.off-canvas-menu a:hover {
+    background-color: #6272a4;
+    padding-left: 20px; /* Shift the link slightly to the right */
+    transform: scale(1.05); /* Slightly scale up */
+}
+
+/* Add a shadow effect on hover */
+.off-canvas-menu a:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5); /* Shadow effect */
+}
+
+/* Adding a 'pulse' effect on hover */
+.off-canvas-menu a {
+    position: relative;
+}
+
+.off-canvas-menu a:hover::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(80, 250, 123, 0.3); /* Light green overlay */
+    border-radius: 5px;
+    transform: translate(-50%, -50%) scale(1); /* Center the pulse */
+    transition: transform 0.4s ease;
+    z-index: -1; /* Put behind the text */
+}
+
+/* Animate the pulse */
+.off-canvas-menu a:hover::before {
+    transform: translate(-50%, -50%) scale(1.5); /* Scale up the overlay */
+}
+
+/* Overlay to darken the background when the menu is open */
+.overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: none; /* Hidden by default */
+    z-index: 1500;
+}
+
+/* Show menu when active */
+.off-canvas-menu.open {
+    left: 0; /* Menu slides in */
+}
+
+.overlay.show {
+    display: block; /* Show overlay */
+}
+
+/* Hamburger menu button */
+.menu-button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 10px;
+    display: flex;
+    align-items: center;
+}
+
+.menu-button svg {
+    width: 30px;
+    height: 30px;
+    fill: #f8f8f2;
+}
+
+.menu-button:hover svg {
+    fill: #50fa7b;
+}
+
+
+
+.header {
+    text-align: center;
+    margin-top: 20px; /* Reduced margin for better spacing */
+    padding: 20px; /* Added padding */
+    background: rgba(98, 114, 164, 0.7); /* Slightly transparent background */
+    border-radius: 10px; /* Rounded corners */
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); /* Shadow effect */
+}
+
+.header h1 {
+    font-size: 2.5em; /* Responsive size */
+    color: #50fa7b;
+    animation: textFadeIn 0.8s ease forwards; /* Animation on load */
+}
+
+.header p {
+    font-size: 1.2em; /* Responsive size */
+    color: #bd93f9;
+    margin: 10px 0;
+    animation: textFadeIn 1s ease forwards; /* Animation on load */
+    animation-delay: 0.2s; /* Delay for second line */
+}
+
+@keyframes textFadeIn {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
 
         /* Button Section */
         .button-container {
@@ -133,6 +222,7 @@
             flex-wrap: wrap;
             justify-content: center;
             margin-top: 20px;
+            padding: 0 20px; /* Added padding */
         }
 
         .action-button {
@@ -153,16 +243,57 @@
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
         }
 
-
-
         /* Footer */
-        .footer {
-            margin-top: auto;
-            text-align: center;
-            padding: 10px;
-            color: #f8f8f2;
-            font-size: 14px;
-        }
+.footer {
+    margin-top: auto;
+    text-align: center;
+    padding: 20px;
+    background: linear-gradient(135deg, #44475a, #6272a4);
+    color: #f8f8f2;
+    font-size: 14px;
+    position: relative; /* Enable positioning for effects */
+    overflow: hidden; /* Hide overflow for the wave effect */
+}
+
+/* Special effect for footer */
+.footer::before {
+    content: '';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    width: 200%;
+    height: 100px;
+    background: rgba(80, 250, 123, 0.3);
+    border-radius: 50%;
+    transform: translateX(-50%) rotate(45deg); /* Rotate for wave effect */
+    animation: wave 4s ease-in-out infinite; /* Animate wave */
+}
+
+.footer a {
+    color: #50fa7b; /* Link color */
+    text-decoration: none;
+}
+
+.footer a:hover {
+    text-decoration: underline; /* Underline on hover */
+}
+
+/* Wave animation */
+@keyframes wave {
+    0% {
+        bottom: 100%;
+        transform: translateX(-50%) rotate(45deg) scale(1);
+    }
+    50% {
+        bottom: 80%;
+        transform: translateX(-50%) rotate(45deg) scale(1.1);
+    }
+    100% {
+        bottom: 100%;
+        transform: translateX(-50%) rotate(45deg) scale(1);
+    }
+}
+
 
         .social-icons {
             position: fixed;
@@ -171,99 +302,155 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            /* Khoảng cách giữa các biểu tượng */
         }
 
-        .social-icons a {
-            color: white;
-            /* Màu biểu tượng */
-            transition: transform 0.2s;
-        }
+        
 
-        .social-icons a:hover {
-            transform: scale(1.2);
-            /* Hiệu ứng phóng to khi di chuột */
-        }
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar a {
+                font-size: 16px;
+            }
 
-        .social-icons svg {
-            width: 24px;
-            height: 24px;
-            /* Kích thước biểu tượng */
+            .header h1 {
+                font-size: 2em; /* Adjust header size */
+            }
+
+            .header p {
+                font-size: 1em; /* Adjust paragraph size */
+            }
+
+            .action-button {
+                font-size: 14px; /* Adjust button size */
+                padding: 10px 15px; /* Adjust padding */
+            }
+
+            .menu-button {
+                font-size: 14px; /* Adjust menu button size */
+                padding: 10px; /* Adjust padding */
+            }
+
+            .social-icons svg {
+                width: 20px; /* Adjust social icon size */
+                height: 20px;
+            }
         }
     </style>
-</head>
+    </head>
 
-<body>
-    <!-- Navbar -->
-    <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/about-me">About me</a>
-        <a href="/dev">Docs</a>
-    </div>
+    <body>
 
-    <!-- Header Section -->
-    <div class="header">
-        <h1>Welcome to My Awesome Site</h1>
-        <p>Explore various tools and features right at your fingertips!</p>
-    </div>
-
-    <!-- Button Section -->
-    <div class="button-container">
-        <a href="/upload_file" class="action-button">Upload File</a>
-        <a href="/shorten-link" class="action-button">Shorten Link</a>
-        <a href="/api-check" class="action-button">API Checker</a>
-        <a href="/qrcode" class="action-button">QR Code Generator</a>
-    </div>
-
-    <!-- Menu Button and Dropdown -->
-    <div class="menu-bar" id="menu-bar-1">
-        <button class="menu-button">Menu</button>
-        <div class="dropdown-content" id="dropdown-content-1">
-            <a href="/upload_file">Upload tệp</a>
-            <a href="/shorten-link">Rút gọn link</a>
-            <a href="/api-check">Kiểm tra API</a>
-            <a href="/qrcode">Tạo mã QRCODE</a>
-            <a href="/clipython">Trình chạy Python</a>
-            <a href="/facts">Fact</a>
-            <a href="/ipconfig">IP check</a>
-            <a href="/weather">Dự báo thời tiết</a>
-            <a href="/urldownload">Download Video</a>
-            <a href="/random-image">Random Image</a>
-            <a href="/news">Tin tức</a>
-            <a href="/math">Làm toán</a>
-            <a href="/about">About</a>
+        <!-- Header Section -->
+        <div class="header">
+            <h1>Chào mừng bạn đến với Website của tôi</h1>
+            <p>Explore various tools and features right at your fingertips!</p>
         </div>
-    </div>
 
-    <!-- Footer Section -->
-    <div class="footer">
-        <p>&copy; 2024 - Dự án web multi-task | Designed by Me with Flask and ❤️ </p>
-    </div>
-    <div class="social-icons">
-        <a href="https://github.com/tanbaycu" target="_blank" aria-label="GitHub">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-                <path
-                    d="M12 .5C5.372.5 0 5.872 0 12.5c0 5.244 3.388 9.688 8.128 11.285.594.109.816-.257.816-.571 0-.283-.01-1.307-.02-2.38-3.313.718-4.015-1.602-4.015-1.602-.541-1.375-1.319-1.742-1.319-1.742-1.08-.739.082-.725.082-.725 1.195.084 1.826 1.227 1.826 1.227 1.063 1.818 2.785 1.293 3.465.988.107-.771.416-1.293.757-1.591-2.665-.303-5.467-1.332-5.467-5.93 0-1.313.469-2.387 1.237-3.227-.124-.303-.537-1.523.117-3.176 0 0 1.008-.322 3.301 1.227a11.545 11.545 0 0 1 3.004-.404c1.022.004 2.042.139 3.004.404 2.293-1.549 3.301-1.227 3.301-1.227.655 1.653.241 2.873.118 3.176.77.84 1.237 1.914 1.237 3.227 0 4.615-2.806 5.62-5.476 5.91.428.371.81 1.1.81 2.219 0 1.604-.015 2.895-.015 3.287 0 .317.221.685.824.571C20.612 22.188 24 17.744 24 12.5 24 5.872 18.628.5 12 .5z" />
-            </svg>
-        </a>
-        <a href="https://www.facebook.com/tanbaycu.404s/" target="_blank" aria-label="Facebook">
-            <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="#ffffff">
-                <path
-                    d="M12 0c6.627 0 12 5.373 12 12s-5.373 12-12 12S0 18.627 0 12 5.373 0 12 0zm4 7.278V4.5h-2.286c-2.1 0-3.428 1.6-3.428 3.889v1.667H8v2.777h2.286V19.5h2.857v-6.667h2.286L16 10.056h-2.857V8.944c0-1.11.572-1.666 1.714-1.666H16z" />
-            </svg>
-        </a>
+        <!-- Button Section -->
+        <div class="button-container">
+            <a href="/upload_file" class="action-button">Upload File</a>
+            <a href="/shorten-link" class="action-button">Shorten Link</a>
+            <a href="/api-check" class="action-button">API Checker</a>
+            <a href="/qrcode" class="action-button">QR Code Generator</a>
+        </div>
 
-    </div>
+        <!-- Navbar -->
+        <div class="navbar">
+            <div class="navbar-links">
+                <!-- Home Icon -->
+                <a href="/">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="38"
+                        height="38" viewBox="0 0 24 24" fill="none"
+                        stroke="#ffffff" stroke-width="2" stroke-linecap="butt"
+                        stroke-linejoin="arcs">
+                        <path
+                            d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                        <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                    </svg>
+                </a>
+                <!-- About Me Icon -->
+                <a href="/about-me">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="38"
+                        height="38" viewBox="0 0 24 24" fill="none"
+                        stroke="#ffffff" stroke-width="2" stroke-linecap="butt"
+                        stroke-linejoin="arcs">
+                        <path
+                            d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
+                        <circle cx="12" cy="10" r="3" />
+                        <circle cx="12" cy="12" r="10" />
+                    </svg>
+                </a>
+                <!-- Dev Icon -->
+                <a href="/dev">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="38"
+                        height="38" viewBox="0 0 24 24" fill="none"
+                        stroke="#ffffff" stroke-width="2" stroke-linecap="butt"
+                        stroke-linejoin="arcs">
+                        <path
+                            d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path>
+                        <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                    </svg>
+                </a>
+            </div>
+            <!-- Nút Menu -->
+            <button class="menu-button" id="menu-toggle">
+                <!-- Hamburger icon (menu icon) -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
+                    fill="currentColor">
+                    <path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z" />
+                </svg>
+            </button>
 
-    <script>
-        const menuButton = document.querySelector(".menu-button");
-        const dropdownContent = document.querySelector(".dropdown-content");
+            <!-- Off-canvas menu -->
+            <div class="off-canvas-menu" id="off-canvas-menu">
+                <a href="/upload_file">Upload tệp</a>
+                <a href="/shorten-link">Rút gọn link</a>
+                <a href="/api-check">Kiểm tra API</a>
+                <a href="/qrcode">Tạo mã QRCODE</a>
+                <a href="/clipython">Trình chạy Python</a>
+                <a href="/facts">Fact</a>
+                <a href="/ipconfig">IP check</a>
+                <a href="/weather">Dự báo thời tiết</a>
+                <a href="/urldownload">Download Video</a>
+                <a href="/random-image">Random Image</a>
+                <a href="/news">Tin tức</a>
+                <a href="/math">Làm toán</a>
+                <a href="/about">About</a>
+            </div>
 
-        menuButton.addEventListener("click", () => {
-            dropdownContent.style.display =
-                dropdownContent.style.display === "block" ? "none" : "block";
-        });
+            <!-- Overlay to close off-canvas menu -->
+            <div class="overlay" id="overlay"></div>
+
+        </div>
+
+        <!-- Footer Section -->
+        <div class="footer">
+            <p>&copy; 2024 - Dự án web multi-task | Designed by Me with Flask
+                and ❤️</p>
+            <p>Follow me on <a href="https://github.com/tanbaycu"
+                    target="_blank">GitHub</a> | <a
+                    href="https://www.facebook.com/tanbaycu.404s/"
+                    target="_blank">Facebook</a></p>
+        </div>
+
+        <script>
+            const menuButton = document.getElementById("menu-toggle");
+            const offCanvasMenu = document.getElementById("off-canvas-menu");
+            const overlay = document.getElementById("overlay");
+            
+            // Toggle menu visibility when clicking the menu button
+            menuButton.addEventListener("click", () => {
+                offCanvasMenu.classList.toggle("open");
+                overlay.classList.toggle("show");
+            });
+            
+            // Close menu when clicking outside (on overlay)
+            overlay.addEventListener("click", () => {
+                offCanvasMenu.classList.remove("open");
+                overlay.classList.remove("show");
+            });
+            
     </script>
-</body>
+    </body>
 
 </html>

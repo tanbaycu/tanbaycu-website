@@ -30,8 +30,7 @@ if not os.path.exists(UPLOAD_FOLDER):
 
 app.secret_key = "28a03d4e9561e85914da8e57f55f5bbe"
 app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100MB
-# api_key = "AIzaSyCSz6oCSnlQnpFKVFjZc421IDWjoVRwQaM"
-# genai.configure(api_key=api_key)
+
 
 PIXELDRAIN_API_KEY = "fba3e1f5-269b-4758-8e44-78326d0d7d95"
 RETRY_LIMIT = 3
@@ -39,45 +38,9 @@ RETRY_LIMIT = 3
 upload_history = []
 download_history = []
 
-"""
-def convert_chat_history(history):
-    converted_history = []
-    for message in history:
-        if message["role"] == "user":
-            converted_history.append({"role": "user", "parts": [message["text"]]})
-        elif message["role"] == "model":
-            converted_history.append({"role": "model", "parts": [message["text"]]})
-    return converted_history
 
 
-# Đọc lịch sử chat từ file
-try:
-    with open("geminimath.json", "r", encoding="utf-8") as file:
-        raw_history = json.load(file)
-except FileNotFoundError:
-    raw_history = []
 
-# Chuyển đổi lịch sử sang định dạng mong muốn
-chat_history = convert_chat_history(raw_history)
-
-generation_config = {
-    "temperature": 2,
-    "top_p": 0.95,
-    "top_k": 64,
-    "max_output_tokens": 8192,
-    "response_mime_type": "text/plain",
-}
-
-# Khởi tạo mô hình
-model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash",
-    generation_config=generation_config,
-)
-
-# Khởi tạo phiên trò chuyện với lịch sử đã chuyển đổi
-chat_session = model.start_chat(history=chat_history)
-
-"""
 
 # Hàm xác thực URL
 def validate_url(url):
@@ -319,45 +282,7 @@ def download_history_page():
     )
 
 
-"""@app.route("/aibot-chat", methods=["GET"])
-def aibot_chat():
-    return render_template("aibot.html")
 
-
-@app.route("/message", methods=["POST"])
-def message():
-    user_input = request.json.get("message")
-    try:
-        response = chat_session.send_message(user_input)
-    except genai.generation_types.StopCandidateException as e:
-        return jsonify({"error": "Safety filter triggered", "details": str(e)}), 400
-
-    # Thêm tin nhắn mới vào lịch sử với định dạng yêu cầu
-    chat_history.append({"role": "user", "parts": [user_input]})
-    chat_history.append({"role": "model", "parts": [response.text]})
-
-    # Lưu lịch sử tin nhắn vào file với định dạng yêu cầu
-    try:
-        with open("geminimath.json", "w", encoding="utf-8") as file:
-            json.dump(chat_history, file, ensure_ascii=False, indent=4)
-    except Exception as e:
-        return jsonify({"error": f"Failed to save chat history: {str(e)}"}), 500
-
-    return jsonify({"response": response.text})
-
-
-@app.route("/clear-history", methods=["POST"])
-def clear_history():
-    global chat_history
-    chat_history = []
-    try:
-        with open("geminimath.json", "w", encoding="utf-8") as file:
-            json.dump([], file, ensure_ascii=False, indent=4)  # Xóa nội dung file
-        return jsonify({"message": "History cleared successfully."}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-"""
 @app.route("/about")
 def about():
     return render_template("about.html")  # Tạo trang about.html
