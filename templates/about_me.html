@@ -1,67 +1,130 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About Me</title>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
-        rel="stylesheet"
-    />
+    <title>About Me - Tan</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
     <style>
         body {
             font-family: "Roboto", sans-serif;
             background-color: #282a36;
             color: #f8f8f2;
             margin: 0;
-            padding: 20px;
+            padding: 10px;
             display: flex;
             flex-direction: column;
             align-items: center;
+            transition: background-color 0.3s;
         }
-        h1 {
+
+        h1,
+        h2,
+        h3 {
             color: #50fa7b;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
+
         p {
             text-align: justify;
-            max-width: 800px;
             line-height: 1.6;
+            margin: 10px 0;
         }
+
         .navbar {
             background-color: #6272a4;
-            padding: 15px;
+            padding: 10px;
             text-align: center;
             width: 100%;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         }
+
         .navbar a {
             color: #f8f8f2;
             text-decoration: none;
-            margin: 0 15px;
+            margin: 0 10px;
             font-weight: 500;
-            transition: color 0.3s;
+            transition: color 0.3s, transform 0.3s;
+            font-size: 1rem;
+            /* Thay đổi kích thước chữ */
         }
+
         .navbar a:hover {
             color: #50fa7b;
+            transform: scale(1.1);
         }
+
         .content {
-            padding: 20px;
+            padding: 15px;
             background-color: #44475a;
             border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            /* Điều chỉnh để sử dụng 100% chiều rộng */
             max-width: 900px;
             margin-top: 20px;
+            transition: transform 0.3s;
         }
-        .profile-image {
-            max-width: 100%;
-            border-radius: 8px;
+
+        .content:hover {
+            transform: translateY(-5px);
+        }
+
+        .footer {
             margin-top: 20px;
+            text-align: center;
+            color: #f8f8f2;
+        }
+
+        .stats img {
+            margin: 10px;
+            max-width: 100px;
+            /* Giảm kích thước hình ảnh */
+        }
+
+        .skills,
+        .learning,
+        .goals {
+            margin-top: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 10px;
+            transition: background 0.3s;
+        }
+
+        .skills:hover,
+        .learning:hover,
+        .goals:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .contact a {
+            color: #50fa7b;
+            text-decoration: none;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+
+            .navbar a {
+                margin: 0 5px;
+                font-size: 0.9rem;
+                /* Thay đổi kích thước chữ cho màn hình nhỏ */
+            }
+
+            .content {
+                padding: 15px;
+            }
         }
     </style>
 </head>
+
 <body>
     <div class="navbar">
         <a href="/">Home</a>
@@ -69,15 +132,90 @@
         <a href="/dev">Dev</a>
     </div>
     <div class="content">
-        <h1>About Me</h1>
+        <h1>👋 Self Introduction</h1>
         <p>
-            Đồng 7 Tấn
+            Hello! I am Tan (you can call me tanbaycu), a beginner programmer from
+            Vietnam. I have just started my journey in the world of technology and
+            programming, and I am very excited to learn new things every day.
         </p>
-        <!-- Chèn ảnh -->
-        <img class="profile-image" src="https://i.postimg.cc/FKZ89zP6/z5906034867696-6f6332fb9cb28352af6298a593d7d690.jpg" alt="Đệ tử ruột" />
+
+        <h2>Stats</h2>
+        <div class="stats">
+            <img src="https://komarev.com/ghpvc/?username=tanbaycu" alt="Profile views" />
+            <img src="https://img.shields.io/github/followers/tanbaycu?style=social" alt="GitHub followers" />
+            <img src="https://img.shields.io/github/stars/tanbaycu/tanbaycu.github.io?style=social"
+                alt="GitHub stars" />
+            <img src="https://img.shields.io/github/forks/tanbaycu/tanbaycu.github.io?style=social"
+                alt="GitHub forks" />
+        </div>
+
+        <h2>🛠️ Current Skills</h2>
+        <div class="skills">
+            <p>
+                <strong>Programming Languages:</strong> Python (basic), JavaScript
+                (basic), Node.js (basic).
+            </p>
+            <p>
+                <strong>Tools & Frameworks:</strong> Termux, VS Code, Thonny,
+                W3School, OnlineGDB.
+            </p>
+            <p>
+                <strong>Knowledge:</strong> Basic data structures, basic algorithms,
+                object-oriented programming.
+            </p>
+            <p><strong>Web Development:</strong> HTML + CSS (basic).</p>
+            <img src="https://github-profile-trophy.vercel.app/?username=tanbaycu" alt="Trophy" />
+        </div>
+
+        <h2>🌱 Learning Journey</h2>
+        <div class="learning">
+            <p>
+                I am self-learning through online courses, open-source materials, and
+                practicing on small projects. I understand that this learning path can
+                be challenging, but I believe that with persistence and hard work, I
+                can achieve my goals.
+            </p>
+        </div>
+
+        <h2>💡 Goals & Motivation</h2>
+        <div class="goals">
+            <p>
+                My dream is to hack the school's website and upload a picture of my
+                pet dog (Loki) :))
+            </p>
+        </div>
+
+        <h2>📫 Contact</h2>
+        <div class="contact">
+            <p>
+                If you have any advice, useful resources, or projects that I can join
+                and learn from, please feel free to contact me at:
+            </p>
+            <p>
+                <strong>Email:</strong>
+                <a href="mailto:tranminhtan4953@gmail.com">tranminhtan4953@gmail.com</a>
+            </p>
+            <p>
+                <strong>Telegram:</strong>
+                <a href="https://t.me/tanbaycu">t.me/tanbaycu</a>
+            </p>
+            <p>
+                <strong>GitHub:</strong>
+                <a href="https://github.com/tanbaycu">tanbaycu</a>
+            </p>
+        </div>
+
+        <h2>Your GitHub Stats</h2>
+        <img src="https://github-readme-stats.vercel.app/api?username=tanbaycu&show_icons=true&hide_title=true&count_private=true&hide_border=true&theme=radical"
+            alt="GitHub Stats" />
+
+        <h2>Top Languages</h2>
+        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=tanbaycu&layout=compact"
+            alt="Top Languages" />
     </div>
     <div class="footer">
-        <p>&copy; 2024 - Dự án web thập cẩm | Designed by Me with Flask and ❤️ </p>
+        <p>&copy; 2024 - Dự án đầu tay | Designed by Tan with ❤️</p>
     </div>
 </body>
+
 </html>
