@@ -621,26 +621,23 @@ def load_more_forecasts():
 
 @app.route("/urldownload", methods=["GET", "POST"])
 def urldownload():
+    error_message = None  
+    formats = []
     if request.method == "POST":
         url = request.form.get("url")
         if url:
             try:
-                # Tùy chọn cho yt-dlp
                 ydl_opts = {
                     "format": "bestvideo+bestaudio/best",
                     "noplaylist": True,
                     "quiet": True,
                 }
-
                 with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                     info_dict = ydl.extract_info(url, download=False)
                     formats = info_dict.get("formats", [])
 
-                    # Lọc video từ Facebook và YouTube
-                    if (
-                        "youtube" in info_dict["webpage_url"]
-                        or "facebook" in info_dict["webpage_url"]
-                    ):
+                    # Check for supported platforms
+                    if "youtube" in info_dict["webpage_url"] or "facebook" in info_dict["webpage_url"]:
                         return render_template(
                             "urldownload.html",
                             formats=formats,
@@ -648,10 +645,12 @@ def urldownload():
                             url=url,
                         )
                     else:
-                        return "Unsupported platform. Please provide a YouTube or Facebook URL."
+                        error_message = "Unsupported platform. Please provide a YouTube or Facebook URL."
             except Exception as e:
-                return str(e)
-    return render_template("urldownload.html", formats=None)
+                error_message = str(e)
+
+    return render_template("urldownload.html", formats=None, error_message=error_message)
+
 
 
 PEXELS_API_KEY = "1RLKfe657NlpkTa6gv60FnAJDlncnMYy1g1zcvaM5OXXhpiAIZftxtbA"

@@ -1,139 +1,238 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Video Download</title>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/dracula-dracula/1.0.0/dracula.min.css"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-    />
-    <style>
-      body {
-        background-color: #282a36;
-        color: #f8f8f2;
-        font-family: "Courier New", Courier, monospace;
-      }
-      .container {
-        max-width: 800px;
-        margin: auto;
-        padding: 30px;
-        border-radius: 10px;
-        background: #44475a;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      }
-      h1, h2 {
-        text-align: center;
-        color: #50fa7b;
-      }
-      input[type="text"] {
-        width: 100%;
-        padding: 12px;
-        border: none;
-        border-radius: 5px;
-        margin-bottom: 20px;
-        font-size: 14px;
-        background: #6272a4;
-        color: #f8f8f2;
-      }
-      button, .download-link {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        width: auto;
-        background: linear-gradient(45deg, #50fa7b, #ffb86c);
-        color: #282a36;
-        text-align: center;
-      }
-      button:hover, .download-link:hover {
-        background: linear-gradient(45deg, #ffb86c, #50fa7b);
-        transform: scale(1.05);
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      }
-      .format-list {
-        margin-top: 20px;
-        list-style: none;
-        padding: 0;
-      }
-      .format-list li {
-        background: #6272a4;
-        margin-bottom: 15px;
-        padding: 10px;
-        border-radius: 8px;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        transition: transform 0.2s;
-      }
-      .format-list li:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-      }
-      .format-info {
-        flex-grow: 1;
-        margin-right: 20px;
-      }
-      .format-info strong {
-        display: block;
-        font-size: 16px;
-        color: #50fa7b;
-      }
-      .format-info span {
-        color: #f8f8f2;
-        font-size: 12px;
-      }
-      .retry-button {
-        background: linear-gradient(45deg, #ff5555, #ff79c6);
-      }
-      .retry-button:hover {
-        background: linear-gradient(45deg, #ff79c6, #ff5555);
-      }
-      .back-button {
-        background: linear-gradient(45deg, #8be9fd, #6272a4);
-        margin-top: 20px;
-        color: #282a36;
-        width: auto;
-        padding: 10px 20px;
-      }
-      .back-button:hover {
-        background: linear-gradient(45deg, #6272a4, #8be9fd);
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <h1>Video Download</h1>
-      <form method="POST">
-        <input type="text" name="url" placeholder="Enter YouTube or Facebook URL" required />
-        <button type="submit">Find</button>
-      </form>
 
-      {% if formats %}
-      <h2>{{ title }}</h2>
-      <ul class="format-list">
-        {% for fmt in formats %}
-        <li>
-          <div class="format-info">
-            <strong>{{ fmt['format_note'] }}</strong>
-            <span>ID: {{ fmt['id'] }}</span>
-            <span>Quality: {{ fmt['quality'] }}</span>
-            <span>Extension: {{ fmt['ext'] }}</span>
-          </div>
-          <a class="download-link" href="{{ fmt['url'] }}" download>Tải xuống</a>
-        </li>
-        {% endfor %}
-      </ul>
-      <button class="retry-button" onclick="location.reload();">Thử lại</button>
-      {% endif %}
-    </div>
-    <button class="back-button" onclick="window.location.href='{{ url_for('homepage') }}'">Quay về trang chủ</button>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Download</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dracula-dracula/1.0.0/dracula.min.css" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <style>
+    body {
+      background-color: #1e1e2f;
+      color: #f8f8f2;
+      font-family: "Arial", sans-serif;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      flex: 1;
+      max-width: 900px;
+      margin: auto;
+      padding: 40px;
+      border-radius: 15px;
+      background: #2e2e4c;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
+      transition: transform 0.3s;
+    }
+
+    .container:hover {
+      transform: translateY(-5px);
+    }
+
+    h1 {
+      text-align: center;
+      color: #50fa7b;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      text-align: center;
+      color: #ffb86c;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 2px solid #50fa7b;
+      border-radius: 5px;
+      margin-bottom: 20px;
+      font-size: 14px;
+      background: #44475a;
+      color: #f8f8f2;
+      transition: border-color 0.3s;
+    }
+
+    input[type="text"]:focus {
+      border-color: #ffb86c;
+      outline: none;
+    }
+
+    button,
+    .download-link {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      background: linear-gradient(45deg, #50fa7b, #ffb86c);
+      color: #282a36;
+      text-align: center;
+      margin: 5px;
+    }
+
+    button:hover,
+    .download-link:hover {
+      background: linear-gradient(45deg, #ffb86c, #50fa7b);
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .format-list {
+      margin-top: 20px;
+      list-style: none;
+      padding: 0;
+    }
+
+    .format-list li {
+      background: #6272a4;
+      margin-bottom: 15px;
+      padding: 15px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      transition: transform 0.2s;
+    }
+
+    .format-list li:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    .format-info {
+      flex-grow: 1;
+      margin-right: 20px;
+    }
+
+    .format-info strong {
+      display: block;
+      font-size: 16px;
+      color: #50fa7b;
+    }
+
+    .format-info span {
+      color: #f8f8f2;
+      font-size: 12px;
+    }
+
+    .retry-button {
+      background: linear-gradient(45deg, #ff5555, #ff79c6);
+    }
+
+    .retry-button:hover {
+      background: linear-gradient(45deg, #ff79c6, #ff5555);
+    }
+
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: #f8f8f2;
+      margin-top: auto;
+    }
+
+    .video-link {
+      color: #50fa7b;
+      cursor: pointer;
+      font-size: 24px;
+    }
+
+    .video-link:hover {
+      text-decoration: underline;
+    }
+
+    .popup {
+      display: none;
+      position: fixed;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      background: #44475a;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+    }
+
+    .popup h2 {
+      color: #50fa7b;
+      margin: 0 0 10px;
+    }
+
+    .popup button {
+      background: #ff5555;
+      color: #ffffff;
+    }
+
+    .popup button:hover {
+      background: #ff79c6;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 20px;
+      }
+
+      h1,
+      h2 {
+        font-size: 20px;
+      }
+
+      button,
+      .download-link {
+        font-size: 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1 class="video-link" onclick="window.location.href='{{ url_for('homepage') }}'">Video Download</h1>
+    <form method="POST">
+      <input type="text" name="url" placeholder="Enter YouTube or Facebook URL" required />
+      <button type="submit">Find</button>
+    </form>
+
+    {% if formats %}
+    <h2>{{ title }}</h2>
+    <ul class="format-list">
+      {% for fmt in formats %}
+      <li>
+        <div class="format-info">
+          <strong>{{ fmt['format_note'] }}</strong>
+          <span>ID: {{ fmt['id'] }}</span>
+          <span>Quality: {{ fmt['quality'] }}</span>
+          <span>Extension: {{ fmt['ext'] }}</span>
+        </div>
+        <a class="download-link" href="{{ fmt['url'] }}" download>Tải xuống</a>
+      </li>
+      {% endfor %}
+    </ul>
+    <button class="retry-button" onclick="location.reload();">Thử lại</button>
+    {% endif %}
+  </div>
+  <footer class="footer">
+    <p>© 2024 | Video Download(Beta)</p>
+  </footer>
+
+  <div class="popup" id="notification-popup">
+    <h2>Thông báo</h2>
+    <p>Vui lòng lưu ý rằng một số liên kết YouTube có thể không khả dụng để tải xuống.</p>
+    <button onclick="closePopup()">Đóng</button>
+  </div>
+
+  <script>
+    window.onload = function () {
+      document.getElementById('notification-popup').style.display = 'block';
+    };
+
+    function closePopup() {
+      document.getElementById('notification-popup').style.display = 'none';
+    }
+  </script>
+</body>
+
 </html>
