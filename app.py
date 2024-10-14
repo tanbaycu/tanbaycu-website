@@ -730,7 +730,13 @@ def math_operation():
     # Render the form for GET request
     return render_template("math.html")
 
-
+@app.route('/projects')
+def projects():
+    # Lấy dữ liệu từ GitHub API
+    response = requests.get('https://api.github.com/users/tanbaycu/repos')
+    repos = response.json()
+    return render_template('projects.html', repos=repos)
+    
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
