@@ -88,14 +88,46 @@
       text-align: center;
     }
 
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      color: #6272a4;
-      font-size: 0.9em;
+    footer {
+      margin-top: auto;
+      /* Đẩy footer xuống dưới cùng */
       padding: 20px 0;
-      /* Khoảng đệm cho footer */
+      /* Padding trên và dưới */
+      font-size: 1rem;
+      /* Kích thước chữ */
+      display: flex;
+      /* Sử dụng flexbox */
+      justify-content: center;
+      /* Căn giữa nội dung trong footer */
+      align-items: center;
+      /* Căn giữa theo chiều dọc */
+      background-color: transparent;
+      /* Nền trong suốt, không cần phông nền */
+      color: #ffffff;
+      /* Màu chữ sáng */
     }
+
+    footer a {
+      color: #50fa7b;
+      /* Màu chữ liên kết trong footer */
+      text-decoration: none;
+      /* Không gạch chân */
+      transition: color 0.3s;
+      /* Hiệu ứng chuyển màu */
+      margin: 0 10px;
+      /* Khoảng cách giữa các liên kết */
+    }
+
+    footer a:hover {
+      color: #ffffff;
+      /* Màu chữ khi hover */
+    }
+
+    footer span {
+      margin: 0 10px;
+      /* Khoảng cách giữa các phần tử */
+    }
+
 
     .home-button-container {
       text-align: center;
@@ -199,9 +231,14 @@
     {% endif %} {% endwith %}
   </div>
 
-  <footer class="footer">
-    <div>© 2024 | Shorten-URL</div>
+  <footer>
+    <p>
+      <span>© 2024</span> | 
+      <span>Url Shortener</span> | 
+      <a href="{{ url_for('homepage') }}">Trang chủ</a>
+    </p>
   </footer>
+  
 
   <script>
     document.getElementById("title").onclick = function () {
