@@ -38,14 +38,46 @@
       /* Chiều rộng tối đa */
     }
 
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #f8f8f2;
-      font-size: 1em;
-      padding: 20px;
-      /* Thêm khoảng cách cho footer */
+    footer {
+      margin-top: auto;
+      /* Đẩy footer xuống dưới cùng */
+      padding: 20px 0;
+      /* Padding trên và dưới */
+      font-size: 1rem;
+      /* Kích thước chữ */
+      display: flex;
+      /* Sử dụng flexbox */
+      justify-content: center;
+      /* Căn giữa nội dung trong footer */
+      align-items: center;
+      /* Căn giữa theo chiều dọc */
+      background-color: transparent;
+      /* Nền trong suốt, không cần phông nền */
+      color: #ffffff;
+      /* Màu chữ sáng */
     }
+
+    footer a {
+      color: #50fa7b;
+      /* Màu chữ liên kết trong footer */
+      text-decoration: none;
+      /* Không gạch chân */
+      transition: color 0.3s;
+      /* Hiệu ứng chuyển màu */
+      margin: 0 10px;
+      /* Khoảng cách giữa các liên kết */
+    }
+
+    footer a:hover {
+      color: #ffffff;
+      /* Màu chữ khi hover */
+    }
+
+    footer span {
+      margin: 0 10px;
+      /* Khoảng cách giữa các phần tử */
+    }
+
 
     /* Header */
     .header {
@@ -225,12 +257,15 @@
       <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #50fa7b"></i>
       <p>Đang xử lý yêu cầu...</p>
     </div>
-    <div class="response" id="response" style="display: none"></div>
-    <a href="{{ url_for('homepage') }}" class="btn btn-custom w-100 mt-3">Quay trở về trang chủ</a>
-  </div>
-  <footer class="footer">
-    <p>&copy; 2024 | Kiểm Tra API</p>
-  </footer>
+    
+    <footer>
+      <p>
+        <span>© 2024</span> | 
+        <span>API Check</span> | 
+        <a href="{{ url_for('homepage') }}">Trang chủ</a>
+      </p>
+    </footer>
+    
 
   <script>
     document
