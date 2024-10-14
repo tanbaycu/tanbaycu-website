@@ -11,118 +11,184 @@
         body {
             font-family: "Roboto", sans-serif;
             background-color: #121212;
+            /* Nền tối */
             color: #e0e0e0;
+            /* Màu chữ sáng */
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            transition: background-color 0.3s;
-        }
-
-        h1 {
-            color: #50fa7b;
-            margin: 20px 0;
-            font-size: 2.5rem;
+            min-height: 100vh;
+            /* Đảm bảo footer luôn ở cuối */
         }
 
         .navbar {
             background-color: #1c1c1c;
-            padding: 15px;
-            text-align: center;
+            /* Nền navbar tối */
+            padding: 10px 20px;
             width: 100%;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         .navbar a {
-            color: #f8f8f2;
+            color: #61dafb;
+            /* Màu chữ navbar xanh */
             text-decoration: none;
-            margin: 0 15px;
+            margin: 0 10px;
             font-weight: 500;
             transition: color 0.3s;
-            font-size: 1.2rem;
+            font-size: 1rem;
         }
 
         .navbar a:hover {
-            color: #50fa7b;
+            color: #21a1f1;
+            /* Màu khi hover */
         }
 
         .content {
+            flex: 1;
+            /* Giúp phần nội dung chiếm không gian còn lại */
             padding: 30px;
             background-color: #282a36;
-            border-radius: 10px;
+            /* Nền nội dung tối */
+            border-radius: 6px;
             width: 90%;
             max-width: 1000px;
-            margin-top: 20px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-            transition: transform 0.3s;
+            margin: 20px auto;
+            /* Giữa trang */
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
         }
 
-        .content:hover {
-            transform: scale(1.01);
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
+            color: #61dafb;
+            /* Màu tiêu đề xanh */
+            text-shadow: 0 0 5px #61dafb, 0 0 10px #21a1f1;
+            /* Hiệu ứng phát sáng */
         }
 
         .repo {
             margin: 15px 0;
             padding: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 8px;
-            transition: background 0.3s;
+            background: #1e1e1e;
+            /* Nền repo tối */
+            border-radius: 6px;
+            border: 1px solid #3e3e3e;
+            /* Đường viền tối */
+            transition: background 0.2s, box-shadow 0.2s;
+            /* Thêm hiệu ứng bóng */
         }
 
         .repo:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: #3b3b3b;
+            /* Nền khi hover */
+            box-shadow: 0 0 10px #61dafb;
+            /* Hiệu ứng bóng phát sáng */
         }
 
         .repo a {
-            color: #50fa7b;
+            color: #61dafb;
+            /* Màu liên kết repo */
             text-decoration: none;
             font-weight: bold;
-            font-size: 1.5rem;
+            font-size: 1.25rem;
+            transition: text-shadow 0.3s;
+            /* Hiệu ứng chữ phát sáng */
+        }
+
+        .repo a:hover {
+            text-shadow: 0 0 5px #61dafb, 0 0 10px #21a1f1;
+            /* Hiệu ứng phát sáng */
         }
 
         .repo p {
             margin: 10px 0;
-            font-size: 1rem;
+            font-size: 0.9rem;
+            color: #a0a0a0;
+            /* Màu mô tả repo */
         }
 
         .repo .repo-stats {
             display: flex;
             justify-content: space-between;
-            font-size: 0.9rem;
+            font-size: 0.8rem;
+            color: #a0a0a0;
+            /* Màu thống kê repo */
         }
 
         .footer {
-            margin-top: 30px;
             text-align: center;
-            color: #f8f8f2;
+            color: #a0a0a0;
+            /* Màu chữ footer */
             font-size: 0.9rem;
+            padding: 20px 0;
+            margin-top: auto;
+            /* Đảm bảo footer nằm ở cuối trang */
+        }
+
+        /* Thêm phần tìm kiếm */
+        .search-bar {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .search-input {
+            padding: 10px;
+            border: 1px solid #444;
+            /* Đường viền tối */
+            border-radius: 6px;
+            width: 300px;
+            margin-right: 10px;
+            background-color: #282a36;
+            /* Nền input tối */
+            color: #e0e0e0;
+            /* Màu chữ trong input */
+        }
+
+        .search-button {
+            background-color: #61dafb;
+            /* Màu nút tìm kiếm */
+            color: black;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.3s, box-shadow 0.3s;
+            /* Thêm hiệu ứng bóng */
+        }
+
+        .search-button:hover {
+            background-color: #21a1f1;
+            /* Màu khi hover */
+            box-shadow: 0 0 10px #61dafb;
+            /* Hiệu ứng bóng phát sáng */
         }
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/about-me">About Me</a>
-        <a href="/dev">Dev</a>
+        <div>
+            <a href="/">Home</a>
+            <a href="https://github.com/tanbaycu" target="_blank">View on GitHub</a>
+        </div>
     </div>
     <div class="content">
         <h1>📁 My GitHub Projects</h1>
+        <div class="search-bar">
+            <input type="text" class="search-input" placeholder="Search repositories..." />
+            <button class="search-button">Search</button>
+        </div>
         <div id="repos">
-            {% for repo in repos %}
-            <div class="repo">
-                <h3><a href="{{ repo.html_url }}" target="_blank">{{ repo.name }}</a></h3>
-                <p>{{ repo.description if repo.description else 'No description available.' }}</p>
-                <div class="repo-stats">
-                    <span><strong>Stars:</strong> {{ repo.stargazers_count }}</span>
-                    <span><strong>Forks:</strong> {{ repo.forks_count }}</span>
-                </div>
-            </div>
-            {% endfor %}
+            <!-- Repositories will be injected here by JavaScript -->
         </div>
     </div>
     <div class="footer">
