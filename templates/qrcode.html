@@ -157,44 +157,33 @@
 
     footer {
       margin-top: auto;
-      /* Đẩy footer xuống dưới cùng */
-      padding: 20px 0;
-      /* Padding trên và dưới */
-      font-size: 1rem;
-      /* Kích thước chữ */
-      display: flex;
-      /* Sử dụng flexbox */
-      justify-content: center;
-      /* Căn giữa nội dung trong footer */
-      align-items: center;
-      /* Căn giữa theo chiều dọc */
-      background-color: transparent;
-      /* Nền trong suốt, không cần phông nền */
+      /* Đẩy footer xuống cuối cùng */
+      width: 100%;
+      /* Chiếm toàn bộ chiều rộng */
+      background-color: #1e1e1e;
+      /* Nền footer tối */
+      padding: 10px 0;
+      text-align: center;
+      /* Căn giữa cho footer */
+      border-top: 1px solid #333;
+      /* Viền trên cho footer */
       color: #ffffff;
-      /* Màu chữ sáng */
+      /* Chữ màu trắng */
     }
 
     footer a {
-      color: #50fa7b;
-      /* Màu chữ liên kết trong footer */
+      color: #28a745;
+      /* Chữ màu xanh lá cho liên kết */
       text-decoration: none;
-      /* Không gạch chân */
-      transition: color 0.3s;
-      /* Hiệu ứng chuyển màu */
-      margin: 0 10px;
-      /* Khoảng cách giữa các liên kết */
+      /* Bỏ gạch chân */
+      transition: color 0.3s ease;
+      /* Hiệu ứng khi hover */
     }
 
     footer a:hover {
-      color: #ffffff;
-      /* Màu chữ khi hover */
+      color: #218838;
+      /* Màu tối hơn khi hover */
     }
-
-    footer span {
-      margin: 0 10px;
-      /* Khoảng cách giữa các phần tử */
-    }
-
 
     @media only screen and (max-width: 480px) {
       body {
@@ -254,13 +243,8 @@
     </div>
   </div>
   <footer>
-    <p>
-      <span>© 2024</span> |
-      <span>Qrcode Generator/span> |
-        <a href="{{ url_for('homepage') }}">Trang chủ</a>
-    </p>
+    <div>© 2024 | <a href="/">QRcode Generator</a></div>
   </footer>
-
 
   <script>
     $(document).ready(function () {
