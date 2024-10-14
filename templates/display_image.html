@@ -1,188 +1,304 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Hình Ảnh Ngẫu Nhiên</title>
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-    />
-    <style>
-      body {
-        font-family: "Arial", sans-serif;
-        background-color: #1e1e2f; /* Nền tối */
-        color: #ffffff; /* Màu chữ sáng */
-        text-align: center;
-        margin: 0;
-        padding: 20px;
-        transition: background-color 0.3s ease;
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Images Pexels - Hình Ảnh Chất Lượng Cao</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <style>
+    body {
+      font-family: "Arial", sans-serif;
+      background-color: #1e1e2f;
+      /* Nền tối */
+      color: #ffffff;
+      /* Màu chữ sáng */
+      text-align: center;
+      margin: 0;
+      padding: 20px;
+      transition: background-color 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      /* Đảm bảo body chiếm đủ chiều cao */
+    }
+
+    h1 {
+      color: #50fa7b;
+      /* Màu xanh lá */
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+    }
+
+    .button-container {
+      margin-bottom: auto;
+      /* Đẩy các nút lên trên cùng */
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      /* Cho phép nút xuống hàng nếu không đủ chỗ */
+      gap: 15px;
+      /* Khoảng cách giữa các nút */
+    }
+
+    button {
+      background: linear-gradient(90deg, #50fa7b, #6272a4);
+      /* Nền gradient */
+      color: #ffffff;
+      /* Màu chữ sáng */
+      border: none;
+      border-radius: 30px;
+      /* Bo tròn góc nhiều hơn */
+      padding: 15px 30px;
+      /* Padding linh hoạt */
+      cursor: pointer;
+      font-size: 1.2rem;
+      /* Kích thước chữ lớn hơn */
+      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
+      /* Thêm hiệu ứng bóng đổ */
+      flex: 1 1 150px;
+      /* Nút chiếm không gian đều với chiều rộng tối thiểu 150px */
+      min-width: 150px;
+      /* Đặt chiều rộng tối thiểu cho nút */
+      max-width: 300px;
+      /* Đặt chiều rộng tối đa cho nút */
+      height: 50px;
+      /* Chiều cao cố định cho nút */
+      position: relative;
+      /* Để có thể tạo hiệu ứng */
+      overflow: hidden;
+      /* Ẩn phần nội dung ra ngoài */
+    }
+
+    button::before {
+      content: "";
+      /* Thêm hiệu ứng chớp */
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: rgba(255, 255, 255, 0.2);
+      /* Màu trắng nhẹ */
+      transform: rotate(30deg);
+      transition: transform 0.5s;
+      z-index: 0;
+      /* Đặt dưới cùng */
+      opacity: 0;
+      /* Ẩn ban đầu */
+    }
+
+    button:hover::before {
+      transform: rotate(30deg) translate(0, 100%);
+      /* Hiệu ứng chớp khi hover */
+      opacity: 1;
+      /* Hiện lên khi hover */
+    }
+
+    button:hover {
+      transform: translateY(-2px);
+      /* Hiệu ứng nhấc lên */
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+      /* Thêm bóng đổ khi hover */
+    }
+
+    button span {
+      position: relative;
+      /* Để chữ ở trên cùng */
+      z-index: 1;
+      /* Đặt trên cùng */
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      /* Đổ bóng cho hình ảnh */
+      transition: transform 0.3s;
+      cursor: pointer;
+      /* Thay đổi con trỏ khi hover */
+      object-fit: cover;
+      /* Giữ tỷ lệ khung hình cho hình ảnh */
+    }
+
+    img:hover {
+      transform: scale(1.05);
+      /* Phóng to hình ảnh khi hover */
+    }
+
+    /* CSS cho lớp mờ */
+    .overlay {
+      display: none;
+      /* Ẩn lớp mờ ban đầu */
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.7);
+      /* Màu mờ */
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+      /* Đặt lớp mờ lên trên */
+    }
+
+    .overlay img {
+      max-width: 80%;
+      /* Kích thước tối đa của hình ảnh phóng to */
+      max-height: 80%;
+      /* Kích thước tối đa của hình ảnh phóng to */
+      border-radius: 10px;
+      object-fit: contain;
+      /* Giữ tỷ lệ khung hình cho hình ảnh phóng to */
+    }
+
+    /* CSS cho spinner */
+    .spinner {
+      display: none;
+      border: 8px solid #44475a;
+      /* Màu nền */
+      border-top: 8px solid #50fa7b;
+      /* Màu xanh lá cho spinner */
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      animation: spin 1s linear infinite;
+      /* Hiệu ứng quay */
+      margin: 20px auto;
+      /* Căn giữa spinner */
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
       }
 
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @media (max-width: 600px) {
       h1 {
-        color: #50fa7b; /* Màu xanh lá */
-        font-size: 2.5rem;
-        margin-bottom: 20px;
-      }
-
-      .button-container {
-        margin-bottom: 20px;
+        font-size: 2rem;
+        /* Kích thước tiêu đề nhỏ hơn trên màn hình nhỏ */
       }
 
       button {
-        background-color: #6272a4; /* Nền xanh dương */
-        color: #ffffff; /* Màu chữ sáng */
-        border: none;
-        border-radius: 5px;
-        padding: 15px 30px;
-        cursor: pointer;
-        font-size: 18px;
-        transition: background-color 0.3s, transform 0.3s;
-        margin: 0 10px;
-      }
-
-      button:hover {
-        background-color: #44475a; /* Nền tối khi hover */
-        transform: translateY(-2px); /* Hiệu ứng nhấc lên */
-      }
-
-      .image-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-        gap: 15px;
-        margin-top: 20px;
-      }
-
-      img {
         width: 100%;
-        height: auto;
-        border-radius: 10px;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5); /* Đổ bóng cho hình ảnh */
-        transition: transform 0.3s;
-        cursor: pointer; /* Thay đổi con trỏ khi hover */
-        object-fit: cover; /* Giữ tỷ lệ khung hình cho hình ảnh */
+        /* Đặt nút rộng 100% trên thiết bị di động */
+        margin: 5px 0;
+        /* Căn giữa nút */
       }
+    }
 
-      img:hover {
-        transform: scale(1.05); /* Phóng to hình ảnh khi hover */
-      }
+    /* CSS cho footer */
+    footer {
+      margin-top: auto;
+      /* Đẩy footer xuống dưới cùng */
+      padding: 20px 0;
+      font-size: 1rem;
+      display: flex;
+      justify-content: center;
+      /* Căn giữa nội dung trong footer */
+      align-items: center;
+      /* Căn giữa theo chiều dọc */
+    }
 
-      /* CSS cho lớp mờ */
-      .overlay {
-        display: none; /* Ẩn lớp mờ ban đầu */
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0, 0, 0, 0.7); /* Màu mờ */
-        justify-content: center;
-        align-items: center;
-        z-index: 10; /* Đặt lớp mờ lên trên */
-      }
+    footer a {
+      color: #50fa7b;
+      /* Màu chữ liên kết trong footer */
+      text-decoration: none;
+      /* Không gạch chân */
+      transition: color 0.3s;
+      /* Thêm hiệu ứng chuyển màu */
+      margin: 0 10px;
+      /* Khoảng cách giữa các liên kết */
+    }
 
-      .overlay img {
-        max-width: 80%; /* Kích thước tối đa của hình ảnh phóng to */
-        max-height: 80%; /* Kích thước tối đa của hình ảnh phóng to */
-        border-radius: 10px;
-        object-fit: contain; /* Giữ tỷ lệ khung hình cho hình ảnh phóng to */
-      }
+    footer a:hover {
+      color: #ffffff;
+      /* Màu khi hover */
+    }
 
-      /* CSS cho spinner */
-      .spinner {
-        display: none;
-        border: 8px solid #44475a; /* Màu nền */
-        border-top: 8px solid #50fa7b; /* Màu xanh lá cho spinner */
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        animation: spin 1s linear infinite; /* Hiệu ứng quay */
-        margin: 20px auto; /* Căn giữa spinner */
-      }
+    footer span {
+      margin: 0 10px;
+      /* Khoảng cách giữa các phần tử */
+    }
+  </style>
+</head>
 
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
+<body>
 
-      @media (max-width: 600px) {
-        h1 {
-          font-size: 2rem; /* Kích thước tiêu đề nhỏ hơn trên màn hình nhỏ */
-        }
+  <div class="button-container">
+    <button id="fetch-images" onclick="fetchImages()">
+      <span>Click meee!</span>
+    </button>
+  </div>
 
-        button {
-          width: 100%; /* Đặt nút rộng 100% trên thiết bị di động */
-          margin: 5px 0; /* Căn giữa nút */
-        }
-      }
-    </style>
-  </head>
-  <body>
+  <div class="spinner" id="spinner"></div>
+  <!-- Spinner -->
 
-    <div class="button-container">
-      <button id="fetch-images" onclick="fetchImages()">
-        Lấy Hình Ảnh Ngẫu Nhiên
-      </button>
-      <a href="{{ url_for('homepage') }}">
-        <button>Quay Về Trang Chủ</button>
-      </a>
-    </div>
+  <div class="image-grid" id="image-grid">
+    {% if images %}
+    {% for image in images %}
+    <img src="{{ image }}" alt="Random Image" loading="lazy" onclick="openModal(this.src)" />
+    {% endfor %}
+    {% endif %}
+  </div>
 
-    <div class="spinner" id="spinner"></div>
-    <!-- Spinner -->
+  <div class="overlay" id="overlay" onclick="closeModal()">
+    <img id="overlay-img" src="" alt="Enlarged Image" />
+  </div>
 
-    <div class="image-grid" id="image-grid">
-      {% if images %}
-        {% for image in images %}
-          <img
-            src="{{ image }}"
-            alt="Random Image"
-            loading="lazy"
-            onclick="openModal(this.src)"
-          />
-        {% endfor %}
-      {% endif %}
-    </div>
+  <footer>
+    <p>
+      <span>© 2024</span> |
+      <span>Images Pexels</span> |
+      <a href="{{ url_for('homepage') }}">Trang chủ</a>
+    </p>
+  </footer>
 
-    <div class="overlay" id="overlay" onclick="closeModal()">
-      <img id="overlay-img" src="" alt="Enlarged Image" />
-    </div>
+  <script>
+    function fetchImages() {
+      const spinner = document.getElementById("spinner");
+      const imageGrid = document.getElementById("image-grid");
+      spinner.style.display = "block"; // Hiện spinner
+      imageGrid.innerHTML = ""; // Xóa hình ảnh trước đó
 
-    <script>
-      function fetchImages() {
-        const spinner = document.getElementById("spinner");
-        const imageGrid = document.getElementById("image-grid");
-        spinner.style.display = "block"; // Hiện spinner
-        imageGrid.innerHTML = ""; // Xóa hình ảnh trước đó
+      fetch("/random-image", { method: "POST" })
+        .then((response) => response.text())
+        .then((html) => {
+          document.body.innerHTML = html; // Cập nhật HTML mới
+          spinner.style.display = "none"; // Ẩn spinner
+        })
+        .catch((error) => {
+          console.error("Error fetching images:", error);
+          spinner.style.display = "none"; // Ẩn spinner trong trường hợp có lỗi
+        });
+    }
 
-        fetch("/random-image", { method: "POST" })
-          .then((response) => response.text())
-          .then((html) => {
-            document.body.innerHTML = html; // Cập nhật HTML mới
-            spinner.style.display = "none"; // Ẩn spinner
-          })
-          .catch((error) => {
-            console.error("Error fetching images:", error);
-            spinner.style.display = "none"; // Ẩn spinner trong trường hợp có lỗi
-          });
-      }
+    function openModal(src) {
+      const overlay = document.getElementById("overlay");
+      const overlayImg = document.getElementById("overlay-img");
+      overlayImg.src = src; // Đặt src của hình ảnh phóng to
+      overlay.style.display = "flex"; // Hiện lớp mờ
+    }
 
-      function openModal(src) {
-        const overlay = document.getElementById("overlay");
-        const overlayImg = document.getElementById("overlay-img");
-        overlayImg.src = src; // Đặt src của hình ảnh phóng to
-        overlay.style.display = "flex"; // Hiện lớp mờ
-      }
+    function closeModal() {
+      const overlay = document.getElementById("overlay");
+      overlay.style.display = "none"; // Ẩn lớp mờ
+    }
+  </script>
+</body>
 
-      function closeModal() {
-        const overlay = document.getElementById("overlay");
-        overlay.style.display = "none"; // Ẩn lớp mờ
-      }
-    </script>
-  </body>
 </html>
