@@ -664,8 +664,11 @@ def random_image():
 
         # Thêm tham số page ngẫu nhiên để yêu cầu hình ảnh khác nhau
         random_page = random.randint(1, 1000)  # Có thể điều chỉnh theo tổng số trang
+        # Lấy số lượng hình ảnh ngẫu nhiên từ 9 đến 45
+        random_per_page = random.randint(9, 45)
+
         response = requests.get(
-            f"https://api.pexels.com/v1/search?query=nature&per_page=10&page={random_page}",
+            f"https://api.pexels.com/v1/search?query=nature&per_page={random_per_page}&page={random_page}",
             headers=headers,
         )
 
@@ -736,7 +739,7 @@ def projects():
     response = requests.get('https://api.github.com/users/tanbaycu/repos')
     repos = response.json()
     return render_template('projects.html', repos=repos)
-    
+
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
