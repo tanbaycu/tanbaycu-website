@@ -126,12 +126,46 @@
       background: linear-gradient(45deg, #ff79c6, #ff5555);
     }
 
-    .footer {
-      text-align: center;
-      padding: 20px;
-      color: #f8f8f2;
+    footer {
       margin-top: auto;
+      /* Đẩy footer xuống dưới cùng */
+      padding: 20px 0;
+      /* Padding trên và dưới */
+      font-size: 1rem;
+      /* Kích thước chữ */
+      display: flex;
+      /* Sử dụng flexbox */
+      justify-content: center;
+      /* Căn giữa nội dung trong footer */
+      align-items: center;
+      /* Căn giữa theo chiều dọc */
+      background-color: transparent;
+      /* Nền trong suốt, không cần phông nền */
+      color: #ffffff;
+      /* Màu chữ sáng */
     }
+
+    footer a {
+      color: #50fa7b;
+      /* Màu chữ liên kết trong footer */
+      text-decoration: none;
+      /* Không gạch chân */
+      transition: color 0.3s;
+      /* Hiệu ứng chuyển màu */
+      margin: 0 10px;
+      /* Khoảng cách giữa các liên kết */
+    }
+
+    footer a:hover {
+      color: #ffffff;
+      /* Màu chữ khi hover */
+    }
+
+    footer span {
+      margin: 0 10px;
+      /* Khoảng cách giữa các phần tử */
+    }
+
 
     .video-link {
       color: #50fa7b;
@@ -214,9 +248,14 @@
     <button class="retry-button" onclick="location.reload();">Thử lại</button>
     {% endif %}
   </div>
-  <footer class="footer">
-    <p>© 2024 | Video Download(Beta)</p>
+  <footer>
+    <p>
+      <span>© 2024</span> |
+      <span>Video Download (Beta)</span> |
+      <a href="{{ url_for('homepage') }}">Trang chủ</a>
+    </p>
   </footer>
+
 
   <div class="popup" id="notification-popup">
     <h2>Thông báo</h2>
