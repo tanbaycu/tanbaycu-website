@@ -2,221 +2,246 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My GitHub Projects - Tanbaycu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: "Roboto", sans-serif;
-            background-color: #121212;
-            /* Nền tối */
-            color: #e0e0e0;
-            /* Màu chữ sáng */
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --text-primary: #c9d1d9;
+            --text-secondary: #8b949e;
+            --accent: #58a6ff;
+            --border: #30363d;
+        }
+
+        * {
             margin: 0;
             padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-            /* Đảm bảo footer luôn ở cuối */
         }
 
         .navbar {
-            background-color: #1c1c1c;
-            /* Nền navbar tối */
-            padding: 10px 20px;
-            width: 100%;
+            background-color: var(--bg-secondary);
+            padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .navbar-content {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
         }
 
         .navbar a {
-            color: #61dafb;
-            /* Màu chữ navbar xanh */
+            color: var(--text-primary);
             text-decoration: none;
-            margin: 0 10px;
+            margin-right: 1rem;
             font-weight: 500;
-            transition: color 0.3s;
-            font-size: 1rem;
+            transition: color 0.3s ease;
         }
 
         .navbar a:hover {
-            color: #21a1f1;
-            /* Màu khi hover */
+            color: var(--accent);
         }
 
         .content {
             flex: 1;
-            /* Giúp phần nội dung chiếm không gian còn lại */
-            padding: 30px;
-            background-color: #282a36;
-            /* Nền nội dung tối */
-            border-radius: 6px;
-            width: 90%;
-            max-width: 1000px;
-            margin: 20px auto;
-            /* Giữa trang */
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+            padding: 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+            width: 100%;
         }
 
         h1 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-            color: #61dafb;
-            /* Màu tiêu đề xanh */
-            text-shadow: 0 0 5px #61dafb, 0 0 10px #21a1f1;
-            /* Hiệu ứng phát sáng */
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: var(--accent);
         }
 
-        .repo {
-            margin: 15px 0;
-            padding: 20px;
-            background: #1e1e1e;
-            /* Nền repo tối */
-            border-radius: 6px;
-            border: 1px solid #3e3e3e;
-            /* Đường viền tối */
-            transition: background 0.2s, box-shadow 0.2s;
-            /* Thêm hiệu ứng bóng */
-        }
-
-        .repo:hover {
-            background: #3b3b3b;
-            /* Nền khi hover */
-            box-shadow: 0 0 10px #61dafb;
-            /* Hiệu ứng bóng phát sáng */
-        }
-
-        .repo a {
-            color: #61dafb;
-            /* Màu liên kết repo */
-            text-decoration: none;
-            font-weight: bold;
-            font-size: 1.25rem;
-            transition: text-shadow 0.3s;
-            /* Hiệu ứng chữ phát sáng */
-        }
-
-        .repo a:hover {
-            text-shadow: 0 0 5px #61dafb, 0 0 10px #21a1f1;
-            /* Hiệu ứng phát sáng */
-        }
-
-        .repo p {
-            margin: 10px 0;
-            font-size: 0.9rem;
-            color: #a0a0a0;
-            /* Màu mô tả repo */
-        }
-
-        .repo .repo-stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            color: #a0a0a0;
-            /* Màu thống kê repo */
-        }
-
-        .footer {
-            text-align: center;
-            color: #a0a0a0;
-            /* Màu chữ footer */
-            font-size: 0.9rem;
-            padding: 20px 0;
-            margin-top: auto;
-            /* Đảm bảo footer nằm ở cuối trang */
-        }
-
-        /* Thêm phần tìm kiếm */
         .search-bar {
             display: flex;
-            align-items: center;
-            margin-top: 10px;
+            margin-bottom: 2rem;
         }
 
         .search-input {
-            padding: 10px;
-            border: 1px solid #444;
-            /* Đường viền tối */
-            border-radius: 6px;
-            width: 300px;
-            margin-right: 10px;
-            background-color: #282a36;
-            /* Nền input tối */
-            color: #e0e0e0;
-            /* Màu chữ trong input */
+            flex: 1;
+            padding: 0.75rem;
+            border: 1px solid var(--border);
+            border-radius: 6px 0 0 6px;
+            background-color: var(--bg-secondary);
+            color: var(--text-primary);
+            font-size: 1rem;
         }
 
         .search-button {
-            background-color: #61dafb;
-            /* Màu nút tìm kiếm */
-            color: black;
+            padding: 0.75rem 1.5rem;
+            background-color: var(--accent);
+            color: var(--bg-primary);
             border: none;
-            padding: 10px 15px;
-            border-radius: 6px;
+            border-radius: 0 6px 6px 0;
             cursor: pointer;
-            transition: background 0.3s, box-shadow 0.3s;
-            /* Thêm hiệu ứng bóng */
+            font-size: 1rem;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
         }
 
         .search-button:hover {
-            background-color: #21a1f1;
-            /* Màu khi hover */
-            box-shadow: 0 0 10px #61dafb;
-            /* Hiệu ứng bóng phát sáng */
+            background-color: #4c8ed9;
+        }
+
+        .repo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .repo {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 1.5rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .repo:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .repo h3 {
+            margin-bottom: 0.5rem;
+        }
+
+        .repo a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .repo p {
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+
+        .repo-stats {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+
+        .footer {
+            background-color: var(--bg-secondary);
+            color: var(--text-secondary);
+            text-align: center;
+            padding: 1rem;
+            margin-top: auto;
+        }
+
+        @media (max-width: 768px) {
+            .repo-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .content {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
         }
     </style>
 </head>
 
 <body>
-    <div class="navbar">
-        <div>
-            <a href="/">Home</a>
-            <a href="https://github.com/tanbaycu" target="_blank">View on GitHub</a>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <div>
+                <a href="/">Home</a>
+                <a href="https://github.com/tanbaycu" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+            </div>
         </div>
-    </div>
-    <div class="content">
+    </nav>
+
+    <main class="content">
         <h1>📁 My GitHub Projects</h1>
         <div class="search-bar">
-            <input type="text" class="search-input" placeholder="Search repositories..." />
+            <input type="text" class="search-input" placeholder="Search repositories..."
+                aria-label="Search repositories">
             <button class="search-button">Search</button>
         </div>
-        <div id="repos">
+        <div id="repos" class="repo-grid">
             <!-- Repositories will be injected here by JavaScript -->
         </div>
-    </div>
-    <div class="footer">
+    </main>
+
+    <footer class="footer">
         <p>&copy; 2024 - Dự án đầu tay | Designed by Tan with ❤️</p>
-    </div>
+    </footer>
 
     <script>
         async function fetchRepos() {
-            const response = await fetch('https://api.github.com/users/tanbaycu/repos');
-            const repos = await response.json();
-            const reposDiv = document.getElementById('repos');
+            try {
+                const response = await fetch('https://api.github.com/users/tanbaycu/repos');
+                if (!response.ok) throw new Error('Failed to fetch repositories');
+                const repos = await response.json();
+                const reposDiv = document.getElementById('repos');
+                reposDiv.innerHTML = ''; // Clear existing content
 
-            repos.forEach(repo => {
-                const repoDiv = document.createElement('div');
-                repoDiv.className = 'repo';
-                repoDiv.innerHTML = `
-                    <h3><a href="${repo.html_url}" target="_blank">${repo.name}</a></h3>
-                    <p>${repo.description ? repo.description : 'No description available.'}</p>
-                    <div class="repo-stats">
-                        <span><strong>Stars:</strong> ${repo.stargazers_count}</span>
-                        <span><strong>Forks:</strong> ${repo.forks_count}</span>
-                    </div>
-                `;
-                reposDiv.appendChild(repoDiv);
-            });
+                repos.forEach(repo => {
+                    const repoDiv = document.createElement('div');
+                    repoDiv.className = 'repo';
+                    repoDiv.innerHTML = `
+                        <h3><a href="${repo.html_url}" target="_blank" rel="noopener noreferrer">${repo.name}</a></h3>
+                        <p>${repo.description || 'No description available.'}</p>
+                        <div class="repo-stats">
+                            <span>⭐ ${repo.stargazers_count}</span>
+                            <span>🍴 ${repo.forks_count}</span>
+                        </div>
+                    `;
+                    reposDiv.appendChild(repoDiv);
+                });
+            } catch (error) {
+                console.error('Error fetching repositories:', error);
+                document.getElementById('repos').innerHTML = '<p>Failed to load repositories. Please try again later.</p>';
+            }
         }
 
-        fetchRepos();
+        document.addEventListener('DOMContentLoaded', fetchRepos);
+
+        // Implement search functionality
+        document.querySelector('.search-button').addEventListener('click', function () {
+            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
+            const repos = document.querySelectorAll('.repo');
+            repos.forEach(repo => {
+                const repoName = repo.querySelector('h3 a').textContent.toLowerCase();
+                const repoDescription = repo.querySelector('p').textContent.toLowerCase();
+                if (repoName.includes(searchTerm) || repoDescription.includes(searchTerm)) {
+                    repo.style.display = '';
+                } else {
+                    repo.style.display = 'none';
+                }
+            });
+        });
     </script>
 </body>
 
