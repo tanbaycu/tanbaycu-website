@@ -4,218 +4,693 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>About Me - Tan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
-    <style>
-        body {
-            font-family: "Roboto", sans-serif;
-            background-color: #282a36;
-            color: #f8f8f2;
-            margin: 0;
-            padding: 10px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            transition: background-color 0.3s;
+    <meta name="description"
+        content="Tanbaycu - Portfolio showcasing projects and skills in web development and programming. Explore the work of a passionate high school student learning Python, HTML, CSS, and Node.js." />
+    <meta name="keywords"
+        content="portfolio, web development, Python, HTML, CSS, Node.js, high school, programming, Tanbaycu" />
+    <meta name="author" content="Tanbaycu" />
+
+    <!-- Open Graph metadata for better sharing on social media -->
+    <meta property="og:title" content="Tanbaycu - Portfolio" />
+    <meta property="og:description"
+        content="Explore Tanbaycu's projects and skills in web development and programming." />
+    <meta property="og:image" content="{{ url_for('static', filename='portfolio.png') }}" />
+    <meta property="og:url" content="https://tanbaycu.vercel.app/" />
+    <meta property="og:type" content="website" />
+
+    <!-- Twitter card metadata -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Tanbaycu - Portfolio" />
+    <meta name="twitter:description"
+        content="Explore Tanbaycu's projects and skills in web development and programming." />
+    <meta name="twitter:image" content="{{ url_for('static', filename='portfolio.png') }}" />
+
+    <!-- Robots tag to control search engine indexing -->
+    <meta name="robots" content="index, follow" />
+
+    
+    <link rel="canonical" href="https://tanbaycu.vercel.app/" />
+
+    <title>Tanbaycu - Portfolio</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
+
+  
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+
+
+</head>
+<style>
+    @import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;700&display=swap");
+    @import url("https://cdn.jsdelivr.net/gh/devicons/devicon@v2.15.1/devicon.min.css");
+
+    :root {
+        --bg-color: #0a0a0a;
+        --text-color: #ffffff;
+        --neon-purple: #b700ff;
+        --neon-blue: #00b3ff;
+        --neon-pink: #ff00d4;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: "Roboto", sans-serif;
+        background-color: var(--bg-color);
+        color: var(--text-color);
+        line-height: 1.6;
+        overflow-x: hidden;
+    }
+
+    #stars {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+    }
+
+    .star {
+        position: absolute;
+        background-color: #ffffff;
+        border-radius: 50%;
+        animation: twinkle 2s infinite;
+    }
+
+    @keyframes twinkle {
+
+        0%,
+        100% {
+            opacity: 0;
         }
 
-        h1,
-        h2,
-        h3 {
-            color: #50fa7b;
-            margin-bottom: 10px;
+        50% {
+            opacity: 1;
+        }
+    }
+
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        padding: 1rem;
+        background-color: rgba(10, 10, 10, 0.8);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+    }
+
+    nav ul {
+        display: flex;
+        justify-content: center;
+        list-style-type: none;
+    }
+
+    nav ul li {
+        margin: 0 1rem;
+    }
+
+    nav ul li a {
+        color: var(--text-color);
+        text-decoration: none;
+        font-family: "Orbitron", sans-serif;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: all 0.3s ease;
+    }
+
+    nav ul li a:hover {
+        color: var(--neon-blue);
+        text-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    .hero {
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: radial-gradient(circle,
+                rgba(183, 0, 255, 0.1) 0%,
+                rgba(0, 179, 255, 0.1) 50%,
+                rgba(255, 0, 212, 0.1) 100%);
+        z-index: -1;
+        animation: pulse 10s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+
+        0%,
+        100% {
+            transform: scale(1);
         }
 
-        p {
-            text-align: justify;
-            line-height: 1.6;
-            margin: 10px 0;
-        }
-
-        .navbar {
-            background-color: #6272a4;
-            padding: 10px;
-            text-align: center;
-            width: 100%;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
-
-        .navbar a {
-            color: #f8f8f2;
-            text-decoration: none;
-            margin: 0 10px;
-            font-weight: 500;
-            transition: color 0.3s, transform 0.3s;
-            font-size: 1rem;
-            /* Thay đổi kích thước chữ */
-        }
-
-        .navbar a:hover {
-            color: #50fa7b;
+        50% {
             transform: scale(1.1);
         }
+    }
 
-        .content {
-            padding: 15px;
-            background-color: #44475a;
-            border-radius: 8px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+    .hero-content {
+        z-index: 1;
+    }
+
+    .profile-image {
+        width: 200px;
+        height: 200px;
+        border-radius: 50%;
+        border: 4px solid var(--neon-blue);
+        box-shadow: 0 0 20px var(--neon-blue);
+        animation: glow 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow {
+        from {
+            box-shadow: 0 0 20px var(--neon-blue);
+        }
+
+        to {
+            box-shadow: 0 0 40px var(--neon-blue), 0 0 80px var(--neon-purple);
+        }
+    }
+
+    .glowing-text {
+        font-family: "Orbitron", sans-serif;
+        font-size: 4rem;
+        font-weight: 700;
+        margin: 2rem 0;
+        background: linear-gradient(to right,
+                var(--neon-purple),
+                var(--neon-blue),
+                var(--neon-pink));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: glow-text 2s ease-in-out infinite alternate;
+    }
+
+    @keyframes glow-text {
+        from {
+            text-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        to {
+            text-shadow: 0 0 20px var(--neon-blue), 0 0 30px var(--neon-purple);
+        }
+    }
+
+    .typewriter {
+        font-family: "Roboto", sans-serif;
+        font-size: 1.5rem;
+        overflow: hidden;
+        border-right: 0.15em solid var(--neon-pink);
+        white-space: nowrap;
+        margin: 0 auto;
+        letter-spacing: 0.15em;
+        animation: typing 3.5s steps(40, end), blink-caret 0.75s step-end infinite;
+    }
+
+    @keyframes typing {
+        from {
+            width: 0;
+        }
+
+        to {
             width: 100%;
-            /* Điều chỉnh để sử dụng 100% chiều rộng */
-            max-width: 900px;
-            margin-top: 20px;
-            transition: transform 0.3s;
+        }
+    }
+
+    @keyframes blink-caret {
+
+        from,
+        to {
+            border-color: transparent;
         }
 
-        .content:hover {
-            transform: translateY(-5px);
+        50% {
+            border-color: var(--neon-pink);
+        }
+    }
+
+    section {
+        padding: 5rem 2rem;
+        max-width: 1200px;
+        margin: 0 auto;
+    }
+
+    .section-title {
+        font-family: "Orbitron", sans-serif;
+        font-size: 2.5rem;
+        text-align: center;
+        margin-bottom: 2rem;
+        color: var(--neon-blue);
+        text-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    .skills-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 2rem;
+    }
+
+    .skill-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+        padding: 1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        transition: all 0.3s ease;
+    }
+
+    .skill-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 0 20px var(--neon-purple);
+    }
+
+    .skill-item i {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        color: var(--neon-pink);
+    }
+
+    .skill-item span {
+        font-family: "Orbitron", sans-serif;
+        font-weight: 700;
+    }
+
+    .projects-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .project-card {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        padding: 1.5rem;
+        transition: all 0.3s ease;
+    }
+
+    .project-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 0 20px var(--neon-blue);
+    }
+
+    .project-card h3 {
+        font-family: "Orbitron", sans-serif;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: var(--neon-pink);
+    }
+
+    .project-card p {
+        margin-bottom: 1rem;
+    }
+
+    .project-card a {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        background-color: var(--neon-blue);
+        color: var(--bg-color);
+        text-decoration: none;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .project-card a:hover {
+        background-color: var(--neon-purple);
+        box-shadow: 0 0 10px var(--neon-purple);
+    }
+
+    #contact-form {
+        display: flex;
+        flex-direction: column;
+        max-width: 600px;
+        margin: 0 auto;
+    }
+
+    .form-group {
+        position: relative;
+        margin-bottom: 2rem;
+    }
+
+    .form-group input,
+    .form-group textarea {
+        width: 100%;
+        padding: 1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        border: none;
+        border-radius: 5px;
+        color: var(--text-color);
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+        outline: none;
+        box-shadow: 0 0 10px var(--neon-blue);
+    }
+
+    .form-group label {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        color: rgba(255, 255, 255, 0.5);
+        transition: all 0.3s ease;
+        pointer-events: none;
+    }
+
+    .form-group input:focus~label,
+    .form-group input:valid~label,
+    .form-group textarea:focus~label,
+    .form-group textarea:valid~label {
+        top: -1.5rem;
+        left: 0;
+        font-size: 0.8rem;
+        color: var(--neon-blue);
+    }
+
+    .submit-btn {
+        align-self: center;
+        padding: 1rem 2rem;
+        background-color: var(--neon-purple);
+        color: var(--text-color);
+        border: none;
+        border-radius: 5px;
+        font-family: "Orbitron", sans-serif;
+        font-size: 1rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .submit-btn:hover {
+        background-color: var(--neon-blue);
+        box-shadow: 0 0 20px var(--neon-blue);
+        transform: translateY(-5px);
+    }
+
+    footer {
+        text-align: center;
+        padding: 2rem;
+        background-color: rgba(10, 10, 10, 0.8);
+    }
+
+    @media (max-width: 768px) {
+        .hero h1 {
+            font-size: 3rem;
         }
 
-        .footer {
-            margin-top: 20px;
-            text-align: center;
-            color: #f8f8f2;
+        .typewriter {
+            font-size: 1.2rem;
         }
 
-        .stats img {
-            margin: 10px;
-            max-width: 100px;
-            /* Giảm kích thước hình ảnh */
+        .skills-grid {
+            grid-template-columns: repeat(2, 1fr);
         }
 
-        .skills,
-        .learning,
-        .goals {
-            margin-top: 20px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 5px;
-            padding: 10px;
-            transition: background 0.3s;
+        .projects-grid {
+            grid-template-columns: 1fr;
         }
-
-        .skills:hover,
-        .learning:hover,
-        .goals:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .contact a {
-            color: #50fa7b;
-            text-decoration: none;
-        }
-
-        @media (max-width: 600px) {
-            body {
-                padding: 10px;
-            }
-
-            .navbar a {
-                margin: 0 5px;
-                font-size: 0.9rem;
-                /* Thay đổi kích thước chữ cho màn hình nhỏ */
-            }
-
-            .content {
-                padding: 15px;
-            }
-        }
-    </style>
-</head>
+    }
+</style>
 
 <body>
-    <div class="navbar">
-        <a href="/">Home</a>
-        <a href="/about-me">About Me</a>
-        <a href="/dev">Dev</a>
-    </div>
-    <div class="content">
-        <h1>👋 Self Introduction</h1>
+    <div id="stars"></div>
+    <header>
+        <nav>
+            <ul>
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#projects">Projects</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section id="home" class="hero">
+            <div class="hero-content">
+                <img src="https://github.com/tanbaycu.png" alt="Tan Baycu" class="profile-image" />
+                <h1 class="glowing-text">Tran Minh Tan</h1>
+                <p class="typewriter">Junior Developer | Ask AI | Problem Solver</p>
+            </div>
+        </section>
+
+        <section id="about">
+            <h2 class="section-title">About Me</h2>
+            <p>
+                Tôi là Tân, có rất ít kinh nghiệm trong việc lập trình. Nhưng nhờ sự
+                phát triển của AI, Tân dần nắm rõ được có prompt để AI làm việc cho
+                mình và đạt được kết quả như mong đợi. Đây là dự án web đầu tay nên
+                còn nhiều thiếu sót.
+            </p>
+        </section>
+
+        <section id="skills">
+            <h2 class="section-title">Skills</h2>
+            <div class="skills-grid">
+                <div class="skill-item" data-skill="JavaScript">
+                    <i class="devicon-javascript-plain"></i>
+                    <span>JavaScript</span>
+                </div>
+                <div class="skill-item" data-skill="Python">
+                    <i class="devicon-python-plain"></i>
+                    <span>Python</span>
+                </div>
+                <div class="skill-item" data-skill="React">
+                    <i class="devicon-react-original"></i>
+                    <span>React</span>
+                </div>
+                <div class="skill-item" data-skill="Node.js">
+                    <i class="devicon-nodejs-plain"></i>
+                    <span>Node.js</span>
+                </div>
+                <div class="skill-item" data-skill="MongoDB">
+                    <i class="devicon-mongodb-plain"></i>
+                    <span>MongoDB</span>
+                </div>
+                <div class="skill-item" data-skill="Git">
+                    <i class="devicon-git-plain"></i>
+                    <span>Git</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects">
+            <h2 class="section-title">Projects</h2>
+            <div class="projects-grid" id="projects-container">
+                <!-- Projects will be dynamically loaded here -->
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2 class="section-title">Contact Me</h2>
+            <form id="contact-form">
+                <div class="form-group">
+                    <input type="text" id="name" name="name" required />
+                    <label for="name">Name</label>
+                </div>
+                <div class="form-group">
+                    <input type="email" id="email" name="email" required />
+                    <label for="email">Email</label>
+                </div>
+                <div class="form-group">
+                    <textarea id="message" name="message" required></textarea>
+                    <label for="message">Message</label>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </section>
+    </main>
+
+    <footer>
         <p>
-            Hello! I am Tan (you can call me tanbaycu), a beginner programmer from
-            Vietnam. I have just started my journey in the world of technology and
-            programming, and I am very excited to learn new things every day.
+            <span>© 2024</span> | <span>My Portfolio</span> |
+            <a href="{{ url_for('homepage') }}">Trang chủ</a>
         </p>
+    </footer>
 
-        <h2>Stats</h2>
-        <div class="stats">
-            <img src="https://komarev.com/ghpvc/?username=tanbaycu" alt="Profile views" />
-            <img src="https://img.shields.io/github/followers/tanbaycu?style=social" alt="GitHub followers" />
-            <img src="https://img.shields.io/github/stars/tanbaycu/tanbaycu.github.io?style=social"
-                alt="GitHub stars" />
-            <img src="https://img.shields.io/github/forks/tanbaycu/tanbaycu.github.io?style=social"
-                alt="GitHub forks" />
-        </div>
+    <script>
+        // Initialize GSAP ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
 
-        <h2>🛠️ Current Skills</h2>
-        <div class="skills">
-            <p>
-                <strong>Programming Languages:</strong> Python (basic), JavaScript
-                (basic), Node.js (basic).
-            </p>
-            <p>
-                <strong>Tools & Frameworks:</strong> Termux, VS Code, Thonny,
-                W3School, OnlineGDB.
-            </p>
-            <p>
-                <strong>Knowledge:</strong> Basic data structures, basic algorithms,
-                object-oriented programming.
-            </p>
-            <p><strong>Web Development:</strong> HTML + CSS (basic).</p>
-            <img src="https://github-profile-trophy.vercel.app/?username=tanbaycu" alt="Trophy" />
-        </div>
+        // Create stars
+        function createStars() {
+            const starsContainer = document.getElementById("stars");
+            const numStars = 200;
 
-        <h2>🌱 Learning Journey</h2>
-        <div class="learning">
-            <p>
-                I am self-learning through online courses, open-source materials, and
-                practicing on small projects. I understand that this learning path can
-                be challenging, but I believe that with persistence and hard work, I
-                can achieve my goals.
-            </p>
-        </div>
+            for (let i = 0; i < numStars; i++) {
+                const star = document.createElement("div");
+                star.classList.add("star");
+                star.style.width = `${Math.random() * 2}px`;
+                star.style.height = star.style.width;
+                star.style.left = `${Math.random() * 100}%`;
+                star.style.top = `${Math.random() * 100}%`;
+                star.style.animationDelay = `${Math.random() * 2}s`;
+                starsContainer.appendChild(star);
+            }
+        }
 
-        <h2>💡 Goals & Motivation</h2>
-        <div class="goals">
-            <p>
-                My dream is to hack the school's website and upload a picture of my
-                pet dog (Loki) :))
-            </p>
-        </div>
+        createStars();
 
-        <h2>📫 Contact</h2>
-        <div class="contact">
-            <p>
-                If you have any advice, useful resources, or projects that I can join
-                and learn from, please feel free to contact me at:
-            </p>
-            <p>
-                <strong>Email:</strong>
-                <a href="mailto:tranminhtan4953@gmail.com">tranminhtan4953@gmail.com</a>
-            </p>
-            <p>
-                <strong>Telegram:</strong>
-                <a href="https://t.me/tanbaycu">t.me/tanbaycu</a>
-            </p>
-            <p>
-                <strong>GitHub:</strong>
-                <a href="https://github.com/tanbaycu">tanbaycu</a>
-            </p>
-        </div>
+        // Smooth scroll for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+            anchor.addEventListener("click", function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute("href")).scrollIntoView({
+                    behavior: "smooth"
+                });
+            });
+        });
 
-        <h2>Your GitHub Stats</h2>
-        <img src="https://github-readme-stats.vercel.app/api?username=tanbaycu&show_icons=true&hide_title=true&count_private=true&hide_border=true&theme=radical"
-            alt="GitHub Stats" />
+        // Animate sections on scroll
+        gsap.utils.toArray("section").forEach((section) => {
+            gsap.from(section, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: section,
+                    start: "top 80%",
+                    end: "bottom 20%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
 
-        <h2>Top Languages</h2>
-        <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=tanbaycu&layout=compact"
-            alt="Top Languages" />
-    </div>
-    <div class="footer">
-        <p>&copy; 2024 - Dự án đầu tay | Designed by Tan with ❤️</p>
-    </div>
+        // Animate skill items
+        gsap.utils.toArray(".skill-item").forEach((item) => {
+            gsap.from(item, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 0.5,
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 80%",
+                    end: "bottom 20%",
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
+
+        // Fetch and display projects from GitHub
+        async function fetchProjects() {
+            try {
+                const response = await fetch(
+                    "https://api.github.com/users/tanbaycu/repos"
+                );
+                const projects = await response.json();
+                const projectsContainer =
+                    document.getElementById("projects-container");
+
+                projects.forEach((project) => {
+                    const projectCard = document.createElement("div");
+                    projectCard.classList.add("project-card");
+                    projectCard.innerHTML = `
+                <h3>${project.name}</h3>
+                <p>${project.description || "No description available."}</p>
+                <a href="${project.html_url
+                        }" target="_blank" rel="noopener noreferrer">View on GitHub</a>
+            `;
+                    projectsContainer.appendChild(projectCard);
+                });
+
+                // Animate project cards
+                gsap.utils.toArray(".project-card").forEach((card) => {
+                    gsap.from(card, {
+                        opacity: 0,
+                        y: 50,
+                        duration: 0.5,
+                        scrollTrigger: {
+                            trigger: card,
+                            start: "top 80%",
+                            end: "bottom 20%",
+                            toggleActions: "play none none reverse"
+                        }
+                    });
+                });
+            } catch (error) {
+                console.error("Error fetching projects:", error);
+            }
+        }
+
+        fetchProjects();
+
+        // Form submission
+        const contactForm = document.getElementById("contact-form");
+        contactForm.addEventListener("submit", async (e) => {
+            e.preventDefault();
+
+            // Here you would typically send the form data to a server
+            // For this example, we'll just log it to the console
+            const formData = new FormData(contactForm);
+            console.log("Form submitted with data:", Object.fromEntries(formData));
+
+            // Animate the submit button
+            gsap.to(".submit-btn", {
+                scale: 1.1,
+                duration: 0.2,
+                yoyo: true,
+                repeat: 1
+            });
+
+            // Reset the form
+            contactForm.reset();
+        });
+
+        // Parallax effect for hero section
+        gsap.to(".hero", {
+            backgroundPosition: "50% 100%",
+            ease: "none",
+            scrollTrigger: {
+                trigger: ".hero",
+                start: "top top",
+                end: "bottom top",
+                scrub: true
+            }
+        });
+
+        // Floating animation for profile image
+        gsap.to(".profile-image", {
+            y: 20,
+            duration: 2,
+            yoyo: true,
+            repeat: -1,
+            ease: "power1.inOut"
+        });
+
+        // Glowing text animation
+        gsap.to(".glowing-text", {
+            textShadow: "0 0 20px var(--neon-blue), 0 0 30px var(--neon-purple)",
+            duration: 2,
+            yoyo: true,
+            repeat: -1,
+            ease: "power1.inOut"
+        });
+    </script>
 </body>
 
 </html>
