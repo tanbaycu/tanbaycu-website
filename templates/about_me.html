@@ -28,14 +28,14 @@
     <!-- Robots tag to control search engine indexing -->
     <meta name="robots" content="index, follow" />
 
-    
+
     <link rel="canonical" href="https://tanbaycu.vercel.app/" />
 
     <title>Tanbaycu - Portfolio</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.5/ScrollTrigger.min.js"></script>
 
-  
+
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
 
 
@@ -433,6 +433,77 @@
         .projects-grid {
             grid-template-columns: 1fr;
         }
+    }
+
+    footer {
+        margin-top: auto;
+        /* Đẩy footer xuống dưới cùng */
+        padding: 20px 0;
+        /* Padding trên và dưới */
+        font-size: 1rem;
+        /* Kích thước chữ */
+        display: flex;
+        /* Sử dụng flexbox */
+        justify-content: center;
+        /* Căn giữa nội dung trong footer */
+        align-items: center;
+        /* Căn giữa theo chiều dọc */
+        background-color: transparent;
+        /* Nền trong suốt, không cần phông nền */
+        color: #ffffff;
+        /* Màu chữ sáng */
+    }
+
+    footer a {
+        color: #50fa7b;
+        /* Màu chữ liên kết trong footer */
+        text-decoration: none;
+        /* Không gạch chân */
+        transition: color 0.3s;
+        /* Hiệu ứng chuyển màu */
+        margin: 0 10px;
+        /* Khoảng cách giữa các liên kết */
+    }
+
+    footer a:hover {
+        color: #ffffff;
+        /* Màu chữ khi hover */
+    }
+
+    footer span {
+        margin: 0 10px;
+        /* Khoảng cách giữa các phần tử */
+    }
+
+
+    .home-button-container {
+        text-align: center;
+        margin-top: 30px;
+    }
+
+    .home-link {
+        display: inline-block;
+        background-color: transparent;
+        /* Không có màu nền */
+        color: #50fa7b;
+        /* Màu chữ */
+        padding: 10px 20px;
+        /* Khoảng đệm */
+        border-radius: 10px;
+        /* Bo góc */
+        font-size: 1.2em;
+        /* Kích thước chữ */
+        text-decoration: none;
+        /* Bỏ gạch chân */
+        transition: color 0.3s, transform 0.3s;
+        /* Hiệu ứng chuyển đổi */
+    }
+
+    .home-link:hover {
+        color: #4bf66f;
+        /* Màu chữ khi hover */
+        transform: scale(1.05);
+        /* Phóng to nhẹ */
     }
 </style>
 
