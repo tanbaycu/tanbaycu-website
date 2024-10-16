@@ -5,295 +5,140 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>API Check - Tanbaycu</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: '#50fa7b',
+            secondary: '#6272a4',
+            background: '#282a36',
+            surface: '#44475a',
+          },
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+        },
+      },
+      darkMode: 'class',
+    }
+  </script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
+      }
 
-    body {
-      font-family: "Roboto", sans-serif;
-      background-color: #282a36;
-      color: #f8f8f2;
-      display: flex;
-      flex-direction: column;
-      min-height: 100vh;
-      /* Đảm bảo chiều cao tối thiểu của trang */
-    }
+      50% {
+        background-position: 100% 50%;
+      }
 
-    .container {
-      flex: 1;
-      /* Chiếm không gian còn lại của trang */
-      margin: 50px auto;
-      /* Tự động căn giữa */
-      padding: 30px;
-      background-color: #44475a;
-      border-radius: 10px;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-      max-width: 800px;
-      /* Chiều rộng tối đa */
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 30px;
-      color: #f8f8f2;
-      font-size: 1em;
-      padding: 20px;
-      /* Thêm khoảng cách cho footer */
-    }
-
-    footer a {
-      color: #50fa7b;
-      /* Màu chữ liên kết trong footer */
-      text-decoration: none;
-      /* Không gạch chân */
-      transition: color 0.3s;
-      /* Hiệu ứng chuyển màu */
-      margin: 0 10px;
-      /* Khoảng cách giữa các liên kết */
-    }
-
-    footer a:hover {
-      color: #ffffff;
-      /* Màu chữ khi hover */
-    }
-
-    footer span {
-      margin: 0 10px;
-      /* Khoảng cách giữa các phần tử */
-    }
-
-    /* Header */
-    .header {
-      background: linear-gradient(90deg, #007acc, #00d4ff);
-      color: #ffffff;
-      padding: 20px;
-      width: 100%;
-      text-align: center;
-      font-size: 2em;
-      border-bottom: 2px solid #444;
-    }
-
-
-
-    /* Nút */
-    .btn-custom {
-      background-color: #50fa7b;
-      color: #282a36;
-      border-radius: 5px;
-      text-align: center;
-      text-decoration: none;
-      display: inline-block;
-      padding: 10px 20px;
-      transition: background-color 0.3s, transform 0.3s;
-      /* Thêm hiệu ứng biến đổi */
-      max-width: 200px;
-      width: 100%;
-      margin: 10px 0;
-    }
-
-    .btn-custom:hover {
-      background-color: #4bf66f;
-      transform: translateY(-2px);
-      /* Hiệu ứng nổi khi hover */
-    }
-
-    /* Response */
-    .response {
-      margin-top: 20px;
-      background-color: #6272a4;
-      padding: 10px;
-      border-radius: 5px;
-      color: #f8f8f2;
-      width: 100%;
-    }
-
-
-
-    /* Responsive */
-    @media (max-width: 1200px) {
-      .header {
-        font-size: 1.8em;
+      100% {
+        background-position: 0% 50%;
       }
     }
 
-    @media (max-width: 992px) {
-      .header {
-        font-size: 1.6em;
-      }
-
-      .container {
-        padding: 20px;
-      }
-
-      .btn-custom {
-        padding: 8px 16px;
-        font-size: 1em;
-      }
-    }
-
-    @media (max-width: 768px) {
-      .header {
-        font-size: 1.4em;
-      }
-
-      .container {
-        padding: 15px;
-      }
-
-      .response {
-        padding: 8px;
-      }
-    }
-
-    @media (max-width: 576px) {
-      .header {
-        font-size: 1.2em;
-      }
-
-      .btn-custom {
-        padding: 6px 12px;
-        font-size: 0.9em;
-      }
-
-      .response {
-        padding: 6px;
-      }
-    }
-
-    @media (max-width: 400px) {
-      .header {
-        font-size: 1em;
-      }
-
-      .btn-custom {
-        padding: 5px 10px;
-        font-size: 0.8em;
-      }
-
-      .response {
-        padding: 4px;
-        font-size: 0.8em;
-      }
-
-      .container {
-        padding: 10px;
-      }
-    }
-
-    /* Flexbox cho form */
-    #api-form {
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-      /* Khoảng cách giữa các trường trong form */
-    }
-
-    /* Hỗ trợ cho màn hình cảm ứng */
-    input[type="url"],
-    select,
-    textarea {
-      border: 1px solid #6272a4;
-      border-radius: 5px;
-      padding: 10px;
-      transition: border-color 0.3s;
-    }
-
-    input[type="url"]:focus,
-    select:focus,
-    textarea:focus {
-      border-color: #50fa7b;
-      /* Màu viền khi focus */
-      outline: none;
-      /* Loại bỏ outline mặc định */
+    .animate-gradient {
+      background: linear-gradient(270deg, #007acc, #00d4ff, #50fa7b);
+      background-size: 200% 200%;
+      animation: gradient 15s ease infinite;
     }
   </style>
 </head>
 
-<body>
-  <div class="container">
-    <h2 class="text-center">Kiểm Tra API</h2>
-    <form id="api-form">
-      <div class="mb-3">
-        <label for="url" class="form-label">Nhập URL API:</label>
-        <input type="url" class="form-control" id="url" name="url" placeholder="Ví dụ: https://example.com/api"
-          required />
+<body class="bg-background text-gray-100 font-sans min-h-screen flex flex-col">
+  <header class="animate-gradient text-white py-6 px-4 text-center text-2xl md:text-3xl font-bold shadow-lg">
+    <h1>API Checker</h1>
+  </header>
+
+  <main class="flex-grow container mx-auto px-4 py-8">
+    <div class="bg-surface rounded-lg shadow-xl p-6 md:p-8 max-w-2xl mx-auto">
+      <h2 class="text-2xl font-semibold mb-6 text-center">Kiểm Tra API</h2>
+      <form id="api-form" class="space-y-6">
+        <div>
+          <label for="url" class="block text-sm font-medium mb-1">URL API:</label>
+          <input type="url" id="url" name="url" required
+            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition duration-200"
+            placeholder="https://example.com/api">
+        </div>
+        <div>
+          <label for="method" class="block text-sm font-medium mb-1">Phương thức:</label>
+          <select id="method"
+            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition duration-200">
+            <option value="GET">GET</option>
+            <option value="POST">POST</option>
+            <option value="PUT">PUT</option>
+            <option value="DELETE">DELETE</option>
+          </select>
+        </div>
+        <div>
+          <label for="payload" class="block text-sm font-medium mb-1">Nội dung (nếu có):</label>
+          <textarea id="payload" name="payload" rows="3"
+            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition duration-200"
+            placeholder='{"key": "value"}'></textarea>
+        </div>
+        <button type="submit"
+          class="w-full bg-primary text-background font-semibold py-2 px-4 rounded-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200">
+          Gửi yêu cầu
+        </button>
+      </form>
+      <div id="loading" class="hidden text-center mt-6">
+        <svg class="animate-spin h-8 w-8 text-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none"
+          viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+          </path>
+        </svg>
+        <p class="mt-2 text-sm">Đang xử lý yêu cầu...</p>
       </div>
-      <div class="mb-3">
-        <label for="method" class="form-label">Chọn phương
-          thức:</label>
-        <select class="form-select" id="method">
-          <option value="GET">GET</option>
-          <option value="POST">POST</option>
-          <option value="PUT">PUT</option>
-          <option value="DELETE">DELETE</option>
-        </select>
-      </div>
-      <div class="mb-3">
-        <label for="payload" class="form-label">Nội dung (nếu
-          có):</label>
-        <textarea class="form-control" id="payload" name="payload" rows="3" placeholder='{"key": "value"}'></textarea>
-      </div>
-      <button type="submit" class="btn btn-custom w-100">Gửi yêu
-        cầu</button>
-    </form>
-    <div id="loading" style="display: none; text-align: center; margin-top: 20px">
-      <i class="fas fa-spinner fa-spin" style="font-size: 24px; color: #50fa7b"></i>
-      <p>Đang xử lý yêu cầu...</p>
+      <div id="response" class="hidden mt-6 p-4 bg-gray-700 rounded-md overflow-x-auto"></div>
+      <a href="{{ url_for('homepage') }}"
+        class="block mt-6 text-center bg-secondary text-white font-semibold py-2 px-4 rounded-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-200">
+        Quay trở về trang chủ
+      </a>
     </div>
-    <div class="response" id="response" style="display: none"></div>
-    <a href="{{ url_for('homepage') }}" class="btn btn-custom w-100 mt-3">Quay trở về trang chủ</a>
-  </div>
-  <footer class="footer">
-    <p>&copy; 2024 | Kiểm Tra API | <a href="{{ url_for('homepage') }}">Trang chủ</a></p>
+  </main>
+
+  <footer class="bg-surface py-4 text-center text-sm">
+    <p>&copy; 2024 | Kiểm Tra API | <a href="{{ url_for('homepage') }}" class="text-primary hover:underline">Trang
+        chủ</a></p>
   </footer>
 
   <script>
-    document
-      .getElementById("api-form")
-      .addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const url = document.getElementById("url").value;
-        const method = document.getElementById("method").value;
-        const payload = document.getElementById("payload").value;
+    document.getElementById("api-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+      const url = document.getElementById("url").value;
+      const method = document.getElementById("method").value;
+      const payload = document.getElementById("payload").value;
 
-        const responseDiv = document.getElementById("response");
-        const loadingDiv = document.getElementById("loading");
-        responseDiv.style.display = "none"; // Ẩn phần phản hồi trước khi gửi yêu cầu
-        loadingDiv.style.display = "block"; // Hiển thị loading
+      const responseDiv = document.getElementById("response");
+      const loadingDiv = document.getElementById("loading");
+      responseDiv.style.display = "none";
+      loadingDiv.style.display = "block";
 
-        try {
-          const response = await fetch("/api-check", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/x-www-form-urlencoded"
-            },
-            body: new URLSearchParams({
-              url: url,
-              method: method,
-              payload: payload
-            })
-          });
+      try {
+        const response = await fetch("/api-check", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({ url, method, payload })
+        });
 
-          const data = await response.json();
-          responseDiv.innerHTML = `<h5>Phản hồi:</h5><pre>${JSON.stringify(
-            data,
-            null,
-            2
-          )}</pre>`;
-          responseDiv.style.display = "block";
-        } catch (error) {
-          responseDiv.innerHTML = `<h5>Lỗi:</h5><pre>${error.message}</pre>`;
-          responseDiv.style.display = "block";
-        } finally {
-          loadingDiv.style.display = "none"; // Ẩn loading khi hoàn tất
-        }
-      });
+        const data = await response.json();
+        responseDiv.innerHTML = `<h5 class="font-semibold mb-2">Phản hồi:</h5><pre class="text-sm">${JSON.stringify(data, null, 2)}</pre>`;
+        responseDiv.style.display = "block";
+      } catch (error) {
+        responseDiv.innerHTML = `<h5 class="font-semibold mb-2 text-red-500">Lỗi:</h5><pre class="text-sm text-red-400">${error.message}</pre>`;
+        responseDiv.style.display = "block";
+      } finally {
+        loadingDiv.style.display = "none";
+      }
+    });
   </script>
 </body>
 
