@@ -740,6 +740,9 @@ def projects():
     repos = response.json()
     return render_template('projects.html', repos=repos)
 
+@app.route("/aichat", methods=["GET"])
+def aichat():
+    return render_template("aichat.html")
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
