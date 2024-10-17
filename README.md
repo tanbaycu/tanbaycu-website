@@ -7,8 +7,8 @@ Author: Me and Flask
 
 
 ## Một số chức năng chính:
-![Ảnh minh họa](https://i.postimg.cc/QdFPD2TR/z5940471382564-70dbcba4e6a743fde4809ba31cfb680b.jpg)
 
+![Chào em](static/mota.jpg)
 
 ## Chi tiết phiên bản:
 
@@ -17,5 +17,21 @@ Done....
 
 
 
+<<<<<<< HEAD
+=======
+## Notes:
+- Truy cập vào https://tanbaycu.vercel.app -> Xóa lịch sử web để xem giao diện mới nhất
+- Toàn bộ chức năng web đều sử dụng API
+
+---
+
+
+
+```bash
+print("Hello World, I Am Tanbaycu")
+```
+
+
+>>>>>>> e853714 (helllll)
 
 
