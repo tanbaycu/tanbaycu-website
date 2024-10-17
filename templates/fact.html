@@ -1,486 +1,466 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Fact or Joke - Tanbaycu</title>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-    />
-    <style>
-      @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
 
-      :root {
-        --primary-color: #6c63ff;
-        --secondary-color: #4caf50;
-        --background-color: #f0f4f8;
-        --card-bg-color: #ffffff;
-        --text-color: #333333;
-        --input-bg-color: #e9ecef;
-        --highlight-color: #ff6b6b;
-        --shadow-color: rgba(0, 0, 0, 0.1);
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fact or Joke - Tanbaycu</title>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <style>
+    @import url("https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap");
+
+    :root {
+      --primary-color: #6c63ff;
+      --secondary-color: #4caf50;
+      --background-color: #f0f4f8;
+      --card-bg-color: #ffffff;
+      --text-color: #333333;
+      --input-bg-color: #e9ecef;
+      --highlight-color: #ff6b6b;
+      --shadow-color: rgba(0, 0, 0, 0.1);
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      transition: all 0.3s ease;
+      background-image: radial-gradient(circle at 10% 20%,
+          rgba(108, 99, 255, 0.1) 0%,
+          transparent 20%),
+        radial-gradient(circle at 90% 80%,
+          rgba(76, 175, 80, 0.1) 0%,
+          transparent 20%);
+      background-attachment: fixed;
+    }
+
+    .container {
+      background-color: var(--card-bg-color);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px var(--shadow-color);
+      width: 90%;
+      max-width: 600px;
+      transition: all 0.3s ease;
+    }
+
+    h1 {
+      color: var(--primary-color);
+      text-align: center;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      display: inline-block;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    h1::after {
+      content: "";
+      position: absolute;
+      width: 0;
+      height: 4px;
+      bottom: -10px;
+      left: 50%;
+      background-color: var(--highlight-color);
+      transition: all 0.3s ease;
+    }
+
+    h1:hover::after {
+      width: 100%;
+      left: 0;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    select,
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      border: 2px solid var(--input-bg-color);
+      border-radius: 10px;
+      background-color: var(--input-bg-color);
+      color: var(--text-color);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    select:focus,
+    input:focus {
+      outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 10px;
+      background-color: var(--primary-color);
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 1rem;
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button::before {
+      content: "";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: all 0.5s ease;
+    }
+
+    button:hover::before {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    button:hover {
+      background-color: #5753d9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
+    }
+
+    .response {
+      background-color: var(--input-bg-color);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
+      display: none;
+      transition: all 0.3s ease;
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    .response.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .response strong {
+      color: var(--highlight-color);
+      font-weight: 600;
+    }
+
+    #loading {
+      display: none;
+      justify-content: center;
+      align-items: center;
+      margin-top: 1rem;
+    }
+
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 5px solid var(--input-bg-color);
+      border-top: 5px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
       }
 
-      body {
-        font-family: "Poppins", sans-serif;
-        background-color: var(--background-color);
-        color: var(--text-color);
-        margin: 0;
-        padding: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        transition: all 0.3s ease;
-        background-image: radial-gradient(
-            circle at 10% 20%,
-            rgba(108, 99, 255, 0.1) 0%,
-            transparent 20%
-          ),
-          radial-gradient(
-            circle at 90% 80%,
-            rgba(76, 175, 80, 0.1) 0%,
-            transparent 20%
-          );
-        background-attachment: fixed;
+      100% {
+        transform: rotate(360deg);
       }
+    }
 
+    footer {
+      text-align: center;
+      padding: 1rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: rgba(255, 255, 255, 0.8);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s ease;
+    }
+
+    footer a {
+      color: var(--primary-color);
+      text-decoration: none;
+      margin: 0 10px;
+      transition: color 0.3s ease;
+    }
+
+    footer a:hover {
+      color: var(--highlight-color);
+    }
+
+    @media (max-width: 768px) {
       .container {
-        background-color: var(--card-bg-color);
-        border-radius: 20px;
-        padding: 2rem;
-        box-shadow: 0 10px 30px var(--shadow-color);
-        width: 90%;
-        max-width: 600px;
-        transition: all 0.3s ease;
+        width: 95%;
+        padding: 1.5rem;
       }
 
       h1 {
-        color: var(--primary-color);
-        text-align: center;
-        font-size: 2.5rem;
-        margin-bottom: 2rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        position: relative;
-        display: inline-block;
-        left: 50%;
-        transform: translateX(-50%);
+        font-size: 2rem;
       }
+    }
 
-      h1::after {
-        content: "";
-        position: absolute;
-        width: 0;
-        height: 4px;
-        bottom: -10px;
-        left: 50%;
-        background-color: var(--highlight-color);
-        transition: all 0.3s ease;
-      }
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      z-index: 1000;
+    }
 
-      h1:hover::after {
-        width: 100%;
-        left: 0;
-      }
+    .theme-toggle:hover {
+      transform: rotate(180deg);
+    }
 
-      .form-group {
-        margin-bottom: 1.5rem;
-        position: relative;
-      }
+    [data-theme="dark"] {
+      --background-color: #1a1a2e;
+      --card-bg-color: #16213e;
+      --text-color: #e2e8f0;
+      --input-bg-color: #0f3460;
+      --shadow-color: rgba(0, 0, 0, 0.3);
+    }
 
-      label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--text-color);
-        font-weight: 600;
-        transition: all 0.3s ease;
-      }
+    .floating-emoji {
+      position: fixed;
+      font-size: 2rem;
+      pointer-events: none;
+      animation: float 3s ease-in-out infinite;
+      z-index: 1000;
+    }
 
-      select,
-      input {
-        width: 100%;
-        padding: 0.75rem;
-        border: 2px solid var(--input-bg-color);
-        border-radius: 10px;
-        background-color: var(--input-bg-color);
-        color: var(--text-color);
-        font-size: 1rem;
-        transition: all 0.3s ease;
-      }
+    @keyframes float {
 
-      select:focus,
-      input:focus {
-        outline: none;
-        border-color: var(--primary-color);
-        box-shadow: 0 0 0 3px rgba(108, 99, 255, 0.2);
-      }
-
-      button {
-        width: 100%;
-        padding: 0.75rem;
-        border: none;
-        border-radius: 10px;
-        background-color: var(--primary-color);
-        color: white;
-        cursor: pointer;
-        font-weight: 600;
-        font-size: 1rem;
-        margin-top: 1rem;
-        transition: all 0.3s ease;
-        position: relative;
-        overflow: hidden;
-      }
-
-      button::before {
-        content: "";
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: 300px;
-        height: 300px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        transform: translate(-50%, -50%) scale(0);
-        transition: all 0.5s ease;
-      }
-
-      button:hover::before {
-        transform: translate(-50%, -50%) scale(1);
-      }
-
-      button:hover {
-        background-color: #5753d9;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 10px rgba(108, 99, 255, 0.3);
-      }
-
-      .response {
-        background-color: var(--input-bg-color);
-        border-radius: 10px;
-        padding: 1rem;
-        margin-top: 1rem;
-        display: none;
-        transition: all 0.3s ease;
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      .response.show {
-        display: block;
-        opacity: 1;
+      0%,
+      100% {
         transform: translateY(0);
       }
 
-      .response strong {
-        color: var(--highlight-color);
-        font-weight: 600;
+      50% {
+        transform: translateY(-20px);
       }
+    }
+  </style>
+</head>
 
-      #loading {
-        display: none;
-        justify-content: center;
-        align-items: center;
-        margin-top: 1rem;
-      }
+<body>
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-sun"></i>
+  </button>
 
-      .spinner {
-        width: 50px;
-        height: 50px;
-        border: 5px solid var(--input-bg-color);
-        border-top: 5px solid var(--primary-color);
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
+  <div class="container">
+    <h1 onclick="location.href='{{ url_for('homepage') }}'">Fact or Joke</h1>
 
-      @keyframes spin {
-        0% {
-          transform: rotate(0deg);
-        }
-        100% {
-          transform: rotate(360deg);
-        }
-      }
-
-      footer {
-        text-align: center;
-        padding: 1rem;
-        position: fixed;
-        bottom: 0;
-        width: 100%;
-        background-color: rgba(255, 255, 255, 0.8);
-        backdrop-filter: blur(10px);
-        transition: all 0.3s ease;
-      }
-
-      footer a {
-        color: var(--primary-color);
-        text-decoration: none;
-        margin: 0 10px;
-        transition: color 0.3s ease;
-      }
-
-      footer a:hover {
-        color: var(--highlight-color);
-      }
-
-      @media (max-width: 768px) {
-        .container {
-          width: 95%;
-          padding: 1.5rem;
-        }
-
-        h1 {
-          font-size: 2rem;
-        }
-      }
-
-      .theme-toggle {
-        position: fixed;
-        top: 20px;
-        right: 20px;
-        background: var(--primary-color);
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: 50px;
-        height: 50px;
-        font-size: 1.5rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        z-index: 1000;
-      }
-
-      .theme-toggle:hover {
-        transform: rotate(180deg);
-      }
-
-      [data-theme="dark"] {
-        --background-color: #1a1a2e;
-        --card-bg-color: #16213e;
-        --text-color: #e2e8f0;
-        --input-bg-color: #0f3460;
-        --shadow-color: rgba(0, 0, 0, 0.3);
-      }
-
-      .floating-emoji {
-        position: fixed;
-        font-size: 2rem;
-        pointer-events: none;
-        animation: float 3s ease-in-out infinite;
-        z-index: 1000;
-      }
-
-      @keyframes float {
-        0%,
-        100% {
-          transform: translateY(0);
-        }
-        50% {
-          transform: translateY(-20px);
-        }
-      }
-    </style>
-  </head>
-  <body>
-    <button class="theme-toggle" id="themeToggle">
-      <i class="fas fa-sun"></i>
-    </button>
-
-    <div class="container">
-      <h1 onclick="location.href='{{ url_for('homepage') }}'">Fact or Joke</h1>
-
-      <div class="form-group">
-        <label for="factType">Chọn loại thông tin:</label>
-        <select id="factType">
-          <option value="numbers">Numbers Fact</option>
-          <option value="cat">Cat Fact</option>
-          <option value="joke">Joke</option>
-          <option value="useless">Useless Fact</option>
-        </select>
-      </div>
-
-      <div id="numbersSection">
-        <div class="form-group">
-          <label for="number">Số:</label>
-          <input type="text" id="number" placeholder="Nhập số hoặc 'random'" />
-        </div>
-
-        <div class="form-group">
-          <label for="type">Loại:</label>
-          <select id="type">
-            <option value="trivia">Trivia</option>
-            <option value="math">Math</option>
-            <option value="date">Date</option>
-            <option value="year">Year</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="catSection" style="display: none">
-        <!-- Cat fact section is empty as it only needs a button -->
-      </div>
-
-      <div id="jokeSection" style="display: none">
-        <div class="form-group">
-          <label for="jokeCategory">Chọn loại joke:</label>
-          <select id="jokeCategory">
-            <option value="Programming">Programming</option>
-            <option value="Miscellaneous">Miscellaneous</option>
-            <option value="Dark">Dark</option>
-            <option value="Spooky">Spooky</option>
-          </select>
-        </div>
-      </div>
-
-      <div id="uselessFactSection" style="display: none">
-        <!-- Useless fact section is empty as it only needs a button -->
-      </div>
-
-      <button id="getContent">Nhận Nội Dung</button>
-
-      <div id="loading">
-        <div class="spinner"></div>
-      </div>
-
-      <div id="contentResponse" class="response"></div>
-      <div id="translatedResponse" class="response"></div>
+    <div class="form-group">
+      <label for="factType">Chọn loại thông tin:</label>
+      <select id="factType">
+        <option value="numbers">Numbers Fact</option>
+        <option value="cat">Cat Fact</option>
+        <option value="joke">Joke</option>
+        <option value="useless">Useless Fact</option>
+      </select>
     </div>
 
-    <footer>
-      <p>
-        <span>© 2024</span> | <span>Fact API</span> |
-        <a href="{{ url_for('homepage') }}">Trang chủ</a>
-      </p>
-    </footer>
+    <div id="numbersSection">
+      <div class="form-group">
+        <label for="number">Số:</label>
+        <input type="text" id="number" placeholder="Nhập số hoặc 'random'" />
+      </div>
 
-    <script>
-      document.addEventListener("DOMContentLoaded", function () {
-        const factType = document.getElementById("factType");
-        const numbersSection = document.getElementById("numbersSection");
-        const catSection = document.getElementById("catSection");
-        const jokeSection = document.getElementById("jokeSection");
-        const uselessFactSection =
-          document.getElementById("uselessFactSection");
-        const getContentButton = document.getElementById("getContent");
-        const loading = document.getElementById("loading");
-        const contentResponse = document.getElementById("contentResponse");
-        const translatedResponse =
-          document.getElementById("translatedResponse");
-        const themeToggle = document.getElementById("themeToggle");
+      <div class="form-group">
+        <label for="type">Loại:</label>
+        <select id="type">
+          <option value="trivia">Trivia</option>
+          <option value="math">Math</option>
+          <option value="date">Date</option>
+          <option value="year">Year</option>
+        </select>
+      </div>
+    </div>
 
-        factType.addEventListener("change", function () {
-          numbersSection.style.display =
-            this.value === "numbers" ? "block" : "none";
-          catSection.style.display = this.value === "cat" ? "block" : "none";
-          jokeSection.style.display = this.value === "joke" ? "block" : "none";
-          uselessFactSection.style.display =
-            this.value === "useless" ? "block" : "none";
+    <div id="catSection" style="display: none">
+      <!-- Cat fact section is empty as it only needs a button -->
+    </div>
 
-          contentResponse.style.display = "none";
-          translatedResponse.style.display = "none";
-        });
+    <div id="jokeSection" style="display: none">
+      <div class="form-group">
+        <label for="jokeCategory">Chọn loại joke:</label>
+        <select id="jokeCategory">
+          <option value="Programming">Programming</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+          <option value="Dark">Dark</option>
+          <option value="Spooky">Spooky</option>
+        </select>
+      </div>
+    </div>
 
-        getContentButton.addEventListener("click", async function () {
-          loading.style.display = "flex";
-          contentResponse.classList.remove("show");
-          translatedResponse.classList.remove("show");
+    <div id="uselessFactSection" style="display: none">
+      <!-- Useless fact section is empty as it only needs a button -->
+    </div>
 
-          let url = "";
+    <button id="getContent">Nhận Nội Dung</button>
 
-          switch (factType.value) {
-            case "numbers":
-              url =
-                "/get-fact/" +
-                document.getElementById("type").value +
-                "/" +
-                document.getElementById("number").value;
-              break;
-            case "cat":
-              url = "/get-cat-fact";
-              break;
-            case "joke":
-              url =
-                "/get-joke/" + document.getElementById("jokeCategory").value;
-              break;
-            case "useless":
-              url = "/get-useless-fact";
-              break;
+    <div id="loading">
+      <div class="spinner"></div>
+    </div>
+
+    <div id="contentResponse" class="response"></div>
+    <div id="translatedResponse" class="response"></div>
+  </div>
+
+  <footer>
+    <p>
+      <span>© 2024</span> | <span>Fact API</span> |
+      <a href="{{ url_for('homepage') }}">Trang chủ</a>
+    </p>
+  </footer>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const factType = document.getElementById('factType');
+      const numbersSection = document.getElementById('numbersSection');
+      const catSection = document.getElementById('catSection');
+      const jokeSection = document.getElementById('jokeSection');
+      const uselessFactSection = document.getElementById('uselessFactSection');
+      const getContentButton = document.getElementById('getContent');
+      const loading = document.getElementById('loading');
+      const contentResponse = document.getElementById('contentResponse');
+      const translatedResponse = document.getElementById('translatedResponse');
+      const themeToggle = document.getElementById('themeToggle');
+
+      factType.addEventListener('change', function () {
+        numbersSection.style.display = this.value === 'numbers' ? 'block' : 'none';
+        catSection.style.display = this.value === 'cat' ? 'block' : 'none';
+        jokeSection.style.display = this.value === 'joke' ? 'block' : 'none';
+        uselessFactSection.style.display = this.value === 'useless' ? 'block' : 'none';
+
+        contentResponse.style.display = 'none';
+        translatedResponse.style.display = 'none';
+      });
+
+      getContentButton.addEventListener('click', async function () {
+        loading.style.display = 'flex';
+        contentResponse.style.display = 'none';
+        translatedResponse.style.display = 'none';
+
+        let url = '';
+
+        switch (factType.value) {
+          case 'numbers':
+            const type = document.getElementById('type').value;
+            const number = document.getElementById('number').value;
+            url = `/get-fact/${type}/${number}`;
+            break;
+          case 'cat':
+            url = '/get-cat-fact';
+            break;
+          case 'joke':
+            const jokeCategory = document.getElementById('jokeCategory').value;
+            url = `/get-joke/${jokeCategory}`;
+            break;
+          case 'useless':
+            url = '/get-useless-fact';
+            break;
+        }
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+
+          loading.style.display = 'none';
+
+          let originalContent = '';
+          let translatedContent = '';
+
+          if (data.original_fact) {
+            originalContent = data.original_fact;
+            translatedContent = data.translated_fact;
+          } else if (data.cat_fact) {
+            originalContent = data.cat_fact;
+            translatedContent = data.translated_cat_fact;
+          } else if (data.joke) {
+            originalContent = data.joke;
+            translatedContent = data.translated_joke;
+          } else if (data.useless_fact) {
+            originalContent = data.useless_fact;
+            translatedContent = data.translated_useless_fact;
           }
 
-          try {
-            const response = await fetch(url);
-            const data = await response.json();
+          contentResponse.innerHTML = `<strong>Nội dung:</strong> ${originalContent}`;
+          translatedResponse.innerHTML = `<strong>Dịch:</strong> ${translatedContent}`;
 
-            loading.style.display = "none";
+          contentResponse.style.display = 'block';
+          translatedResponse.style.display = 'block';
 
-            let originalContent = "";
-            let translatedContent = "";
-
-            if (data.original_fact) {
-              originalContent = data.original_fact;
-              translatedContent = data.translated_fact;
-            } else if (data.cat_fact) {
-              originalContent = data.cat_fact;
-              translatedContent = data.translated_cat_fact;
-            } else if (data.joke) {
-              originalContent = data.joke;
-              translatedContent = data.translated_joke;
-            } else if (data.useless_fact) {
-              originalContent = data.useless_fact;
-              translatedContent = data.translated_useless_fact;
-            }
-
-            contentResponse.innerHTML = `<strong>Nội dung:</strong> ${originalContent}`;
-            translatedResponse.innerHTML = `<strong>Dịch:</strong> ${translatedContent}`;
-
-            setTimeout(() => {
-              contentResponse.classList.add("show");
-              translatedResponse.classList.add("show");
-            }, 100);
-
-            addFloatingEmoji();
-          } catch (error) {
-            loading.style.display = "none";
-            contentResponse.innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
-            contentResponse.classList.add("show");
-          }
-        });
-
-        themeToggle.addEventListener("click", function () {
-          document.body.setAttribute(
-            "data-theme",
-            document.body.getAttribute("data-theme") === "dark"
-              ? "light"
-              : "dark"
-          );
-          this.innerHTML =
-            document.body.getAttribute("data-theme") === "dark"
-              ? '<i class="fas fa-sun"></i>'
-              : '<i class="fas fa-moon"></i>';
-        });
-
-        function addFloatingEmoji() {
-          const emoji = document.createElement("div");
-          emoji.className = "floating-emoji";
-          emoji.style.left = `${Math.random() * window.innerWidth}px`;
-          emoji.style.top = `${Math.random() * window.innerHeight}px`;
-          emoji.innerHTML = ["😂", "🤔", "🐱", "🧮", "🤯"][
-            Math.floor(Math.random() * 5)
-          ];
-          document.body.appendChild(emoji);
-
-          setTimeout(() => {
-            emoji.remove();
-          }, 3000);
+          // Thêm hiệu ứng emoji nổi
+          addFloatingEmoji();
+        } catch (error) {
+          loading.style.display = 'none';
+          contentResponse.innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
+          contentResponse.style.display = 'block';
         }
       });
-    </script>
-  </body>
+
+      themeToggle.addEventListener('click', function () {
+        document.body.setAttribute('data-theme',
+          document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        this.innerHTML = document.body.getAttribute('data-theme') === 'dark'
+          ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+      });
+
+      function addFloatingEmoji() {
+        const emoji = document.createElement('div');
+        emoji.className = 'floating-emoji';
+        emoji.style.left = `${Math.random() * window.innerWidth}px`;
+        emoji.style.top = `${Math.random() * window.innerHeight}px`;
+        emoji.innerHTML = ['😂', '🤔', '🐱', '🧮', '🤯'][Math.floor(Math.random() * 5)];
+        document.body.appendChild(emoji);
+
+        setTimeout(() => {
+          emoji.remove();
+        }, 3000);
+      }
+    });
+  </script>
+</body>
+
 </html>
