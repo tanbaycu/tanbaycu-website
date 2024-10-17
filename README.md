@@ -12,7 +12,6 @@ Author: Me and Flask
 
 ## Chi tiết phiên bản:
 
-Done....
 **Chat với Gemini** : beta 17/10/2024
 
 
