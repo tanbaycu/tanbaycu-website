@@ -365,16 +365,23 @@
       const loading = document.getElementById('loading');
       const contentResponse = document.getElementById('contentResponse');
       const translatedResponse = document.getElementById('translatedResponse');
-      const themeToggle = document.getElementById('themeToggle');
 
       factType.addEventListener('change', function () {
-        numbersSection.style.display = this.value === 'numbers' ? 'block' : 'none';
-        catSection.style.display = this.value === 'cat' ? 'block' : 'none';
-        jokeSection.style.display = this.value === 'joke' ? 'block' : 'none';
-        uselessFactSection.style.display = this.value === 'useless' ? 'block' : 'none';
+        const selectedValue = this.value;
+        numbersSection.style.display = selectedValue === 'numbers' ? 'block' : 'none';
+        catSection.style.display = selectedValue === 'cat' ? 'block' : 'none';
+        jokeSection.style.display = selectedValue === 'joke' ? 'block' : 'none';
+        uselessFactSection.style.display = selectedValue === 'useless' ? 'block' : 'none';
 
-        contentResponse.style.display = 'none';
-        translatedResponse.style.display = 'none';
+        // Xóa nội dung cũ khi chuyển loại
+        if (selectedValue === 'numbers') {
+          document.getElementById('number').value = '';
+          contentResponse.innerHTML = '';
+          translatedResponse.innerHTML = '';
+        } else {
+          contentResponse.innerHTML = '';
+          translatedResponse.innerHTML = '';
+        }
       });
 
       getContentButton.addEventListener('click', async function () {
@@ -408,58 +415,38 @@
 
           loading.style.display = 'none';
 
-          let originalContent = '';
-          let translatedContent = '';
-
           if (data.original_fact) {
-            originalContent = data.original_fact;
-            translatedContent = data.translated_fact;
+            contentResponse.innerHTML = `<strong>Fact:</strong> ${data.original_fact}`;
+            translatedResponse.innerHTML = `<strong>Dịch:</strong> ${data.translated_fact}`;
           } else if (data.cat_fact) {
-            originalContent = data.cat_fact;
-            translatedContent = data.translated_cat_fact;
+            contentResponse.innerHTML = `<strong>Cat Fact:</strong> ${data.cat_fact}`;
+            translatedResponse.innerHTML = `<strong>Dịch:</strong> ${data.translated_cat_fact}`;
           } else if (data.joke) {
-            originalContent = data.joke;
-            translatedContent = data.translated_joke;
+            contentResponse.innerHTML = `<strong>Joke:</strong> ${data.joke}`;
+            translatedResponse.innerHTML = `<strong>Dịch:</strong> ${data.translated_joke}`;
           } else if (data.useless_fact) {
-            originalContent = data.useless_fact;
-            translatedContent = data.translated_useless_fact;
+            contentResponse.innerHTML = `<strong>Useless Fact:</strong> ${data.useless_fact}`;
+            translatedResponse.innerHTML = `<strong>Dịch:</strong> ${data.translated_useless_fact}`;
           }
-
-          contentResponse.innerHTML = `<strong>Nội dung:</strong> ${originalContent}`;
-          translatedResponse.innerHTML = `<strong>Dịch:</strong> ${translatedContent}`;
 
           contentResponse.style.display = 'block';
           translatedResponse.style.display = 'block';
-
-          // Thêm hiệu ứng emoji nổi
-          addFloatingEmoji();
         } catch (error) {
           loading.style.display = 'none';
           contentResponse.innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
           contentResponse.style.display = 'block';
         }
       });
-
-      themeToggle.addEventListener('click', function () {
-        document.body.setAttribute('data-theme',
-          document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-        this.innerHTML = document.body.getAttribute('data-theme') === 'dark'
-          ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-      });
-
-      function addFloatingEmoji() {
-        const emoji = document.createElement('div');
-        emoji.className = 'floating-emoji';
-        emoji.style.left = `${Math.random() * window.innerWidth}px`;
-        emoji.style.top = `${Math.random() * window.innerHeight}px`;
-        emoji.innerHTML = ['😂', '🤔', '🐱', '🧮', '🤯'][Math.floor(Math.random() * 5)];
-        document.body.appendChild(emoji);
-
-        setTimeout(() => {
-          emoji.remove();
-        }, 3000);
-      }
     });
+
+    themeToggle.addEventListener('click', function () {
+      document.body.setAttribute('data-theme',
+        document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+      this.innerHTML = document.body.getAttribute('data-theme') === 'dark'
+        ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
+    });
+
+    
   </script>
 </body>
 
