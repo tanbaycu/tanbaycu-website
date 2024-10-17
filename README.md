@@ -15,8 +15,6 @@ Author: Me and Flask
 **Chat với Gemini** : beta 17/10/2024
 
 
-
-<<<<<<< HEAD
 =======
 ## Notes:
 - Truy cập vào https://tanbaycu.vercel.app -> Xóa lịch sử web để xem giao diện mới nhất
@@ -31,6 +29,6 @@ print("Hello World, I Am Tanbaycu")
 ```
 
 
->>>>>>> e853714 (helllll)
+
 
 
