@@ -9,6 +9,9 @@ Author: Me and Flask
 ## Một số chức năng chính:
 
 ![Chào em](static/mota.jpg)
+---------------------------------
+![RealmeC53](static/dienthoai1.jpg)
+![RealmeC53](static/dienthoai2.jpg)
 
 ## Chi tiết phiên bản:
 
