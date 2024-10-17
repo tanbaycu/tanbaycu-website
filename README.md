@@ -1,21 +1,15 @@
-# Tanbaycu - Dự án web đầu tay
+# Tanbaycu - Dự Án Web Đầu Tay
 
-Dự án website multi-tasks | Với 1 số chức năng nhất định.
-Ngày khởi tạo: 12/10/2024 - Act
-Author: Me and Flask
+**Dự án:** Website đa chức năng  
+**Ngày khởi tạo:** 12/10/2024  
+**Tác giả:** Tôi và Flask
 
+## Một Số Chức Năng Nổi Bật
+![Ảnh minh họa](https://postimg.cc/Mn8tbrtD)
 
+## Chi Tiết Phiên Bản
 
-## Một số chức năng chính:
-![Ảnh minh họa](https://i.postimg.cc/QdFPD2TR/z5940471382564-70dbcba4e6a743fde4809ba31cfb680b.jpg)
+### Tính Năng Hoàn Thành
+- **Chat với Gemini:** Phiên bản beta ra mắt ngày 17/10/2024
 
-
-## Chi tiết phiên bản:
-
-Done....
-**Chat với Gemini** : beta 17/10/2024
-
-
-
-
-
+---
