@@ -2,204 +2,210 @@
 <html lang="vi">
 
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>URL Shortener - Tanbaycu</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>QR Code Generator - Tanbaycu</title>
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <style>
-    :root {
-      --primary-color: #6C63FF;
-      --secondary-color: #4CAF50;
-      --background-color: #1A1A2E;
-      --text-color: #FFFFFF;
-      --card-background: #16213E;
-    }
-
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
     body {
-      font-family: 'Roboto', sans-serif;
-      background-color: var(--background-color);
-      color: var(--text-color);
+      font-family: "Arial", sans-serif;
+      background-color: #121212;
+      /* Nền tối */
+      color: #ffffff;
+      /* Chữ màu trắng */
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-      overflow-x: hidden;
+      align-items: center;
+      /* Căn giữa cho footer */
+      height: 100vh;
+      /* Chiếm toàn bộ chiều cao */
+      margin: 0;
+      padding: 20px;
+      box-sizing: border-box;
+      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      /* Hiệu ứng đổ bóng cho chữ */
+      overflow: auto;
+      /* Thêm thanh cuộn */
     }
 
     .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background-color: var(--card-background);
-      border-radius: 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      transition: transform 0.3s ease;
-    }
-
-    .container:hover {
-      transform: translateY(-5px);
-    }
-
-    h1 {
-      text-align: center;
-      font-size: 3rem;
-      margin-bottom: 2rem;
-      color: var(--primary-color);
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-    }
-
-    form {
       display: flex;
       flex-direction: column;
-      gap: 1rem;
+      width: 100%;
+      max-width: 800px;
+      /* Điều chỉnh chiều rộng tối đa */
+      margin: 0 auto;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      /* Đổ bóng cho container */
+      background-color: #1e1e1e;
+      /* Nền của container */
+      transition: transform 0.3s ease;
+      /* Hiệu ứng khi hover */
+      max-height: 90vh;
+      /* Chiều cao tối đa */
+      overflow-y: auto;
+      /* Thêm thanh cuộn dọc */
     }
 
-    label {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
+    .input-form,
+    .result-form {
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    input[type="url"] {
-      padding: 1rem;
-      font-size: 1rem;
+    input[type="text"],
+    select {
+      width: 100%;
+      padding: 15px;
       border: none;
-      border-radius: 10px;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: var(--text-color);
-      transition: all 0.3s ease;
+      /* Bỏ viền */
+      border-radius: 5px;
+      background-color: #333;
+      /* Nền input tối */
+      color: #ffffff;
+      /* Chữ trắng cho input */
+      font-size: 1.1em;
+      /* Kích thước chữ */
+      margin-bottom: 20px;
+      transition: background-color 0.3s ease;
+      /* Hiệu ứng đổi màu nền */
     }
 
-    input[type="url"]:focus {
+    input[type="text"]:focus,
+    select:focus {
+      background-color: #444;
+      /* Nền sáng hơn khi focus */
       outline: none;
-      box-shadow: 0 0 0 2px var(--primary-color);
+      /* Bỏ viền focus mặc định */
+    }
+
+    .button-container {
+      display: flex;
+      /* Sắp xếp các nút theo chiều ngang */
+      justify-content: space-between;
+      /* Tạo khoảng cách giữa các nút */
+      width: 100%;
+      /* Để chiếm toàn bộ chiều rộng */
+      gap: 10px;
+      /* Khoảng cách giữa các nút */
     }
 
     button {
-      padding: 1rem;
-      font-size: 1.2rem;
+      background-color: #28a745;
+      /* Nền xanh lá */
+      color: #ffffff;
+      /* Chữ trắng */
       border: none;
-      border-radius: 10px;
-      background-color: var(--primary-color);
-      color: var(--text-color);
+      padding: 15px;
+      border-radius: 8px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      font-size: 1.1em;
+      flex: 1;
+      /* Cho phép nút mở rộng chiếm không gian còn lại */
+      transition: background-color 0.3s ease, transform 0.2s ease;
+      /* Hiệu ứng khi hover */
     }
 
     button:hover {
-      background-color: #5753D9;
+      background-color: #218838;
+      /* Màu nền tối hơn khi hover */
       transform: translateY(-2px);
+      /* Hiệu ứng nhấc lên khi hover */
     }
 
-    .short-url {
-      margin-top: 2rem;
+    #qrCode {
+      margin-top: 20px;
+      display: none;
       text-align: center;
     }
 
-    .short-url h4 {
-      margin-bottom: 1rem;
-      color: var(--secondary-color);
-    }
-
-    .short-url a {
-      color: var(--primary-color);
-      font-weight: bold;
+    #downloadLink {
+      display: inline-flex;
+      /* Để icon và text hiển thị trên cùng một dòng */
+      align-items: center;
+      /* Căn giữa icon và text theo chiều dọc */
+      margin-top: 10px;
+      color: #ffffff;
+      /* Chữ màu trắng */
       text-decoration: none;
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
+      font-size: 1.2em;
+      background-color: #28a745;
+      /* Nền màu để icon và text dễ nhìn */
+      padding: 10px 15px;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
     }
 
-    .short-url a:hover {
-      text-decoration: underline;
+    #downloadLink svg {
+      margin-left: 10px;
+      /* Tạo khoảng cách giữa icon và văn bản */
+      stroke: #ffffff;
+      /* Đảm bảo icon có màu trắng nổi bật trên nền xanh */
+      width: 24px;
+      height: 24px;
     }
 
-    .qr-code {
-      margin-top: 2rem;
-      display: flex;
-      justify-content: center;
-    }
-
-    .qr-code img {
-      max-width: 200px;
-      border-radius: 10px;
-      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    }
-
-    .home-button {
-      text-align: center;
-      margin-top: 2rem;
-    }
-
-    .home-button a {
-      display: inline-block;
-      padding: 0.8rem 1.5rem;
-      background-color: var(--secondary-color);
-      color: var(--text-color);
-      text-decoration: none;
-      border-radius: 10px;
-      transition: all 0.3s ease;
-    }
-
-    .home-button a:hover {
-      background-color: #45a049;
-      transform: translateY(-2px);
+    #downloadLink:hover {
+      background-color: #218838;
+      /* Hiệu ứng hover */
     }
 
     footer {
       margin-top: auto;
+      /* Đẩy footer xuống cuối cùng */
+      width: 100%;
+      /* Chiếm toàn bộ chiều rộng */
+      background-color: #1e1e1e;
+      /* Nền footer tối */
+      padding: 10px 0;
       text-align: center;
-      padding: 1rem;
-      background-color: rgba(0, 0, 0, 0.2);
+      /* Căn giữa cho footer */
+      border-top: 1px solid #333;
+      /* Viền trên cho footer */
+      color: #ffffff;
+      /* Chữ màu trắng */
     }
 
     footer a {
-      color: var(--primary-color);
+      color: #28a745;
+      /* Chữ màu xanh lá cho liên kết */
       text-decoration: none;
+      /* Bỏ gạch chân */
       transition: color 0.3s ease;
+      /* Hiệu ứng khi hover */
     }
 
     footer a:hover {
-      color: var(--secondary-color);
+      color: #218838;
+      /* Màu tối hơn khi hover */
     }
 
-    @media (max-width: 768px) {
+    @media only screen and (max-width: 480px) {
+      body {
+        padding: 10px;
+      }
+
+      input[type="text"],
+      select {
+        font-size: 1em;
+        /* Giảm cỡ chữ cho màn hình nhỏ */
+        padding: 10px;
+      }
+
+      button {
+        padding: 10px;
+        font-size: 1em;
+        /* Giảm cỡ chữ cho nút */
+      }
+
       .container {
-        margin: 1rem;
-        padding: 1.5rem;
-      }
-
-      h1 {
-        font-size: 2.5rem;
-      }
-
-      input[type="url"],
-      button {
-        font-size: 1rem;
-      }
-
-      .short-url a {
-        font-size: 1.1rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      h1 {
-        font-size: 2rem;
-      }
-
-      .short-url a {
-        font-size: 1rem;
-      }
-
-      button {
-        padding: 0.8rem;
-        font-size: 1rem;
+        box-shadow: none;
+        /* Bỏ đổ bóng cho mobile */
       }
     }
   </style>
@@ -207,56 +213,75 @@
 
 <body>
   <div class="container">
-    <h1>Rút gọn URL</h1>
-    <form id="urlForm" method="POST" onsubmit="return validateForm()">
-      <label for="long_url">Nhập URL dài của bạn:</label>
-      <input type="url" id="long_url" name="long_url" placeholder="Ví dụ: https://example.com" required>
-      <button type="submit">Rút gọn <i class="fas fa-link"></i></button>
-    </form>
-
-    {% if short_url %}
-    <div class="short-url">
-      <h4>URL rút gọn của bạn:</h4>
-      <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+    <div class="input-form">
+      <h1 id="title" style="cursor: pointer;">QR Code Generator</h1>
+      <input type="text" id="dataInput" placeholder="Nhập dữ liệu để tạo QR Code" />
+      <select id="qrSize">
+        <option value="200">Size: 200x200</option>
+        <option value="300">Size: 300x300</option>
+        <option value="400">Size: 400x400</option>
+      </select>
+      <select id="qrFormat">
+        <option value="png">Format: PNG</option>
+        <option value="jpg">Format: JPG</option>
+        <option value="svg">Format: SVG</option>
+      </select>
+      <div class="button-container">
+        <button id="generateButton">Tạo QR Code</button>
+      </div>
     </div>
-    <div class="qr-code">
-      <img src="https://api.stakdek.de/api/qr/gen?data={{ short_url }}" alt="QR Code">
-    </div>
-    {% endif %}
-
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-    <div class="alert" role="alert">
-      {{ messages[0] }}
-    </div>
-    {% endif %}
-    {% endwith %}
-
-    <div class="home-button">
-      <a href="{{ url_for('homepage') }}">Về trang chủ <i class="fas fa-home"></i></a>
+    <div class="result-form" id="resultForm">
+      <h2>Kết quả</h2>
+      <div id="qrCode"></div>
+      <a id="downloadLink" style="display:none;">
+        <span>Tải về QR Code</span>
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff"
+          stroke-width="2" stroke-linecap="butt" stroke-linejoin="arcs">
+          <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5" />
+        </svg>
+      </a>
     </div>
   </div>
-
   <footer>
-    <p>&copy; 2024 | URL Shortener | <a href="{{ url_for('homepage') }}">Trang chủ</a></p>
+    <div>© 2024 | <a href="/">QRcode Generator</a></div>
   </footer>
 
   <script>
-    function validateForm() {
-      const longUrlInput = document.getElementById("long_url").value;
-      if (!longUrlInput) {
-        alert("Vui lòng nhập URL dài!");
-        return false;
+    $(document).ready(function () {
+      // Hàm reset form
+      function resetForm() {
+        $("#dataInput").val(""); // Xóa dữ liệu nhập
+        $("#qrCode").hide(); // Ẩn QR code
+        $("#downloadLink").hide(); // Ẩn link tải về
+        $("#resultForm").removeClass("visible"); // Ẩn phần kết quả
       }
-      return true;
-    }
 
-    document.querySelector('h1').addEventListener('click', function () {
-      document.getElementById("urlForm").reset();
-      const shortUrlDiv = document.querySelector(".short-url");
-      const qrCodeDiv = document.querySelector(".qr-code");
-      if (shortUrlDiv) shortUrlDiv.remove();
-      if (qrCodeDiv) qrCodeDiv.remove();
+      // Sự kiện click cho tiêu đề
+      $("#title").click(function () {
+        resetForm();
+      });
+
+      $("#generateButton").click(function () {
+        const data = $("#dataInput").val();
+        const size = $("#qrSize").val();
+        const format = $("#qrFormat").val();
+
+        if (data) {
+          const qrCodeUrl = `https://api.stakdek.de/api/qr/gen?data=${encodeURIComponent(data)}&size=${size}&format=${format}`;
+          $("#qrCode")
+            .html(`<img src="${qrCodeUrl}" alt="QR Code" style="width: ${size}px; height: ${size}px; margin-top: 20px;">`)
+            .show();
+
+          $("#downloadLink")
+            .attr("href", qrCodeUrl)
+            .attr("download", `QRCode.${format}`)
+            .show();
+
+          $("#resultForm").addClass("visible");
+        } else {
+          alert("Vui lòng nhập dữ liệu!");
+        }
+      });
     });
   </script>
 </body>
