@@ -4,283 +4,334 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>QR Code Generator - Tanbaycu</title>
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <meta name="description"
+    content="Tạo mã QR miễn phí với công cụ hiện đại và đỉnh cao. Tùy chỉnh kích thước, định dạng và tải về ngay lập tức." />
+  <title>QR Code Generator - Hiện Đại & Đỉnh Cao</title>
+  <link rel="icon" type="image/svg+xml"
+    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>" />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
   <style>
+    :root {
+      --primary-color: #6c63ff;
+      --secondary-color: #4caf50;
+      --background-dark: #1a1a2e;
+      --surface-dark: #16213e;
+      --text-light: #ffffff;
+      --text-dark: #0f3460;
+      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+    }
+
     body {
-      font-family: "Arial", sans-serif;
-      background-color: #121212;
-      /* Nền tối */
-      color: #ffffff;
-      /* Chữ màu trắng */
+      font-family: "Roboto", sans-serif;
+      margin: 0;
+      padding: 0;
+      background: var(--background-dark);
+      color: var(--text-light);
+      transition: var(--transition);
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      /* Căn giữa cho footer */
-      height: 100vh;
-      /* Chiếm toàn bộ chiều cao */
-      margin: 0;
-      padding: 20px;
-      box-sizing: border-box;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-      /* Hiệu ứng đổ bóng cho chữ */
-      overflow: auto;
-      /* Thêm thanh cuộn */
     }
 
     .container {
-      display: flex;
-      flex-direction: column;
-      width: 100%;
       max-width: 800px;
-      /* Điều chỉnh chiều rộng tối đa */
-      margin: 0 auto;
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      /* Đổ bóng cho container */
-      background-color: #1e1e1e;
-      /* Nền của container */
-      transition: transform 0.3s ease;
-      /* Hiệu ứng khi hover */
-      max-height: 90vh;
-      /* Chiều cao tối đa */
-      overflow-y: auto;
-      /* Thêm thanh cuộn dọc */
+      margin: 2rem auto;
+      padding: 2rem;
+      background: var(--surface-dark);
+      border-radius: 20px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
     }
 
-    .input-form,
-    .result-form {
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    h1 {
+      font-size: 2.5rem;
+      text-align: center;
+      margin-bottom: 2rem;
+      background: linear-gradient(45deg,
+          var(--primary-color),
+          var(--secondary-color));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      animation: gradientText 5s ease infinite;
+    }
+
+    @keyframes gradientText {
+
+      0%,
+      100% {
+        background-position: 0% 50%;
+      }
+
+      50% {
+        background-position: 100% 50%;
+      }
+    }
+
+    .input-group {
+      margin-bottom: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
     }
 
     input[type="text"],
     select {
       width: 100%;
-      padding: 15px;
+      padding: 12px;
       border: none;
-      /* Bỏ viền */
-      border-radius: 5px;
-      background-color: #333;
-      /* Nền input tối */
-      color: #ffffff;
-      /* Chữ trắng cho input */
-      font-size: 1.1em;
-      /* Kích thước chữ */
-      margin-bottom: 20px;
-      transition: background-color 0.3s ease;
-      /* Hiệu ứng đổi màu nền */
+      border-radius: 10px;
+      background-color: rgba(255, 255, 255, 0.1);
+      color: var(--text-light);
+      font-size: 1rem;
+      transition: var(--transition);
     }
 
     input[type="text"]:focus,
     select:focus {
-      background-color: #444;
-      /* Nền sáng hơn khi focus */
       outline: none;
-      /* Bỏ viền focus mặc định */
-    }
-
-    .button-container {
-      display: flex;
-      /* Sắp xếp các nút theo chiều ngang */
-      justify-content: space-between;
-      /* Tạo khoảng cách giữa các nút */
-      width: 100%;
-      /* Để chiếm toàn bộ chiều rộng */
-      gap: 10px;
-      /* Khoảng cách giữa các nút */
+      box-shadow: 0 0 0 2px var(--primary-color);
     }
 
     button {
-      background-color: #28a745;
-      /* Nền xanh lá */
-      color: #ffffff;
-      /* Chữ trắng */
+      width: 100%;
+      padding: 12px;
       border: none;
-      padding: 15px;
-      border-radius: 8px;
+      border-radius: 10px;
+      background: linear-gradient(45deg,
+          var(--primary-color),
+          var(--secondary-color));
+      color: white;
+      font-size: 1rem;
+      font-weight: bold;
       cursor: pointer;
-      font-size: 1.1em;
-      flex: 1;
-      /* Cho phép nút mở rộng chiếm không gian còn lại */
-      transition: background-color 0.3s ease, transform 0.2s ease;
-      /* Hiệu ứng khi hover */
+      transition: var(--transition);
     }
 
     button:hover {
-      background-color: #218838;
-      /* Màu nền tối hơn khi hover */
-      transform: translateY(-2px);
-      /* Hiệu ứng nhấc lên khi hover */
+      transform: translateY(-3px);
+      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
     }
 
     #qrCode {
-      margin-top: 20px;
-      display: none;
-      text-align: center;
+      display: flex;
+      justify-content: center;
+      margin-top: 2rem;
+    }
+
+    #qrCode img {
+      max-width: 100%;
+      border-radius: 10px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      transition: var(--transition);
+    }
+
+    #qrCode img:hover {
+      transform: scale(1.05);
     }
 
     #downloadLink {
       display: inline-flex;
-      /* Để icon và text hiển thị trên cùng một dòng */
       align-items: center;
-      /* Căn giữa icon và text theo chiều dọc */
-      margin-top: 10px;
-      color: #ffffff;
-      /* Chữ màu trắng */
+      justify-content: center;
+      margin-top: 1rem;
+      padding: 12px 20px;
+      background: var(--secondary-color);
+      color: white;
       text-decoration: none;
-      font-size: 1.2em;
-      background-color: #28a745;
-      /* Nền màu để icon và text dễ nhìn */
-      padding: 10px 15px;
-      border-radius: 8px;
-      transition: background-color 0.3s ease;
-    }
-
-    #downloadLink svg {
-      margin-left: 10px;
-      /* Tạo khoảng cách giữa icon và văn bản */
-      stroke: #ffffff;
-      /* Đảm bảo icon có màu trắng nổi bật trên nền xanh */
-      width: 24px;
-      height: 24px;
+      border-radius: 10px;
+      font-weight: bold;
+      transition: var(--transition);
     }
 
     #downloadLink:hover {
-      background-color: #218838;
-      /* Hiệu ứng hover */
+      background: #45a049;
+      transform: translateY(-2px);
+    }
+
+    #downloadLink svg {
+      margin-left: 8px;
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: none;
+      border: none;
+      color: var(--text-light);
+      font-size: 1.5rem;
+      cursor: pointer;
     }
 
     footer {
       margin-top: auto;
-      /* Đẩy footer xuống cuối cùng */
-      width: 100%;
-      /* Chiếm toàn bộ chiều rộng */
-      background-color: #1e1e1e;
-      /* Nền footer tối */
-      padding: 10px 0;
       text-align: center;
-      /* Căn giữa cho footer */
-      border-top: 1px solid #333;
-      /* Viền trên cho footer */
-      color: #ffffff;
-      /* Chữ màu trắng */
+      padding: 1rem;
+      background: var(--surface-dark);
     }
 
     footer a {
-      color: #28a745;
-      /* Chữ màu xanh lá cho liên kết */
+      color: var(--primary-color);
       text-decoration: none;
-      /* Bỏ gạch chân */
-      transition: color 0.3s ease;
-      /* Hiệu ứng khi hover */
     }
 
-    footer a:hover {
-      color: #218838;
-      /* Màu tối hơn khi hover */
-    }
-
-    @media only screen and (max-width: 480px) {
-      body {
-        padding: 10px;
-      }
-
-      input[type="text"],
-      select {
-        font-size: 1em;
-        /* Giảm cỡ chữ cho màn hình nhỏ */
-        padding: 10px;
-      }
-
-      button {
-        padding: 10px;
-        font-size: 1em;
-        /* Giảm cỡ chữ cho nút */
-      }
-
+    @media (max-width: 768px) {
       .container {
-        box-shadow: none;
-        /* Bỏ đổ bóng cho mobile */
+        margin: 1rem;
+        padding: 1rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    .light-mode {
+      --background-dark: #f0f2f5;
+      --surface-dark: #ffffff;
+      --text-light: var(--text-dark);
+    }
+
+    .loading {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
       }
     }
   </style>
 </head>
 
 <body>
+  <button class="theme-toggle" id="themeToggle" aria-label="Chuyển đổi chế độ tối/sáng">
+    🌓
+  </button>
   <div class="container">
-    <div class="input-form">
-      <h1 id="title" style="cursor: pointer;">QR Code Generator</h1>
-      <input type="text" id="dataInput" placeholder="Nhập dữ liệu để tạo QR Code" />
-      <select id="qrSize">
-        <option value="200">Size: 200x200</option>
-        <option value="300">Size: 300x300</option>
-        <option value="400">Size: 400x400</option>
-      </select>
-      <select id="qrFormat">
-        <option value="png">Format: PNG</option>
-        <option value="jpg">Format: JPG</option>
-        <option value="svg">Format: SVG</option>
-      </select>
-      <div class="button-container">
-        <button id="generateButton">Tạo QR Code</button>
+    <h1>QR Code Generator</h1>
+    <form id="qrForm">
+      <div class="input-group">
+        <label for="dataInput">Nhập dữ liệu cho mã QR</label>
+        <input type="text" id="dataInput" placeholder="Nhập văn bản hoặc URL" required aria-required="true" />
       </div>
-    </div>
-    <div class="result-form" id="resultForm">
-      <h2>Kết quả</h2>
-      <div id="qrCode"></div>
-      <a id="downloadLink" style="display:none;">
-        <span>Tải về QR Code</span>
-        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff"
-          stroke-width="2" stroke-linecap="butt" stroke-linejoin="arcs">
-          <path d="M3 15v4c0 1.1.9 2 2 2h14a2 2 0 0 0 2-2v-4M17 9l-5 5-5-5M12 12.8V2.5" />
-        </svg>
-      </a>
-    </div>
+      <div class="input-group">
+        <label for="qrSize">Chọn kích thước mã QR</label>
+        <select id="qrSize" aria-label="Kích thước mã QR">
+          <option value="200">200x200</option>
+          <option value="300">300x300</option>
+          <option value="400">400x400</option>
+        </select>
+      </div>
+      <div class="input-group">
+        <label for="qrFormat">Chọn định dạng mã QR</label>
+        <select id="qrFormat" aria-label="Định dạng mã QR">
+          <option value="png">PNG</option>
+          <option value="jpg">JPG</option>
+          <option value="svg">SVG</option>
+        </select>
+      </div>
+      <button type="submit" id="generateButton">Tạo Mã QR</button>
+    </form>
+    <div id="qrCode" aria-live="polite"></div>
+    <a id="downloadLink" href="#" download style="display: none">
+      Tải về Mã QR
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+        <polyline points="7 10 12 15 17 10"></polyline>
+        <line x1="12" y1="15" x2="12" y2="3"></line>
+      </svg>
+    </a>
   </div>
   <footer>
-    <div>© 2024 | <a href="/">QRcode Generator</a></div>
+    <p>&copy; 2024 | <a href="/">QR Code Generator</a> | Được tạo bởi AI</p>
   </footer>
 
   <script>
-    $(document).ready(function () {
-      // Hàm reset form
-      function resetForm() {
-        $("#dataInput").val(""); // Xóa dữ liệu nhập
-        $("#qrCode").hide(); // Ẩn QR code
-        $("#downloadLink").hide(); // Ẩn link tải về
-        $("#resultForm").removeClass("visible"); // Ẩn phần kết quả
+    document.addEventListener("DOMContentLoaded", function () {
+      const form = document.getElementById("qrForm");
+      const qrCode = document.getElementById("qrCode");
+      const downloadLink = document.getElementById("downloadLink");
+      const themeToggle = document.getElementById("themeToggle");
+
+      function setTheme(isDark) {
+        document.body.classList.toggle("light-mode", !isDark);
+        localStorage.setItem("darkMode", isDark);
       }
 
-      // Sự kiện click cho tiêu đề
-      $("#title").click(function () {
-        resetForm();
+      const savedTheme = localStorage.getItem("darkMode");
+      if (savedTheme !== null) {
+        setTheme(savedTheme === "true");
+      }
+
+      themeToggle.addEventListener("click", () => {
+        const isDarkMode = document.body.classList.toggle("light-mode");
+        setTheme(!isDarkMode);
       });
 
-      $("#generateButton").click(function () {
-        const data = $("#dataInput").val();
-        const size = $("#qrSize").val();
-        const format = $("#qrFormat").val();
+      form.addEventListener("submit", async function (e) {
+        e.preventDefault();
+        const data = document.getElementById("dataInput").value;
+        const size = document.getElementById("qrSize").value;
+        const format = document.getElementById("qrFormat").value;
 
         if (data) {
-          const qrCodeUrl = `https://api.stakdek.de/api/qr/gen?data=${encodeURIComponent(data)}&size=${size}&format=${format}`;
-          $("#qrCode")
-            .html(`<img src="${qrCodeUrl}" alt="QR Code" style="width: ${size}px; height: ${size}px; margin-top: 20px;">`)
-            .show();
+          qrCode.innerHTML = '<div class="loading"></div>';
+          downloadLink.style.display = "none";
 
-          $("#downloadLink")
-            .attr("href", qrCodeUrl)
-            .attr("download", `QRCode.${format}`)
-            .show();
+          const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+            data
+          )}&size=${size}x${size}&format=${format}`;
 
-          $("#resultForm").addClass("visible");
+
+          try {
+            const response = await fetch(qrCodeUrl);
+            if (!response.ok) throw new Error("Network response was not ok");
+            const blob = await response.blob();
+            const objectURL = URL.createObjectURL(blob);
+
+            qrCode.innerHTML = `<img src="${objectURL}" alt="Generated QR Code" style="width:${size}px; height:${size}px;">`;
+            downloadLink.href = objectURL;
+            downloadLink.setAttribute("download", `QRCode.${format}`);
+            downloadLink.style.display = "inline-flex";
+
+            qrCode.scrollIntoView({ behavior: "smooth", block: "start" });
+          } catch (error) {
+            console.error(
+              "There was a problem with the fetch operation:",
+              error.message
+            );
+            qrCode.innerHTML =
+              "<p>Có lỗi xảy ra khi tạo mã QR. Vui lòng thử lại.</p>";
+          }
         } else {
-          alert("Vui lòng nhập dữ liệu!");
+          alert("Vui lòng nhập dữ liệu để tạo mã QR.");
         }
+      });
+
+
+      const buttons = document.querySelectorAll("button");
+      buttons.forEach((button) => {
+        button.addEventListener("click", function (e) {
+          let x = e.clientX - e.target.offsetLeft;
+          let y = e.clientY - e.target.offsetTop;
+          let ripples = document.createElement("span");
+          ripples.style.left = x + "px";
+          ripples.style.top = y + "px";
+          this.appendChild(ripples);
+          setTimeout(() => {
+            ripples.remove();
+          }, 1000);
+        });
       });
     });
   </script>
