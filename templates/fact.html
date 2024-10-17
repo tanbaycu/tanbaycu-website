@@ -2,450 +2,443 @@
 <html lang="vi">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Fact or Joke - Tanbaycu</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+    :root {
+      --primary-color: #6C63FF;
+      --secondary-color: #4CAF50;
+      --background-color: #0F172A;
+      --card-bg-color: #1E293B;
+      --text-color: #E2E8F0;
+      --input-bg-color: #2D3748;
+      --highlight-color: #F59E0B;
+    }
+
     body {
-      background-color: #282a36;
-      /* Màu nền tối */
-      color: #f8f8f2;
-      /* Màu chữ sáng */
-      font-family: "Arial", sans-serif;
-      /* Chọn font chữ */
-      padding: 20px;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
       display: flex;
-      flex-direction: column;
+      justify-content: center;
+      align-items: center;
       min-height: 100vh;
-      /* Chiều cao tối thiểu bằng 100% chiều cao của viewport */
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(108, 99, 255, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 90% 80%, rgba(76, 175, 80, 0.1) 0%, transparent 20%);
+      background-attachment: fixed;
     }
 
     .container {
-      flex: 1;
-      /* Chiếm không gian còn lại */
-      margin-top: 50px;
-      border-radius: 10px;
-      /* Bo tròn góc */
-      padding: 30px;
-      background-color: #44475a;
-      /* Màu nền của container */
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      /* Đổ bóng cho container */
+      background-color: var(--card-bg-color);
+      border-radius: 20px;
+      padding: 2rem;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      width: 90%;
+      max-width: 600px;
+      transition: all 0.3s ease;
     }
 
     h1 {
+      color: var(--primary-color);
       text-align: center;
-      /* Canh giữa tiêu đề */
-      color: #50fa7b;
-      /* Màu sắc tiêu đề */
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      position: relative;
+      overflow: hidden;
+    }
+
+    h1::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 50%;
+      width: 0;
+      height: 3px;
+      background: var(--highlight-color);
+      transition: all 0.3s ease;
+    }
+
+    h1:hover::after {
+      width: 100%;
+      left: 0;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: var(--secondary-color);
+      transition: all 0.3s ease;
+    }
+
+    select,
+    input,
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      border-radius: 10px;
+      background-color: var(--input-bg-color);
+      color: var(--text-color);
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    select:focus,
+    input:focus {
+      outline: none;
+      box-shadow: 0 0 0 2px var(--primary-color);
+    }
+
+    button {
+      background-color: var(--primary-color);
+      color: white;
       cursor: pointer;
-      /* Con trỏ khi hover */
-    }
-
-    .form-label {
       font-weight: bold;
-      /* Làm đậm văn bản nhãn */
+      margin-top: 1rem;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
     }
 
-    .form-control,
-    .form-select {
-      background-color: #6272a4;
-      /* Màu nền của input và select */
-      border: 1px solid #50fa7b;
-      /* Viền màu xanh */
-      color: #f8f8f2;
-      /* Màu chữ cho input */
+    button::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 300px;
+      height: 300px;
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0);
+      transition: all 0.5s ease;
     }
 
-    .form-control:focus,
-    .form-select:focus {
-      background-color: #44475a;
-      /* Màu nền khi focus */
-      border-color: #50fa7b;
-      /* Viền màu khi focus */
-      box-shadow: 0 0 5px rgba(80, 250, 123, 0.5);
-      /* Đổ bóng khi focus */
+    button:hover::before {
+      transform: translate(-50%, -50%) scale(1);
     }
 
-    .btn-custom {
-      background-color: #50fa7b;
-      /* Màu nền nút */
-      color: #282a36;
-      /* Màu chữ nút */
-      border-radius: 5px;
-      /* Bo tròn nút */
-      padding: 10px 20px;
-      /* Padding cho nút */
-      transition: background-color 0.3s, transform 0.2s;
-      /* Hiệu ứng chuyển đổi */
-    }
-
-    .btn-custom:hover {
-      background-color: #4bf66f;
-      /* Màu nền khi hover */
+    button:hover {
+      background-color: #5753d9;
       transform: translateY(-2px);
-      /* Hiệu ứng nhấc lên khi hover */
     }
 
     .response {
-      margin-top: 20px;
-      /* Khoảng cách trên */
-      background-color: #6272a4;
-      /* Màu nền của phần phản hồi */
-      padding: 15px;
-      /* Padding cho phần phản hồi */
-      border-radius: 5px;
-      /* Bo tròn phần phản hồi */
-      color: #f8f8f2;
-      /* Màu chữ của phần phản hồi */
+      background-color: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      padding: 1rem;
+      margin-top: 1rem;
       display: none;
-      /* Ẩn phần phản hồi mặc định */
+      opacity: 0;
+      transform: translateY(20px);
+      transition: all 0.5s ease;
+    }
+
+    .response.show {
+      display: block;
+      opacity: 1;
+      transform: translateY(0);
     }
 
     .response strong {
-      color: #50fa7b;
-      /* Màu chữ đậm trong phần phản hồi */
+      color: var(--highlight-color);
     }
 
-    .toggle-section {
+    #loading {
       display: none;
-      /* Ẩn phần dịch văn bản mặc định */
-      margin-top: 20px;
-      /* Khoảng cách trên */
+      justify-content: center;
+      align-items: center;
+      margin-top: 1rem;
     }
 
-    .spinner-border {
-      width: 3rem;
-      height: 3rem;
-      border-width: 0.25em;
+    .spinner {
+      width: 50px;
+      height: 50px;
+      border: 3px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: var(--primary-color);
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
     }
 
     footer {
-      margin-top: auto;
-      /* Đẩy footer xuống dưới cùng */
-      padding: 20px 0;
-      /* Padding trên và dưới */
-      font-size: 1rem;
-      /* Kích thước chữ */
-      display: flex;
-      /* Sử dụng flexbox */
-      justify-content: center;
-      /* Căn giữa nội dung trong footer */
-      align-items: center;
-      /* Căn giữa theo chiều dọc */
-      background-color: transparent;
-      /* Nền trong suốt, không cần phông nền */
-      color: #ffffff;
-      /* Màu chữ sáng */
+      text-align: center;
+      padding: 1rem;
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      background-color: rgba(30, 41, 59, 0.8);
+      backdrop-filter: blur(10px);
     }
 
     footer a {
-      color: #50fa7b;
-      /* Màu chữ liên kết trong footer */
+      color: var(--primary-color);
       text-decoration: none;
-      /* Không gạch chân */
-      transition: color 0.3s;
-      /* Hiệu ứng chuyển màu */
       margin: 0 10px;
-      /* Khoảng cách giữa các liên kết */
+      transition: color 0.3s ease;
     }
 
     footer a:hover {
-      color: #ffffff;
-      /* Màu chữ khi hover */
+      color: var(--highlight-color);
     }
 
-    footer span {
-      margin: 0 10px;
-      /* Khoảng cách giữa các phần tử */
+    @media (max-width: 768px) {
+      .container {
+        width: 95%;
+        padding: 1.5rem;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+
+    .theme-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 50%;
+      width: 50px;
+      height: 50px;
+      font-size: 1.5rem;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .theme-toggle:hover {
+      transform: rotate(180deg);
+    }
+
+    [data-theme="light"] {
+      --background-color: #F0F4F8;
+      --card-bg-color: #FFFFFF;
+      --text-color: #1A202C;
+      --input-bg-color: #EDF2F7;
+    }
+
+    .floating-emoji {
+      position: fixed;
+      font-size: 2rem;
+      pointer-events: none;
+      animation: float 3s ease-in-out infinite;
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-20px);
+      }
     }
   </style>
 </head>
 
 <body>
-  <div class="container">
-    <h1 onclick="location.href='{{ url_for('homepage') }}'">
-      Fact or Joke:)
-    </h1>
+  <button class="theme-toggle" id="themeToggle">
+    <i class="fas fa-sun"></i>
+  </button>
 
-    <label for="factType" class="form-label">Chọn loại thông tin:</label>
-    <select id="factType" class="form-select mb-3">
-      <option value="numbers">Numbers Fact</option>
-      <option value="cat">Cat Fact</option>
-      <option value="joke">Joke</option>
-      <option value="useless">Useless Fact</option>
-    </select>
+  <div class="container">
+    <h1>Fact or Joke</h1>
+
+    <div class="form-group">
+      <label for="factType">Chọn loại thông tin:</label>
+      <select id="factType">
+        <option value="numbers">Numbers Fact</option>
+        <option value="cat">Cat Fact</option>
+        <option value="joke">Joke</option>
+        <option value="useless">Useless Fact</option>
+      </select>
+    </div>
 
     <div id="numbersSection">
-      <label for="number" class="form-label">Số:</label>
-      <input type="text" id="number" placeholder="Nhập số hoặc 'random'" class="form-control mb-3" />
+      <div class="form-group">
+        <label for="number">Số:</label>
+        <input type="text" id="number" placeholder="Nhập số hoặc 'random'">
+      </div>
 
-      <label for="type" class="form-label">Loại:</label>
-      <select id="type" class="form-select mb-3">
-        <option value="trivia">Trivia</option>
-        <option value="math">Math</option>
-        <option value="date">Date</option>
-        <option value="year">Year</option>
-      </select>
-
-      <button id="getFact" class="btn btn-custom">Nhận Fact</button>
-      <div class="response" id="fact"></div>
-      <div class="response" id="translatedFact"></div>
-    </div>
-
-    <div id="catSection" style="display: none">
-      <button id="getCatFact" class="btn btn-custom">Nhận Cat Fact</button>
-      <div class="response" id="catFact"></div>
-      <div class="response" id="translatedCatFact"></div>
-    </div>
-
-    <div id="uselessFactSection" style="display: none">
-      <button id="getUselessFact" class="btn btn-custom">
-        Nhận Useless Fact
-      </button>
-      <div id="uselessFact" class="response" style="display: none"></div>
-      <div id="translatedUselessFact" class="response" style="display: none"></div>
-    </div>
-
-    <div id="jokeSection" style="display: none">
-      <label for="jokeCategory" class="form-label">Chọn loại joke:</label>
-      <select id="jokeCategory" class="form-select mb-3">
-        <option value="Programming">Programming</option>
-        <option value="Miscellaneous">Miscellaneous</option>
-        <option value="Dark">Dark</option>
-        <option value="Spooky">Spooky</option>
-      </select>
-      <button id="getJoke" class="btn btn-custom">Nhận Joke</button>
-      <div class="response" id="joke"></div>
-      <div class="response" id="translatedJoke"></div>
-    </div>
-    <div id="loading" style="display: none; text-align: center">
-      <div class="spinner-border" role="status">
-        <span class="visually-hidden">Đang tải...</span>
+      <div class="form-group">
+        <label for="type">Loại:</label>
+        <select id="type">
+          <option value="trivia">Trivia</option>
+          <option value="math">Math</option>
+          <option value="date">Date</option>
+          <option value="year">Year</option>
+        </select>
       </div>
     </div>
+
+    <div id="catSection" style="display: none;">
+      <!-- Cat fact section is empty as it only needs a button -->
+    </div>
+
+    <div id="jokeSection" style="display: none;">
+      <div class="form-group">
+        <label for="jokeCategory">Chọn loại joke:</label>
+        <select id="jokeCategory">
+          <option value="Programming">Programming</option>
+          <option value="Miscellaneous">Miscellaneous</option>
+          <option value="Dark">Dark</option>
+          <option value="Spooky">Spooky</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="uselessFactSection" style="display: none;">
+      <!-- Useless fact section is empty as it only needs a button -->
+    </div>
+
+    <button id="getContent">Nhận Nội Dung</button>
+
+    <div id="loading">
+      <div class="spinner"></div>
+    </div>
+
+    <div id="contentResponse" class="response"></div>
+    <div id="translatedResponse" class="response"></div>
   </div>
 
   <footer>
     <p>
       <span>© 2024</span> |
       <span>Fact API</span> |
-      <a href="{{ url_for('homepage') }}">Trang chủ</a>
+      <a href="/">Trang chủ</a>
     </p>
   </footer>
 
-
   <script>
-    document
-      .getElementById("factType")
-      .addEventListener("change", function () {
-        const selectedValue = this.value;
-        const numbersSection = document.getElementById("numbersSection");
-        const catSection = document.getElementById("catSection");
-        const jokeSection = document.getElementById("jokeSection");
-        const uselessFactSection =
-          document.getElementById("uselessFactSection");
+    document.addEventListener('DOMContentLoaded', function () {
+      const factType = document.getElementById('factType');
+      const numbersSection = document.getElementById('numbersSection');
+      const catSection = document.getElementById('catSection');
+      const jokeSection = document.getElementById('jokeSection');
+      const uselessFactSection = document.getElementById('uselessFactSection');
+      const getContentButton = document.getElementById('getContent');
+      const loading = document.getElementById('loading');
+      const contentResponse = document.getElementById('contentResponse');
+      const translatedResponse = document.getElementById('translatedResponse');
+      const themeToggle = document.getElementById('themeToggle');
 
-        if (selectedValue === "numbers") {
-          numbersSection.style.display = "block";
-          catSection.style.display = "none"; // Ẩn phần cat fact
-          jokeSection.style.display = "none"; // Ẩn phần joke
-          uselessFactSection.style.display = "none"; // Ẩn phần useless fact
-          numbersSection.querySelector("input").value = ""; // Xóa giá trị trong input
-          document.getElementById("fact").innerHTML = ""; // Xóa phần phản hồi
-          document.getElementById("translatedFact").innerHTML = ""; // Xóa phần dịch
-        } else if (selectedValue === "cat") {
-          numbersSection.style.display = "none"; // Ẩn phần numbers fact
-          catSection.style.display = "block"; // Hiện phần cat fact
-          jokeSection.style.display = "none"; // Ẩn phần joke
-          uselessFactSection.style.display = "none"; // Ẩn phần useless fact
-          document.getElementById("catFact").innerHTML = ""; // Xóa phần phản hồi
-          document.getElementById("translatedCatFact").innerHTML = ""; // Xóa phần dịch
-        } else if (selectedValue === "joke") {
-          numbersSection.style.display = "none"; // Ẩn phần numbers fact
-          catSection.style.display = "none"; // Ẩn phần cat fact
-          jokeSection.style.display = "block"; // Hiện phần joke
-          uselessFactSection.style.display = "none"; // Ẩn phần useless fact
-          document.getElementById("joke").innerHTML = ""; // Xóa phần phản hồi
-          document.getElementById("translatedJoke").innerHTML = ""; // Xóa phần dịch
-        } else if (selectedValue === "useless") {
-          numbersSection.style.display = "none"; // Ẩn phần numbers fact
-          catSection.style.display = "none"; // Ẩn phần cat fact
-          jokeSection.style.display = "none"; // Ẩn phần joke
-          uselessFactSection.style.display = "block"; // Hiện phần useless fact
-          document.getElementById("uselessFact").innerHTML = ""; // Xóa phần phản hồi
-          document.getElementById("translatedUselessFact").innerHTML = ""; // Xóa phần dịch
-        }
+      factType.addEventListener('change', function () {
+        numbersSection.style.display = this.value === 'numbers' ? 'block' : 'none';
+        catSection.style.display = this.value === 'cat' ? 'block' : 'none';
+        jokeSection.style.display = this.value === 'joke' ? 'block' : 'none';
+        uselessFactSection.style.display = this.value === 'useless' ? 'block' : 'none';
+
+        contentResponse.style.display = 'none';
+        translatedResponse.style.display = 'none';
       });
 
-    // Xử lý lấy Fact
-    document
-      .getElementById("getFact")
-      .addEventListener("click", async function () {
-        const number = document.getElementById("number").value;
-        const type = document.getElementById("type").value;
-        const loadingIndicator = document.getElementById("loading");
+      getContentButton.addEventListener('click', async function () {
+        loading.style.display = 'flex';
+        contentResponse.classList.remove('show');
+        translatedResponse.classList.remove('show');
 
-        loadingIndicator.style.display = "block"; // Hiện spinner
+        let url = '';
+        let params = {};
+
+        switch (factType.value) {
+          case 'numbers':
+            url = '/get-fact/' + document.getElementById('type').value + '/' + document.getElementById('number').value;
+            break;
+          case 'cat':
+            url = '/get-cat-fact';
+            break;
+          case 'joke':
+            url = '/get-joke/' + document.getElementById('jokeCategory').value;
+            break;
+          case 'useless':
+            url = '/get-useless-fact';
+            break;
+        }
 
         try {
-          const response = await fetch(`/get-fact/${type}/${number}`);
-          const data = await response.json();
-          loadingIndicator.style.display = "none"; // Ẩn spinner
-
-          document.getElementById(
-            "fact"
-          ).innerHTML = `<strong>Fact:</strong> ${data.original_fact}`;
-          document.getElementById(
-            "translatedFact"
-          ).innerHTML = `<strong>Dịch:</strong> ${data.translated_fact}`;
-          document.getElementById("fact").style.display = "block";
-          document.getElementById("translatedFact").style.display = "block";
-        } catch (error) {
-          loadingIndicator.style.display = "none"; // Ẩn spinner nếu có lỗi
-          document.getElementById(
-            "fact"
-          ).innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
-          document.getElementById("fact").style.display = "block";
-        }
-      });
-
-    // Xử lý lấy Cat Fact
-    document
-      .getElementById("getCatFact")
-      .addEventListener("click", async function () {
-        const loadingIndicator = document.getElementById("loading");
-
-        loadingIndicator.style.display = "block"; // Hiện spinner
-
-        try {
-          const response = await fetch("/get-cat-fact");
-          const data = await response.json();
-          loadingIndicator.style.display = "none"; // Ẩn spinner
-
-          document.getElementById(
-            "catFact"
-          ).innerHTML = `<strong>Cat Fact:</strong> ${data.cat_fact}`;
-          document.getElementById(
-            "translatedCatFact"
-          ).innerHTML = `<strong>Dịch:</strong> ${data.translated_cat_fact}`;
-          document.getElementById("catFact").style.display = "block";
-          document.getElementById("translatedCatFact").style.display =
-            "block";
-        } catch (error) {
-          loadingIndicator.style.display = "none"; // Ẩn spinner nếu có lỗi
-          document.getElementById(
-            "catFact"
-          ).innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
-          document.getElementById("catFact").style.display = "block";
-        }
-      });
-
-    // Xử lý lấy Joke
-    document
-      .getElementById("getJoke")
-      .addEventListener("click", async function () {
-        const category = document.getElementById("jokeCategory").value;
-        const loadingIndicator = document.getElementById("loading");
-
-        loadingIndicator.style.display = "block"; // Hiện spinner
-
-        try {
-          const response = await fetch(`/get-joke/${category}`);
-          const data = await response.json();
-          loadingIndicator.style.display = "none"; // Ẩn spinner
-
-          document.getElementById(
-            "joke"
-          ).innerHTML = `<strong>Joke:</strong> ${data.joke}`;
-          document.getElementById(
-            "translatedJoke"
-          ).innerHTML = `<strong>Dịch:</strong> ${data.translated_joke}`;
-          document.getElementById("joke").style.display = "block";
-          document.getElementById("translatedJoke").style.display = "block";
-        } catch (error) {
-          loadingIndicator.style.display = "none"; // Ẩn spinner nếu có lỗi
-          document.getElementById(
-            "joke"
-          ).innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
-          document.getElementById("joke").style.display = "block";
-        }
-      });
-    // Xử lý lấy Useless Fact
-    document
-      .getElementById("getUselessFact")
-      .addEventListener("click", async function () {
-        const loadingIndicator = document.getElementById("loading");
-
-        loadingIndicator.style.display = "block"; // Hiện spinner
-
-        try {
-          const response = await fetch("/get-useless-fact");
-          const data = await response.json();
-          loadingIndicator.style.display = "none"; // Ẩn spinner
-
-          document.getElementById(
-            "uselessFact"
-          ).innerHTML = `<strong>Useless Fact:</strong> ${data.useless_fact}`;
-          document.getElementById(
-            "translatedUselessFact"
-          ).innerHTML = `<strong>Dịch:</strong> ${data.translated_useless_fact}`;
-          document.getElementById("uselessFact").style.display = "block";
-          document.getElementById("translatedUselessFact").style.display =
-            "block";
-        } catch (error) {
-          loadingIndicator.style.display = "none"; // Ẩn spinner nếu có lỗi
-          document.getElementById(
-            "uselessFact"
-          ).innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
-          document.getElementById("uselessFact").style.display = "block";
-        }
-      });
-
-    // Xử lý dịch văn bản
-    document
-      .getElementById("toggleTranslate")
-      .addEventListener("click", function () {
-        const translateSection = document.getElementById("translateSection");
-        translateSection.style.display =
-          translateSection.style.display === "none" ? "block" : "none";
-      });
-
-    document
-      .getElementById("translate")
-      .addEventListener("click", async function () {
-        const textToTranslate =
-          document.getElementById("textToTranslate").value;
-        const loadingIndicator = document.getElementById("loading");
-
-        loadingIndicator.style.display = "block"; // Hiện spinner
-
-        try {
-          const response = await fetch("/translate", {
-            method: "POST",
+          const response = await fetch(url, {
+            method: 'GET',
             headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ text: textToTranslate })
+              'Content-Type': 'application/json',
+            }
           });
           const data = await response.json();
-          loadingIndicator.style.display = "none"; // Ẩn spinner
 
-          document.getElementById(
-            "translatedText"
-          ).innerHTML = `<strong>Dịch:</strong> ${data.translated_text}`;
-          document.getElementById("translatedText").style.display = "block";
+          loading.style.display = 'none';
+
+          let originalContent = '';
+          let translatedContent = '';
+
+          if (data.original_fact) {
+            originalContent = data.original_fact;
+            translatedContent = data.translated_fact;
+          } else if (data.cat_fact) {
+            originalContent = data.cat_fact;
+            translatedContent = data.translated_cat_fact;
+          } else if (data.joke) {
+            originalContent = data.joke;
+            translatedContent = data.translated_joke;
+          } else if (data.useless_fact) {
+            originalContent = data.useless_fact;
+            translatedContent = data.translated_useless_fact;
+          }
+
+          contentResponse.innerHTML = `<strong>Nội dung:</strong> ${originalContent}`;
+          translatedResponse.innerHTML = `<strong>Dịch:</strong> ${translatedContent}`;
+
+          setTimeout(() => {
+            contentResponse.classList.add('show');
+            translatedResponse.classList.add('show');
+          }, 100);
+
+          addFloatingEmoji();
         } catch (error) {
-          loadingIndicator.style.display = "none"; // Ẩn spinner nếu có lỗi
-          document.getElementById(
-            "translatedText"
-          ).innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
-          document.getElementById("translatedText").style.display = "block";
+          loading.style.display = 'none';
+          contentResponse.innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
+          contentResponse.classList.add('show');
         }
       });
+
+      themeToggle.addEventListener('click', function () {
+        document.body.setAttribute('data-theme', document.body.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+        this.innerHTML = document.body.getAttribute('data-theme') === 'light' ? '<i class="fas fa-moon"></i>' : '<i class="fas fa-sun"></i>';
+      });
+
+      function addFloatingEmoji() {
+        const emoji = document.createElement('div');
+        emoji.className = 'floating-emoji';
+        emoji.style.left = `${Math.random() * window.innerWidth}px`;
+        emoji.style.top = `${Math.random() * window.innerHeight}px`;
+        emoji.innerHTML = ['😂', '🤔', '🐱', '🧮', '🤯'][Math.floor(Math.random() * 5)];
+        document.body.appendChild(emoji);
+
+        setTimeout(() => {
+          emoji.remove();
+        }, 3000);
+      }
+    });
   </script>
 </body>
 
