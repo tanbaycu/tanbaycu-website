@@ -5,7 +5,9 @@
 **Tác giả:** Tôi và Flask
 
 ## Một Số Chức Năng Nổi Bật
-![Ảnh minh họa](https://postimg.cc/Mn8tbrtD)
+<a href='https://postimg.cc/Mn8tbrtD' target='_blank'>
+  <img src='https://i.postimg.cc/QdFPD2TR/z5940471382564-70dbcba4e6a743fde4809ba31cfb680b.jpg' border='0' alt='Ảnh minh họa'/>
+</a>
 
 ## Chi Tiết Phiên Bản
 
