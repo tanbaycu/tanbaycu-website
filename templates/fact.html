@@ -355,6 +355,7 @@
   </footer>
 
   <script>
+
     document.addEventListener('DOMContentLoaded', function () {
       const factType = document.getElementById('factType');
       const numbersSection = document.getElementById('numbersSection');
@@ -365,6 +366,7 @@
       const loading = document.getElementById('loading');
       const contentResponse = document.getElementById('contentResponse');
       const translatedResponse = document.getElementById('translatedResponse');
+      const themeToggle = document.getElementById('themeToggle');
 
       factType.addEventListener('change', function () {
         const selectedValue = this.value;
@@ -373,15 +375,14 @@
         jokeSection.style.display = selectedValue === 'joke' ? 'block' : 'none';
         uselessFactSection.style.display = selectedValue === 'useless' ? 'block' : 'none';
 
-        // Xóa nội dung cũ khi chuyển loại
+        // Clear old content when changing type
         if (selectedValue === 'numbers') {
           document.getElementById('number').value = '';
-          contentResponse.innerHTML = '';
-          translatedResponse.innerHTML = '';
-        } else {
-          contentResponse.innerHTML = '';
-          translatedResponse.innerHTML = '';
         }
+        contentResponse.innerHTML = '';
+        translatedResponse.innerHTML = '';
+        contentResponse.style.display = 'none';
+        translatedResponse.style.display = 'none';
       });
 
       getContentButton.addEventListener('click', async function () {
@@ -431,22 +432,30 @@
 
           contentResponse.style.display = 'block';
           translatedResponse.style.display = 'block';
+
+          // Add show class for animation
+          setTimeout(() => {
+            contentResponse.classList.add('show');
+            translatedResponse.classList.add('show');
+          }, 10);
+
         } catch (error) {
           loading.style.display = 'none';
           contentResponse.innerHTML = `<strong>Lỗi:</strong> ${error.message}`;
           contentResponse.style.display = 'block';
+          contentResponse.classList.add('show');
         }
+      });
+
+      themeToggle.addEventListener('click', function () {
+        document.body.setAttribute('data-theme',
+          document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+        this.innerHTML = document.body.getAttribute('data-theme') === 'dark'
+          ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
       });
     });
 
-    themeToggle.addEventListener('click', function () {
-      document.body.setAttribute('data-theme',
-        document.body.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
-      this.innerHTML = document.body.getAttribute('data-theme') === 'dark'
-        ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
-    });
 
-    
   </script>
 </body>
 
