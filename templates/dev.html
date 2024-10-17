@@ -4,228 +4,616 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Dev Portfolio - Tan</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <title>Tan's Dev Portfolio - Innovative Web Solutions</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
-        body {
-            font-family: "Roboto", sans-serif;
-            background-color: #282a36;
-            color: #f8f8f2;
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --background-color: #ecf0f1;
+            --text-color: #34495e;
+            --card-bg: #fff;
+        }
+
+        * {
             margin: 0;
             padding: 0;
-            display: flex;
-            flex-direction: column;
-            min-height: 100vh;
+            box-sizing: border-box;
         }
 
-        /* Header and Navbar */
-        .header {
-            background-color: #6272a4;
-            padding: 20px;
-            text-align: center;
-            position: sticky;
-            top: 0;
+        body {
+            font-family: "Roboto", sans-serif;
+            line-height: 1.6;
+            color: var(--text-color);
+            background-color: var(--background-color);
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        header {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 20px 0;
+            position: fixed;
+            width: 100%;
             z-index: 1000;
+            transition: all 0.3s ease;
         }
 
-        .header h1 {
-            color: #50fa7b;
-            margin: 0;
-            font-size: 32px;
+        header.scrolled {
+            background-color: rgba(44, 62, 80, 0.9);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
         }
 
-        .navbar {
-            margin-top: 15px;
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .navbar a {
-            color: #f8f8f2;
+        .logo {
+            font-family: "Playfair Display", serif;
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+        }
+
+        .nav-links a {
+            color: #fff;
             text-decoration: none;
-            margin: 0 15px;
-            font-weight: 500;
-            font-size: 18px;
-            transition: color 0.3s;
+            font-weight: 400;
+            transition: color 0.3s ease;
+            font-size: 1.1rem;
         }
 
-        .navbar a:hover {
-            color: #50fa7b;
+        .nav-links a:hover {
+            color: var(--secondary-color);
         }
 
-        /* Hero Section */
         .hero {
-            background-image: url('https://i.postimg.cc/gjm0KtZx/taoanhdep-com-black-myth-wukong-36770.jpg');
-            /* Thay bằng URL ảnh của bạn */
+            background-image: linear-gradient(rgba(0, 0, 0, 0.7),
+                    rgba(0, 0, 0, 0.7)),
+                url("https://i.postimg.cc/gjm0KtZx/taoanhdep-com-black-myth-wukong-36770.jpg");
             background-size: cover;
             background-position: center;
-            padding: 100px 20px;
+            background-attachment: fixed;
+            height: 100vh;
+            display: flex;
+            align-items: center;
             text-align: center;
-            color: #f8f8f2;
+            color: #fff;
         }
 
-        .hero h2 {
-            font-size: 48px;
+        .hero-content {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .hero h1 {
+            font-family: "Playfair Display", serif;
+            font-size: 4rem;
             margin-bottom: 20px;
+            animation: fadeInUp 1s ease;
         }
 
         .hero p {
-            font-size: 18px;
-            margin-bottom: 40px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
+            font-size: 1.4rem;
+            margin-bottom: 30px;
+            animation: fadeInUp 1s ease 0.2s;
+            animation-fill-mode: both;
         }
 
-        .hero .cta-button {
-            background-color: #50fa7b;
-            color: #282a36;
-            padding: 15px 30px;
-            font-size: 18px;
-            border: none;
-            cursor: pointer;
-            border-radius: 5px;
-            text-transform: uppercase;
-            transition: background-color 0.3s;
+        .cta-button {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            animation: fadeInUp 1s ease 0.4s;
+            animation-fill-mode: both;
         }
 
-        .hero .cta-button:hover {
-            background-color: #45e27b;
+        .cta-button:hover {
+            background-color: #c0392b;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Content Section */
-        .content {
-            padding: 40px 20px;
-            background-color: #44475a;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            max-width: 900px;
-            margin: 20px auto;
+        .section {
+            padding: 100px 0;
+        }
+
+        .section-title {
             text-align: center;
+            font-family: "Playfair Display", serif;
+            font-size: 3rem;
+            margin-bottom: 50px;
+            color: var(--primary-color);
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+        }
+
+        .service-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            padding: 40px;
+            text-align: center;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .service-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .service-card i {
+            font-size: 3rem;
+            color: var(--secondary-color);
+            margin-bottom: 20px;
+        }
+
+        .service-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .service-card p {
+            font-size: 1.1rem;
+            color: #666;
         }
 
         .projects {
-            text-align: left;
+            background-color: #f9f9f9;
+        }
+
+        .project-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+
+        .project-card {
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+
+        .project-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .project-image {
+            height: 200px;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .project-content {
+            padding: 30px;
+        }
+
+        .project-content h3 {
+            font-size: 1.8rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .project-content p {
+            font-size: 1.1rem;
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        .project-link {
+            display: inline-block;
+            background-color: var(--secondary-color);
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+
+        .project-link:hover {
+            background-color: #2980b9;
+        }
+
+        .about {
+            display: flex;
+            align-items: center;
+            gap: 50px;
+        }
+
+        .about-image {
+            flex: 1;
+            max-width: 500px;
+        }
+
+        .about-image img {
+            width: 100%;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .about-content {
+            flex: 1;
+        }
+
+        .about-content h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .about-content p {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
             margin-top: 20px;
         }
 
-        .projects h2 {
-            color: #50fa7b;
-            margin-bottom: 15px;
+        .skill-tag {
+            background-color: var(--secondary-color);
+            color: #fff;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 0.9rem;
         }
 
-        .projects ul {
-            list-style: none;
-            padding: 0;
+        .contact {
+            background-color: var(--primary-color);
+            color: #fff;
         }
 
-        .projects li {
-            background-color: #6272a4;
-            margin: 10px 0;
-            padding: 15px 20px;
+        .contact-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px;
+            border: none;
             border-radius: 5px;
-            transition: transform 0.3s ease;
+            font-size: 1rem;
         }
 
-        .projects li:hover {
-            transform: translateY(-5px);
+        .form-group textarea {
+            height: 150px;
         }
 
-        .projects strong {
-            color: #50fa7b;
-            font-size: 18px;
+        .submit-btn {
+            background-color: var(--accent-color);
+            color: #fff;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 5px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
-        /* Footer */
-        .footer {
+        .submit-btn:hover {
+            background-color: #c0392b;
+        }
+
+        footer {
+            background-color: #2c3e50;
+            color: #fff;
             text-align: center;
             padding: 20px 0;
-            color: #f8f8f2;
-            background-color: #282a36;
-            width: 100%;
-            margin-top: auto;
-            display: flex;
-            justify-content: center;
         }
 
-        .footer p {
-            margin: 0;
+        .social-links {
+            margin-top: 20px;
         }
 
-        /* Responsive */
+        .social-links a {
+            color: #fff;
+            font-size: 1.5rem;
+            margin: 0 10px;
+            transition: color 0.3s ease;
+        }
+
+        .social-links a:hover {
+            color: var(--secondary-color);
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         @media (max-width: 768px) {
-            .hero h2 {
-                font-size: 36px;
+            .hero h1 {
+                font-size: 3rem;
             }
 
             .hero p {
-                font-size: 16px;
+                font-size: 1.2rem;
             }
 
-            .navbar a {
-                font-size: 16px;
+            .section-title {
+                font-size: 2.5rem;
+            }
+
+            .about {
+                flex-direction: column;
+            }
+
+            .about-image {
+                max-width: 100%;
             }
         }
     </style>
 </head>
 
 <body>
-    <header class="header">
-        <h1>Dev Portfolio</h1>
-        <nav class="navbar">
-            <a href="/projects">Projects</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
+    <header>
+        <nav class="container">
+            <div class="logo">
+                <a href="/">Docs</a>
+            </div>
+            <div class="nav-links">
+                <a href="#services">Services</a>
+                <a href="#projects">Projects</a>
+            </div>
         </nav>
     </header>
 
-    <!-- Hero Section -->
     <section class="hero">
-        <h2>Welcome to My Development Space</h2>
-        <p>
-            Explore the range of applications and projects I've developed over the
-            years. I specialize in web development, API integration, and more.
-        </p>
-        <button class="cta-button">Get Started</button>
+        <div class="hero-content">
+            <h1>Docs</h1>
+            <p>Tất cả source của web</p>
+            <a href="#services" class="cta-button">Khám phá</a>
+        </div>
     </section>
 
-    <!-- Content Section -->
-    <div class="content">
-        <h2>Ứng dụng</h2>
-        <div class="projects">
-            <h3>Thông tin</h3>
-            <ul>
-                <li>
-                    <strong><del>Chat với Gemini</del>:</strong> Đang triển khai lại.
-                </li>
-                <li>
-                    <strong>Upload tệp:</strong> Một công cụ đơn giản cho phép người dùng tải lên và lưu trữ tệp trên
-                    máy chủ, giúp dễ dàng chia sẻ và quản lý dữ liệu.
-                </li>
-                <li>
-                    <strong>Rút gọn link:</strong> Ứng dụng giúp người dùng rút gọn các liên kết dài thành các liên kết
-                    ngắn hơn, dễ chia sẻ hơn.
-                </li>
-                <li>
-                    <strong>Kiểm tra API:</strong> Công cụ hữu ích để kiểm tra API, cho phép người dùng gửi yêu cầu và
-                    xem phản hồi.
-                </li>
-                <li>
-                    <strong>Tạo mã QRCODE:</strong> Ứng dụng giúp tạo mã QR từ các liên kết hoặc nội dung muốn chia sẻ.
-                </li>
-                <li>
-                    <strong><del>Trình chạy Python</del>:</strong> Do hạn chế quyền khai thác tệp trên Vercel.
-                </li>
-                <li>
-                    <strong>Fact:</strong> Ứng dụng cung cấp sự thật thú vị ngẫu nhiên.
-                </li>
-            </ul>
+    <section id="services" class="section">
+        <div class="container">
+            <h2 class="section-title">Our Services</h2>
+            <div class="services-grid">
+                <div class="service-card">
+                    <i class="fas fa-file-upload"></i>
+                    <h3>File Management</h3>
+                    <p>
+                        Secure and efficient file upload and storage solutions for
+                        seamless data management.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-link"></i>
+                    <h3>Link Optimization</h3>
+                    <p>
+                        Create short, memorable links to enhance your online presence and
+                        track engagement.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-code"></i>
+                    <h3>API Integration</h3>
+                    <p>
+                        Robust API testing and integration services to streamline your
+                        development process.
+                    </p>
+                </div>
+                <div class="service-card">
+                    <i class="fas fa-qrcode"></i>
+                    <h3>QR Code Generation</h3>
+                    <p>
+                        Generate custom QR codes to bridge the gap between physical and
+                        digital experiences.
+                    </p>
+                </div>
+            </div>
         </div>
-    </div>
+    </section>
 
-    <!-- Footer -->
-    <footer class="footer">
-        <p>&copy; 2024 | Dev Portfolio</p>
+    <section id="projects" class="section projects">
+        <div class="container">
+            <h2 class="section-title">Featured Projects</h2>
+            <div class="project-grid">
+                <div class="project-card">
+                    <div class="project-image" style="
+                background-image: url('https://source.unsplash.com/random/400x300?tech');
+              "></div>
+                    <div class="project-content">
+                        <h3>File Uploader Pro</h3>
+                        <p>
+                            A robust file management system with advanced security features
+                            and cloud integration.
+                        </p>
+                        <a href="https://github.com/tanbaycu/file-exchange-manager" class="project-link">View
+                            Project</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image" style="
+                background-image: url('https://source.unsplash.com/random/400x300?code');
+              "></div>
+                    <div class="project-content">
+                        <h3>LinkShrink</h3>
+                        <p>
+                            An intelligent link shortening service with analytics and custom
+                            branding options.
+                        </p>
+                        <a href="https://github.com/tanbaycu/short-link" class="project-link">View Project</a>
+                    </div>
+                </div>
+                <div class="project-card">
+                    <div class="project-image" style="
+                background-image: url('https://source.unsplash.com/random/400x300?api');
+              "></div>
+                    <div class="project-content">
+                        <h3>API Tester Suite</h3>
+                        <p>
+                            A comprehensive API testing tool with real-time monitoring and
+                            error tracking capabilities.
+                        </p>
+                        <a href="https://github.com/tanbaycu/apis-client-guis" class="project-link">View Project</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="section">
+        <div class="container about">
+            <div class="about-image">
+                <img src="https://i.postimg.cc/zGTnr334/z5906034867696-6f6332fb9cb28352af6298a593d7d690.jpg"
+                    alt="Loki - My Best Friend" />
+            </div>
+            <div class="about-content">
+                <h2>About Loki</h2>
+                <p>Mập dữ lắm</p>
+                <p>=))</p>
+                <div class="skills">
+                    <span class="skill-tag">HTML5</span>
+                    <span class="skill-tag">CSS3</span>
+                    <span class="skill-tag">JavaScript</span>
+                    <span class="skill-tag">React</span>
+                    <span class="skill-tag">Node.js</span>
+                    <span class="skill-tag">Python</span>
+                    <span class="skill-tag">SQL</span>
+                    <span class="skill-tag">Git</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="contact" class="section contact">
+        <div class="container">
+            <h2 class="section-title">Get in Touch</h2>
+            <form class="contact-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" id="name" name="name" required />
+                </div>
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" required />
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea id="message" name="message" required></textarea>
+                </div>
+                <button type="submit" class="submit-btn">Send Message</button>
+            </form>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 | Docs</p>
+            <div class="social-links">
+                <a href="#"><i class="fab fa-github"></i></a>
+                <a href="#"><i class="fab fa-linkedin"></i></a>
+                <a href="#"><i class="fab fa-twitter"></i></a>
+            </div>
+        </div>
     </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const header = document.querySelector("header");
+            const scrollThreshold = 100;
+
+            window.addEventListener("scroll", () => {
+                if (window.scrollY > scrollThreshold) {
+                    header.classList.add("scrolled");
+                } else {
+                    header.classList.remove("scrolled");
+                }
+            });
+
+            // Smooth scrolling for navigation links
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute("href")).scrollIntoView({
+                        behavior: "smooth"
+                    });
+                });
+            });
+
+            // Form submission handling
+            const form = document.querySelector(".contact-form");
+            form.addEventListener("submit", (e) => {
+                e.preventDefault();
+                // Here you would typically send the form data to a server
+                alert("Thank you for your message! We will get back to you soon.");
+                form.reset();
+            });
+
+            // Add animation to service cards on scroll
+            const serviceCards = document.querySelectorAll(".service-card");
+            const projectCards = document.querySelectorAll(".project-card");
+
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting) {
+                            entry.target.style.animation = "fadeInUp 1s ease forwards";
+                        }
+                    });
+                },
+                { threshold: 0.1 }
+            );
+
+            serviceCards.forEach((card) => observer.observe(card));
+            projectCards.forEach((card) => observer.observe(card));
+        });
+    </script>
 </body>
 
 </html>
