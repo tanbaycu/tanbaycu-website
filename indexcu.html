@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Tân 7 Cú - Dự án Web Senior Đầu Tay</title>
+        <meta name="description"
+            content="Khám phá các công cụ trực tuyến hữu ích như tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!" />
+        <meta name="keywords" content="tải lên tệp, rút gọn liên kết, tạo mã QR, kiểm tra API, dự báo thời tiết" />
+        <meta name="author" content="Tân 7 Cú" />
+        <meta name="robots" content="index, follow" />
+
+        <!-- Open Graph Tags -->
+        <meta property="og:title" content="Trang Chủ - Công Cụ Hữu Ích Trực Tuyến" />
+        <meta property="og:description"
+            content="Khám phá các công cụ trực tuyến hữu ích. Tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!" />
+        <meta property="og:image" content="https://i.postimg.cc/mZm3WQJJ/Tan-7-cu-1.png" />
+        <meta property="og:url" content="https://tanbaycu.vercel.app" />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Trang Chủ - Công Cụ Hữu Ích Trực Tuyến" />
+        <meta name="twitter:description"
+            content="Khám phá công cụ trực tuyến hữu ích. Tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!" />
+        <meta name="twitter:image" content="https://i.postimg.cc/mZm3WQJJ/Tan-7-cu-1.png" />
+
+        <!-- Canonical -->
+        <link rel="canonical" href="https://tanbaycu.vercel.app" />
+        <link rel="icon" type="image/jpeg" href="https://i.postimg.cc/mZm3WQJJ/Tan-7-cu-1.png" />
+        <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
+
+    </head>
+
+
+    <style>
+        body {
+            font-family: "Roboto", sans-serif;
+            background: linear-gradient(135deg, #282a36 0%, #6272a4 100%);
+            color: #f8f8f2;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            padding-top: 60px;
+            /* Added padding to avoid overlap with navbar */
+            background-size: 200% 200%;
+            animation: gradient 10s ease infinite;
+            /* Add gradient animation */
+        }
+
+        @keyframes gradient {
+            0% {
+                background-position: 0% 50%;
+            }
+
+            50% {
+                background-position: 100% 50%;
+            }
+
+            100% {
+                background-position: 0% 50%;
+            }
+        }
+
+        /* Navbar */
+        .navbar {
+            background-color: #6272a4;
+            padding: 10px 20px;
+            /* Giảm padding để làm cho navbar gọn gàng hơn */
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            display: flex;
+            align-items: center;
+            /* Căn giữa các mục theo chiều dọc */
+            justify-content: space-between;
+            /* Đặt không gian giữa các mục */
+        }
+
+
+        /* Links in Navbar */
+        .navbar a {
+            color: #f8f8f2;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: 500;
+            margin-right: 20px;
+            /* Khoảng cách giữa các liên kết */
+        }
+
+        .navbar a:last-child {
+            margin-right: 0;
+            /* Không có khoảng cách cho liên kết cuối cùng */
+        }
+
+
+        .navbar a svg {
+            width: 30px;
+            height: 30px;
+            vertical-align: middle;
+            margin-right: 10px;
+            /* Tạo khoảng cách nhỏ giữa các biểu tượng */
+        }
+
+        .navbar a:hover svg {
+            stroke: #50fa7b;
+            /* Đổi màu biểu tượng khi hover */
+            transform: scale(1.1);
+            /* Phóng to nhẹ khi hover */
+        }
+
+
+
+
+
+        /* Off-canvas menu - Hidden by default */
+        .off-canvas-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            /* Start off-screen */
+            width: 250px;
+            height: 100%;
+            background-color: #44475a;
+            box-shadow: 2px 0 12px rgba(0, 0, 0, 0.5);
+            transition: left 0.4s ease;
+            /* Smooth slide effect */
+            z-index: 2000;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+
+        /* Add padding and smooth hover effect */
+        .off-canvas-menu a {
+            color: #f8f8f2;
+            padding: 12px 15px;
+            /* Increased padding for a better touch target */
+            text-decoration: none;
+            transition: background-color 0.3s, padding-left 0.3s, transform 0.3s;
+            /* Smooth transition */
+        }
+
+        /* Hover effect with padding adjustment */
+        .off-canvas-menu a:hover {
+            background-color: #6272a4;
+            padding-left: 20px;
+            /* Shift the link slightly to the right */
+            transform: scale(1.05);
+            /* Slightly scale up */
+        }
+
+        /* Add a shadow effect on hover */
+        .off-canvas-menu a:hover {
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.5);
+            /* Shadow effect */
+        }
+
+        /* Adding a 'pulse' effect on hover */
+        .off-canvas-menu a {
+            position: relative;
+        }
+
+        .off-canvas-menu a:hover::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(80, 250, 123, 0.3);
+            /* Light green overlay */
+            border-radius: 5px;
+            transform: translate(-50%, -50%) scale(1);
+            /* Center the pulse */
+            transition: transform 0.4s ease;
+            z-index: -1;
+            /* Put behind the text */
+        }
+
+        /* Animate the pulse */
+        .off-canvas-menu a:hover::before {
+            transform: translate(-50%, -50%) scale(1.5);
+            /* Scale up the overlay */
+        }
+
+        /* Overlay to darken the background when the menu is open */
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            display: none;
+            /* Hidden by default */
+            z-index: 1500;
+        }
+
+        /* Show menu when active */
+        .off-canvas-menu.open {
+            left: 0;
+            /* Menu slides in */
+        }
+
+        .overlay.show {
+            display: block;
+            /* Show overlay */
+        }
+
+        /* Hamburger menu button */
+        .menu-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .menu-button svg {
+            width: 30px;
+            height: 30px;
+            fill: #f8f8f2;
+        }
+
+        .menu-button:hover svg {
+            fill: #50fa7b;
+        }
+
+
+
+        .header {
+            text-align: center;
+            margin-top: 20px;
+            /* Reduced margin for better spacing */
+            padding: 20px;
+            /* Added padding */
+            background: rgba(98, 114, 164, 0.7);
+            /* Slightly transparent background */
+            border-radius: 10px;
+            /* Rounded corners */
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            /* Shadow effect */
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            /* Responsive size */
+            color: #50fa7b;
+            animation: textFadeIn 0.8s ease forwards;
+            /* Animation on load */
+        }
+
+        .header p {
+            font-size: 1.2em;
+            /* Responsive size */
+            color: #bd93f9;
+            margin: 10px 0;
+            animation: textFadeIn 1s ease forwards;
+            /* Animation on load */
+            animation-delay: 0.2s;
+            /* Delay for second line */
+        }
+
+        @keyframes textFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Button Section */
+        .button-container {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+            padding: 0 20px;
+            /* Added padding */
+        }
+
+        .action-button {
+            background: linear-gradient(135deg, #6272a4, #44475a);
+            color: #f8f8f2;
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: 500;
+            border-radius: 8px;
+            text-decoration: none;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-button:hover {
+            background: linear-gradient(135deg, #44475a, #6272a4);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 20px;
+            background: linear-gradient(135deg, #44475a, #6272a4);
+            color: #f8f8f2;
+            font-size: 14px;
+            position: relative;
+            /* Enable positioning for effects */
+            overflow: hidden;
+            /* Hide overflow for the wave effect */
+        }
+
+        /* Special effect for footer */
+        .footer::before {
+            content: '';
+            position: absolute;
+            bottom: 100%;
+            left: 50%;
+            width: 200%;
+            height: 100px;
+            background: rgba(80, 250, 123, 0.3);
+            border-radius: 50%;
+            transform: translateX(-50%) rotate(45deg);
+            /* Rotate for wave effect */
+            animation: wave 4s ease-in-out infinite;
+            /* Animate wave */
+        }
+
+        .footer a {
+            color: #50fa7b;
+            /* Link color */
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+            /* Underline on hover */
+        }
+
+        /* Wave animation */
+        @keyframes wave {
+            0% {
+                bottom: 100%;
+                transform: translateX(-50%) rotate(45deg) scale(1);
+            }
+
+            50% {
+                bottom: 80%;
+                transform: translateX(-50%) rotate(45deg) scale(1.1);
+            }
+
+            100% {
+                bottom: 100%;
+                transform: translateX(-50%) rotate(45deg) scale(1);
+            }
+        }
+
+
+        .social-icons {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar a {
+                font-size: 16px;
+            }
+
+            .header h1 {
+                font-size: 2em;
+                /* Adjust header size */
+            }
+
+            .header p {
+                font-size: 1em;
+                /* Adjust paragraph size */
+            }
+
+            .action-button {
+                font-size: 14px;
+                /* Adjust button size */
+                padding: 10px 15px;
+                /* Adjust padding */
+            }
+
+            .menu-button {
+                font-size: 14px;
+                /* Adjust menu button size */
+                padding: 10px;
+                /* Adjust padding */
+            }
+
+            .social-icons svg {
+                width: 20px;
+                /* Adjust social icon size */
+                height: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Header Section -->
+    <div class="header">
+        <h1>Chào mừng bạn đến với Website của tôi</h1>
+        <p>Explore various tools and features right at your fingertips!</p>
+    </div>
+
+    <!-- Button Section -->
+    <div class="button-container">
+        <a href="/upload_file" class="action-button">Upload File</a>
+        <a href="/shorten-link" class="action-button">Shorten Link</a>
+        <a href="/api-check" class="action-button">API Checker</a>
+        <a href="/qrcode" class="action-button">QR Code Generator</a>
+    </div>
+
+    <!-- Navbar -->
+    <div class="navbar">
+        <div class="navbar-links">
+            <!-- Home Icon -->
+            <a href="/">
+                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none"
+                    stroke="#ffffff" stroke-width="2" stroke-linecap="butt" stroke-linejoin="arcs">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </a>
+            <!-- About Me Icon -->
+            <a href="/about-me">
+                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none"
+                    stroke="#ffffff" stroke-width="2" stroke-linecap="butt" stroke-linejoin="arcs">
+                    <path d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3" />
+                    <circle cx="12" cy="10" r="3" />
+                    <circle cx="12" cy="12" r="10" />
+                </svg>
+            </a>
+            <!-- Dev Icon -->
+            <a href="/dev">
+                <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 24 24" fill="none"
+                    stroke="#ffffff" stroke-width="2" stroke-linecap="butt" stroke-linejoin="arcs">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"></path>
+                    <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+                </svg>
+            </a>
+        </div>
+        <!-- Nút Menu -->
+        <button class="menu-button" id="menu-toggle">
+            <!-- Hamburger icon (menu icon) -->
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M3 6h18v2H3zm0 5h18v2H3zm0 5h18v2H3z" />
+            </svg>
+        </button>
+
+        <!-- Off-canvas menu -->
+        <div class="off-canvas-menu" id="off-canvas-menu">
+            <a href="/upload_file">Upload tệp</a>
+            <a href="/shorten-link">Rút gọn link</a>
+            <a href="/api-check">Kiểm tra API</a>
+            <a href="/qrcode">Tạo mã QRCODE</a>
+            <a href="/clipython">Trình chạy Python</a>
+            <a href="/facts">Fact</a>
+            <a href="/ipconfig">IP check</a>
+            <a href="/weather">Dự báo thời tiết</a>
+            <a href="/urldownload">Download Video</a>
+            <a href="/random-image">Random Image</a>
+            <a href="/news">Tin tức</a>
+            <a href="/math">Làm toán</a>
+            <a href="/about">About</a>
+        </div>
+
+        <!-- Overlay to close off-canvas menu -->
+        <div class="overlay" id="overlay"></div>
+
+    </div>
+
+    <!-- Footer Section -->
+    <div class="footer">
+        <p>&copy; 2024 - Dự án web multi-task | Designed by Me with Flask
+            and ❤️</p>
+        <p>Follow me on <a href="https://github.com/tanbaycu" target="_blank">GitHub</a> | <a
+                href="https://www.facebook.com/tanbaycu.404s/" target="_blank">Facebook</a></p>
+    </div>
+
+
+    <script>
+        const menuButton = document.getElementById("menu-toggle");
+        const offCanvasMenu = document.getElementById("off-canvas-menu");
+        const overlay = document.getElementById("overlay");
+
+        // Toggle menu visibility when clicking the menu button
+        menuButton.addEventListener("click", () => {
+            offCanvasMenu.classList.toggle("open");
+            overlay.classList.toggle("show");
+        });
+
+        // Close menu when clicking outside (on overlay)
+        overlay.addEventListener("click", () => {
+            offCanvasMenu.classList.remove("open");
+            overlay.classList.remove("show");
+        });
+
+
+
+
+    </script>
+    <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Person",
+          "name": "Tanbaycu",
+          "url": "https://tanbaycu.vercel.app"
+        }
+        </script>
+
+</body>
+
+</html>
