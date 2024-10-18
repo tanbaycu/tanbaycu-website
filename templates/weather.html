@@ -1,369 +1,722 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bảng Điều Khiển Thời Tiết</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <style>
+      :root {
+        --primary-color: #3498db;
+        --secondary-color: #2ecc71;
+        --background-color: #f0f3f5;
+        --card-background: #ffffff;
+        --text-color: #2c3e50;
+        --border-radius: 12px;
+        --box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        --transition: all 0.3s ease;
+      }
 
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Weather Information</title>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-  <style>
-    /* Reset toàn bộ thuộc tính mặc định */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
 
-    body {
-      font-family: "Roboto", sans-serif;
-      background-color: #1b1b1f;
-      /* Màu nền tối hơn */
-      color: #f0f0f0;
-      /* Màu chữ sáng cho dễ đọc */
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-    }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
+        line-height: 1.6;
+      }
 
-    /* Header */
-    .header {
-      background: linear-gradient(90deg, #007acc, #00d4ff);
-      /* Màu gradient cho header */
-      color: #ffffff;
-      padding: 20px;
-      width: 100%;
-      text-align: center;
-      font-size: 2em;
-      border-bottom: 2px solid #444;
-      /* Đường viền cho sự phân cách */
-    }
+      .dashboard {
+        display: flex;
+        min-height: 100vh;
+      }
 
-    /* Container */
-    .container {
-      max-width: 800px;
-      /* Chiều rộng tối đa cho nội dung */
-      width: 90%;
-      /* Chiều rộng 90% cho mọi màn hình */
-      background-color: #2b2b30;
-      /* Nền của thẻ */
-      border-radius: 12px;
-      /* Bo góc */
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      /* Đổ bóng cho chiều sâu */
-      margin: 20px auto;
-      /* Tự động căn giữa */
-      padding: 20px;
-      /* Padding bên trong thẻ */
-    }
+      .sidebar {
+        width: 250px;
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        padding: 2rem;
+        color: #fff;
+        transition: var(--transition);
+      }
 
-    /* Weather Card */
-    .weather-card {
-      background-color: #3c3c42;
-      /* Nền thẻ thông tin thời tiết */
-      border-radius: 10px;
-      /* Bo góc */
-      padding: 15px;
-      /* Padding cho nội dung */
-      margin: 10px 0;
-      /* Khoảng cách giữa các thẻ */
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      /* Đổ bóng cho chiều sâu */
-      transition: transform 0.3s, box-shadow 0.3s;
-      /* Hiệu ứng chuyển tiếp */
-    }
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 2rem;
+        display: flex;
+        align-items: center;
+      }
 
-    .weather-card:hover {
-      transform: translateY(-5px);
-      /* Nâng nhẹ khi hover */
-      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
-      /* Đổ bóng mạnh hơn */
-    }
+      .logo i {
+        margin-right: 0.5rem;
+      }
 
-    /* Tiêu đề card */
-    .card-title {
-      font-size: 1.5em;
-      /* Kích thước tiêu đề */
-      color: #00d4ff;
-      /* Màu sắc nổi bật */
-      margin-bottom: 10px;
-      /* Khoảng cách dưới tiêu đề */
-    }
+      .nav-item {
+        margin-bottom: 1rem;
+      }
 
-    /* Thông tin card */
-    .card-info {
-      display: flex;
-      justify-content: space-between;
-      /* Khoảng cách giữa các phần tử */
-      font-size: 1.2em;
-      /* Kích thước chữ thông tin */
-      margin-bottom: 10px;
-      /* Khoảng cách dưới thông tin */
-    }
+      .nav-link {
+        color: rgba(255, 255, 255, 0.8);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+        padding: 0.5rem;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+      }
 
-    /* Footer */
-    .footer {
-      margin-top: auto;
-      /* Đẩy footer xuống dưới */
-      background-color: #444;
-      /* Nền footer */
-      color: #ffffff;
-      text-align: center;
-      padding: 10px;
-      width: 100%;
-    }
+      .nav-link:hover,
+      .nav-link.active {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: #fff;
+      }
 
-    /* Nút */
-    .button {
-      background: linear-gradient(90deg, #007acc, #00d4ff);
-      /* Gradient cho nút */
-      color: #ffffff;
-      /* Màu chữ trắng */
-      border: none;
-      /* Không có viền */
-      border-radius: 8px;
-      /* Bo góc */
-      padding: 10px 20px;
-      /* Padding cho nút */
-      cursor: pointer;
-      /* Con trỏ biến thành tay khi hover */
-      font-size: 1.2em;
-      /* Kích thước chữ nút */
-      transition: background 0.3s;
-      /* Hiệu ứng chuyển tiếp nền */
-      margin: 20px 0;
-      /* Khoảng cách cho sự phân cách */
-      width: 100%;
-      /* Độ rộng 100% cho nút */
-    }
+      .nav-link i {
+        margin-right: 0.5rem;
+      }
 
-    .button:hover {
-      background: linear-gradient(90deg, #00d4ff, #007acc);
-      /* Gradient ngược khi hover */
-    }
+      .main-content {
+        flex: 1;
+        padding: 2rem;
+        overflow-y: auto;
+      }
 
-    /* Input Field */
-    .input-field {
-      padding: 10px;
-      /* Padding cho input */
-      border-radius: 8px;
-      /* Bo góc */
-      border: 2px solid #00d4ff;
-      /* Màu viền */
-      background-color: #2b2b30;
-      /* Nền input */
-      color: #f8f8f2;
-      /* Màu chữ trong input */
-      width: 100%;
-      /* Chiều rộng đầy đủ */
-      margin-bottom: 20px;
-      /* Khoảng cách dưới input */
-    }
-
-    /* Placeholder */
-    .input-field::placeholder {
-      color: #f8f8f2;
-      /* Màu chữ placeholder */
-      opacity: 0.7;
-      /* Mờ đi một chút */
-    }
-
-    /* Bảng */
-    table {
-      width: 100%;
-      /* Chiều rộng đầy đủ */
-      margin-top: 20px;
-      /* Khoảng cách cho sự phân cách */
-      border-collapse: collapse;
-      /* Gộp viền */
-    }
-
-    th,
-    td {
-      padding: 12px;
-      /* Padding cho ô trong bảng */
-      text-align: left;
-      /* Căn trái chữ */
-      border-bottom: 1px solid #444;
-      /* Viền dưới */
-    }
-
-    th {
-      background-color: #444;
-      /* Nền cho đầu bảng */
-      color: #ffffff;
-      /* Màu chữ cho đầu bảng */
-    }
-
-    tr:hover {
-      background-color: #3c3c42;
-      /* Hiệu ứng hover cho dòng */
-    }
-
-    /* Responsive */
-    @media (max-width: 1200px) {
       .header {
-        font-size: 1.8em;
-        /* Giảm kích thước chữ header */
+        background: linear-gradient(
+          135deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: #fff;
+        padding: 2rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 2rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
-      .card-title {
-        font-size: 1.3em;
-        /* Giảm kích thước tiêu đề card */
-      }
-
-      .card-info {
-        font-size: 1em;
-        /* Giảm kích thước chữ thông tin */
-      }
-    }
-
-    @media (max-width: 992px) {
-      .header {
-        font-size: 1.6em;
-        /* Giảm kích thước chữ header */
-      }
-
-      .weather-card {
-        padding: 10px;
-        /* Giảm padding cho thẻ thời tiết */
-      }
-
-      .input-field {
-        padding: 8px;
-        /* Giảm padding cho input */
+      .header h1 {
+        font-size: 2rem;
+        font-weight: 600;
       }
 
       .button {
-        font-size: 1em;
-        /* Giảm kích thước chữ nút */
+        background-color: #fff;
+        color: var(--primary-color);
+        border: none;
+        border-radius: var(--border-radius);
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: 500;
+        cursor: pointer;
+        transition: var(--transition);
+        box-shadow: var(--box-shadow);
       }
-    }
 
-    @media (max-width: 768px) {
-      .container {
-        padding: 15px;
-        /* Giảm padding cho container */
+      .button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
       }
 
-      .header {
-        font-size: 1.4em;
-        /* Giảm kích thước chữ header */
+      .weather-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
       }
 
       .weather-card {
-        margin: 5px 0;
-        /* Giảm khoảng cách giữa các thẻ */
-      }
-    }
-
-    @media (max-width: 576px) {
-      .header {
-        font-size: 1.2em;
-        /* Giảm kích thước chữ header */
+        background-color: var(--card-background);
+        border-radius: var(--border-radius);
+        padding: 1.5rem;
+        box-shadow: var(--box-shadow);
+        transition: var(--transition);
       }
 
-      .card-title {
-        font-size: 1.1em;
-        /* Giảm kích thước tiêu đề card */
+      .weather-card:hover {
+        transform: translateY(-5px);
       }
 
-      .card-info {
-        font-size: 0.9em;
-        /* Giảm kích thước chữ thông tin */
+      .weather-card h2 {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+        color: var(--primary-color);
       }
 
-      .input-field {
-        padding: 6px;
-        /* Giảm padding cho input */
+      .weather-info {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
       }
 
-      .button {
-        font-size: 0.9em;
-        /* Giảm kích thước chữ nút */
+      .temperature {
+        font-size: 2.5rem;
+        font-weight: 600;
       }
-    }
-  </style>
-</head>
 
-<body>
-  <div class="header">Weather Information</div>
-  <div class="container">
-    <button id="get-location" class="button">Get My Location</button>
+      .weather-icon {
+        font-size: 3rem;
+        color: var(--secondary-color);
+      }
 
-    <form id="location-form" method="POST" style="display: none">
-      <input type="hidden" name="latitude" id="latitude" />
-      <input type="hidden" name="longitude" id="longitude" />
-      <button type="submit" class="button">Get Weather</button>
-    </form>
+      .weather-details {
+        display: flex;
+        justify-content: space-between;
+        margin-top: 1rem;
+      }
 
-    {% if current_weather %}
-    <div class="weather-card">
-      <h2 class="card-title">
-        Current Weather in {{ current_weather.city }}
-      </h2>
-      <div class="card-info">
-        <span>Temperature: {{ current_weather.temperature }} °C</span>
-        <span>Description: {{ current_weather.description }}</span>
-      </div>
-      <div class="card-info">
-        <span>Humidity: {{ current_weather.humidity }}%</span>
-        <span>Wind Speed: {{ current_weather.wind_speed }} m/s</span>
+      .weather-detail {
+        text-align: center;
+      }
+
+      .weather-detail i {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: var(--primary-color);
+      }
+
+      .forecast-table {
+        background-color: var(--card-background);
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        overflow: hidden;
+        margin-bottom: 2rem;
+      }
+
+      .forecast-table table {
+        width: 100%;
+        border-collapse: collapse;
+      }
+
+      .forecast-table th,
+      .forecast-table td {
+        padding: 1rem;
+        text-align: left;
+        border-bottom: 1px solid #e0e0e0;
+      }
+
+      .forecast-table th {
+        background-color: var(--primary-color);
+        color: #fff;
+        font-weight: 500;
+      }
+
+      .forecast-table tr:last-child td {
+        border-bottom: none;
+      }
+
+      .forecast-table tr:hover {
+        background-color: #f5f5f5;
+      }
+
+      #loading {
+        display: none;
+        text-align: center;
+        padding: 2rem;
+        font-size: 1.2rem;
+        color: var(--primary-color);
+      }
+
+      #loading i {
+        animation: spin 1s linear infinite;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .error {
+        background-color: #f8d7da;
+        color: #721c24;
+        padding: 1rem;
+        border-radius: var(--border-radius);
+        margin-bottom: 1rem;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        overflow: auto;
+        background-color: rgba(0, 0, 0, 0.4);
+        animation: fadeIn 0.3s;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+        }
+        to {
+          opacity: 1;
+        }
+      }
+
+      .modal-content {
+        background-color: #fefefe;
+        margin: 15% auto;
+        padding: 2rem;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 500px;
+        border-radius: var(--border-radius);
+        box-shadow: var(--box-shadow);
+        animation: slideIn 0.3s;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateY(-50px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .close {
+        color: #aaa;
+        float: right;
+        font-size: 28px;
+        font-weight: bold;
+        transition: var(--transition);
+      }
+
+      .close:hover,
+      .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+      }
+
+      .form-group {
+        margin-bottom: 1rem;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 500;
+      }
+
+      .form-group input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+        border-radius: var(--border-radius);
+        transition: var(--transition);
+      }
+
+      .form-group input:focus {
+        outline: none;
+        border-color: var(--primary-color);
+        box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+      }
+
+      footer {
+        background-color: var(--card-background);
+        padding: 1rem;
+        text-align: center;
+        border-radius: var(--border-radius);
+        margin-top: 2rem;
+      }
+
+      @media (max-width: 768px) {
+        .dashboard {
+          flex-direction: column;
+        }
+
+        .sidebar {
+          width: 100%;
+          padding: 1rem;
+        }
+
+        .main-content {
+          padding: 1rem;
+        }
+
+        .weather-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="dashboard">
+      <aside class="sidebar">
+        <div class="logo">
+          <i class="fas fa-cloud-sun"></i>
+          <span>Thời Tiết Pro</span>
+        </div>
+        <nav>
+          <div class="nav-item">
+            <a href="#" class="nav-link active" id="dashboard-link">
+              <i class="fas fa-home"></i>
+              <span>Bảng điều khiển</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="#" class="nav-link" id="locations-link">
+              <i class="fas fa-map-marker-alt"></i>
+              <span>Địa điểm</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-chart-line"></i>
+              <span>Thống kê</span>
+            </a>
+          </div>
+          <div class="nav-item">
+            <a href="#" class="nav-link">
+              <i class="fas fa-cog"></i>
+              <span>Cài đặt</span>
+            </a>
+          </div>
+        </nav>
+      </aside>
+      <main class="main-content">
+        <header class="header">
+          <h1>Bảng Điều Khiển Thời Tiết</h1>
+          <button id="get-weather" class="button">
+            <i class="fas fa-map-marker-alt"></i> Lấy Vị Trí Hiện Tại
+          </button>
+        </header>
+        <div id="error" class="error" style="display: none"></div>
+        <div id="weather-container" style="display: none">
+          <section class="weather-grid">
+            <div class="weather-card">
+              <h2>Thời tiết hiện tại tại <span id="city"></span></h2>
+              <div class="weather-info">
+                <div>
+                  <div id="temperature" class="temperature"></div>
+                  <div id="description"></div>
+                </div>
+                <i id="weather-icon" class="fas weather-icon"></i>
+              </div>
+              <div class="weather-details">
+                <div class="weather-detail">
+                  <i class="fas fa-tint"></i>
+                  <div id="humidity"></div>
+                  <div>Độ ẩm</div>
+                </div>
+                <div class="weather-detail">
+                  <i class="fas fa-wind"></i>
+                  <div id="wind-speed"></div>
+                  <div>Gió</div>
+                </div>
+              </div>
+            </div>
+          </section>
+          <section class="forecast-table">
+            <table>
+              <thead>
+                <tr>
+                  <th>Ngày</th>
+                  <th>Nhiệt độ</th>
+                  <th>Mô tả</th>
+                  <th>Độ ẩm</th>
+                  <th>Tốc độ gió</th>
+                </tr>
+              </thead>
+              <tbody id="forecast-data"></tbody>
+            </table>
+          </section>
+          <button id="load-more" class="button">Xem Thêm</button>
+        </div>
+        <div id="loading">
+          <i class="fas fa-spinner fa-2x"></i> Đang tải dữ liệu thời tiết...
+        </div>
+        
+      </main>
+    </div>
+
+    <div id="location-modal" class="modal">
+      <div class="modal-content">
+        <span class="close">&times;</span>
+        <h2>Nhập Chi Tiết Địa Điểm</h2>
+        <form id="location-form">
+          <div class="form-group">
+            <label for="province">Tỉnh/Thành Phố:</label>
+            <input type="text" id="province" name="province" required />
+          </div>
+          <div class="form-group">
+            <label for="district">Huyện:</label>
+            <input type="text" id="district" name="district" required />
+          </div>
+          <div class="form-group">
+            <label for="ward">Xã:</label>
+            <input type="text" id="ward" name="ward" required />
+          </div>
+          <div class="form-group">
+            <label for="country">Quốc gia:</label>
+            <input type="text" id="country" name="country" required />
+          </div>
+          <div class="form-group">
+            <label for="country-code">Mã quốc gia:</label>
+            <input
+              type="text"
+              id="country-code"
+              name="country-code"
+              maxlength="2"
+              placeholder="VN"
+            />
+          </div>
+          <button type="submit" class="button">Xem Thời Tiết</button>
+        </form>
       </div>
     </div>
-    {% elif error %}
-    <p>{{ error }}</p>
-    {% endif %} {% if forecast_info %}
-    <h2>Forecast for the Next 5 Hours</h2>
-    <table>
-      <thead>
-        <tr>
-          <th>Time</th>
-          <th>Temperature (°C)</th>
-          <th>Description</th>
-          <th>Humidity (%)</th>
-          <th>Wind Speed (m/s)</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for forecast in forecast_info %}
-        <tr>
-          <td>{{ forecast.time }}</td>
-          <td>{{ forecast.temperature }}</td>
-          <td>{{ forecast.description }}</td>
-          <td>{{ forecast.humidity }}</td>
-          <td>{{ forecast.wind_speed }}</td>
-        </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-    {% endif %}
-  </div>
 
-  <script>
-    document
-      .getElementById("get-location")
-      .addEventListener("click", function () {
-        if (navigator.geolocation) {
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const getWeatherButton = document.getElementById("get-weather");
+        const loadMoreButton = document.getElementById("load-more");
+        const locationsLink = document.getElementById("locations-link");
+        const dashboardLink = document.getElementById("dashboard-link");
+        const modal = document.getElementById("location-modal");
+        const closeModal = modal.querySelector(".close");
+        const locationForm = document.getElementById("location-form");
+
+        getWeatherButton.addEventListener("click", getWeather);
+        loadMoreButton.addEventListener("click", loadMoreForecasts);
+        locationsLink.addEventListener("click", openLocationModal);
+        dashboardLink.addEventListener("click", showDashboard);
+        closeModal.addEventListener("click", closeLocationModal);
+        locationForm.addEventListener("submit", handleLocationSubmit);
+
+        window.onclick = function (event) {
+          if (event.target == modal) {
+            closeLocationModal();
+          }
+        };
+      });
+
+      function getWeather() {
+        if ("geolocation" in navigator) {
           navigator.geolocation.getCurrentPosition(
             function (position) {
-              document.getElementById("latitude").value =
-                position.coords.latitude;
-              document.getElementById("longitude").value =
-                position.coords.longitude;
-              document.getElementById("location-form").style.display =
-                "block"; // Hiển thị form sau khi lấy vị trí
+              const latitude = position.coords.latitude;
+              const longitude = position.coords.longitude;
+              fetchWeatherData(latitude, longitude);
             },
-            function () {
-              alert("Unable to retrieve your location.");
+            function (error) {
+              showError(
+                "Không thể lấy vị trí của bạn. Vui lòng bật dịch vụ định vị."
+              );
             }
           );
         } else {
-          alert("Geolocation is not supported by this browser.");
+          showError("Trình duyệt của bạn không hỗ trợ Geolocation.");
         }
-      });
-  </script>
-</body>
+      }
 
+      function fetchWeatherData(latitude, longitude) {
+        const loading = document.getElementById("loading");
+        loading.style.display = "block";
+
+        fetch("/weather", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            latitude: latitude,
+            longitude: longitude
+          })
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              showError(data.error);
+            } else {
+              displayWeatherData(data);
+            }
+            loading.style.display = "none";
+          })
+          .catch((error) => {
+            showError("Đã xảy ra lỗi khi lấy dữ liệu thời tiết.");
+            loading.style.display = "none";
+          });
+      }
+
+      function displayWeatherData(data) {
+        const weatherContainer = document.getElementById("weather-container");
+        weatherContainer.style.display = "block";
+
+        // Display current weather
+        document.getElementById("city").textContent = data.current_weather.city;
+        document.getElementById(
+          "temperature"
+        ).textContent = `${data.current_weather.temperature}°C`;
+        document.getElementById("description").textContent =
+          data.current_weather.description;
+        document.getElementById(
+          "humidity"
+        ).textContent = `${data.current_weather.humidity}%`;
+        document.getElementById(
+          "wind-speed"
+        ).textContent = `${data.current_weather.wind_speed} m/s`;
+
+        // Set weather icon
+        const weatherIcon = document.getElementById("weather-icon");
+        weatherIcon.className = "fas weather-icon";
+        weatherIcon.classList.add(
+          getWeatherIconClass(data.current_weather.description)
+        );
+
+        // Display forecast
+        const forecastData = document.getElementById("forecast-data");
+        forecastData.innerHTML = "";
+        data.forecast_info.forEach((forecast) => {
+          const row = forecastData.insertRow();
+          row.innerHTML = `
+                    <td>${forecast.time}</td>
+                    <td>${forecast.temperature}°C</td>
+                    <td>${forecast.description}</td>
+                    <td>${forecast.humidity}%</td>
+                    <td>${forecast.wind_speed} m/s</td>
+                `;
+        });
+      }
+
+      function loadMoreForecasts() {
+        const loading = document.getElementById("loading");
+        loading.style.display = "block";
+
+        const latitude = "{{ latitude }}";
+        const longitude = "{{ longitude }}";
+        const lastForecastIndex = "{{ last_forecast_index }}";
+
+        fetch(
+          `/load_more_forecasts?latitude=${latitude}&longitude=${longitude}&last_forecast_index=${lastForecastIndex}`
+        )
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.forecasts) {
+              const forecastData = document.getElementById("forecast-data");
+              data.forecasts.forEach((forecast) => {
+                const row = forecastData.insertRow();
+                row.innerHTML = `
+                                <td>${forecast.time}</td>
+                                <td>${forecast.temperature}°C</td>
+                                <td>${forecast.description}</td>
+                                <td>${forecast.humidity}%</td>
+                                <td>${forecast.wind_speed} m/s</td>
+                            `;
+              });
+            } else if (data.error) {
+              showError(data.error);
+            }
+            loading.style.display = "none";
+          })
+          .catch((error) => {
+            showError("Đã xảy ra lỗi khi tải thêm dự báo.");
+            loading.style.display = "none";
+          });
+      }
+
+      function showError(message) {
+        const errorElement = document.getElementById("error");
+        errorElement.textContent = message;
+        errorElement.style.display = "block";
+      }
+
+      function getWeatherIconClass(description) {
+        const lowercaseDesc = description.toLowerCase();
+        if (lowercaseDesc.includes("clear")) return "fa-sun";
+        if (lowercaseDesc.includes("cloud")) return "fa-cloud";
+        if (lowercaseDesc.includes("rain")) return "fa-cloud-rain";
+        if (lowercaseDesc.includes("snow")) return "fa-snowflake";
+        if (lowercaseDesc.includes("thunder")) return "fa-bolt";
+        return "fa-cloud-sun"; // default icon
+      }
+
+      function openLocationModal() {
+        document.getElementById("location-modal").style.display = "block";
+      }
+
+      function closeLocationModal() {
+        document.getElementById("location-modal").style.display = "none";
+      }
+
+      function showDashboard() {
+        document.getElementById("weather-container").style.display = "block";
+        closeLocationModal();
+      }
+
+      function handleLocationSubmit(event) {
+        event.preventDefault();
+        const province = document.getElementById("province").value;
+        const district = document.getElementById("district").value;
+        const ward = document.getElementById("ward").value;
+        const country = document.getElementById("country").value;
+        const countryCode = document.getElementById("country-code").value;
+        fetchWeatherByLocation(province, district, ward, country, countryCode);
+        closeLocationModal();
+      }
+
+      function fetchWeatherByLocation(
+        province,
+        district,
+        ward,
+        country,
+        countryCode
+      ) {
+        const loading = document.getElementById("loading");
+        loading.style.display = "block";
+
+        fetch("/weather_by_location", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded"
+          },
+          body: new URLSearchParams({
+            province: province,
+            district: district,
+            ward: ward,
+            country: country,
+            country_code: countryCode
+          })
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              showError(data.error);
+            } else {
+              displayWeatherData(data);
+            }
+            loading.style.display = "none";
+          })
+          .catch((error) => {
+            showError("Đã xảy ra lỗi khi lấy dữ liệu thời tiết.");
+            loading.style.display = "none";
+          });
+      }
+    </script>
+  </body>
 </html>

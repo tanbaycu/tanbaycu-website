@@ -532,12 +532,10 @@ def weather():
         longitude = request.form.get("longitude")
 
         if latitude and longitude:
-            # Lấy thông tin thời tiết hiện tại
             weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API_KEY}&units=metric"
             weather_response = requests.get(weather_url)
             weather_data = weather_response.json()
 
-            # Lấy thông tin dự báo thời tiết 5 giờ tiếp theo
             forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&appid={API_KEY}&units=metric"
             forecast_response = requests.get(forecast_url)
             forecast_data = forecast_response.json()
@@ -554,11 +552,8 @@ def weather():
                     "wind_speed": weather_data["wind"]["speed"],
                 }
 
-                # Lấy thông tin dự báo trong 5 giờ
                 forecast_info = []
-                for entry in forecast_data["list"][
-                    :5
-                ]:  # Lấy 5 bản ghi (tương ứng với 5 giờ tiếp theo)
+                for entry in forecast_data["list"][:5]:
                     forecast_info.append(
                         {
                             "time": entry["dt_txt"],
@@ -569,21 +564,12 @@ def weather():
                         }
                     )
 
-                # Lưu trữ thông tin forecast để lấy sau
-                return render_template(
-                    "weather.html",
-                    current_weather=current_weather,
-                    forecast_info=forecast_info,
-                    latitude=latitude,
-                    longitude=longitude,
-                    last_forecast_index=5,  # Để theo dõi vị trí đã lấy dự báo
+                return jsonify(
+                    {"current_weather": current_weather, "forecast_info": forecast_info}
                 )
-
             else:
-                error_message = (
-                    "Could not retrieve weather data. Please check the location."
-                )
-                return render_template("weather.html", error=error_message)
+                return jsonify({"error": "Could not retrieve weather data."}), 400
+        return jsonify({"error": "Invalid latitude or longitude."}), 400
 
     return render_template("weather.html")
 
@@ -617,6 +603,76 @@ def load_more_forecasts():
         return jsonify({"forecasts": forecasts})
     else:
         return jsonify({"error": "Unable to fetch forecast data."}), 400
+
+
+@app.route("/weather_by_location", methods=["POST"])
+def weather_by_location():
+    province = request.form.get("province")
+    district = request.form.get("district")
+    ward = request.form.get("ward")
+    country = request.form.get("country")
+    country_code = request.form.get("country_code")
+
+    # Xây dựng chuỗi địa điểm
+    location = f"{ward}, {district}, {province}, {country}"
+    if country_code:
+        location += f" ({country_code})"
+    base_url = "http://api.openweathermap.org/data/2.5/forecast"
+
+    params = {
+        "q": location,
+        "appid": API_KEY,
+        "units": "metric",
+        "lang": "vi",  
+    }
+
+    try:
+        response = requests.get(base_url, params=params)
+        data = response.json()
+
+        if response.status_code == 200:
+            current_weather = data["list"][0]
+            city_name = data["city"]["name"]
+
+            # Xử lý thời tiết hiện tại
+            current_weather_data = {
+                "city": city_name,
+                "temperature": round(current_weather["main"]["temp"], 1),
+                "description": current_weather["weather"][0]["description"],
+                "humidity": current_weather["main"]["humidity"],
+                "wind_speed": round(
+                    current_weather["wind"]["speed"] * 3.6, 1
+                ),  # Chuyển đổi từ m/s sang km/h
+            }
+
+            # Xử lý dự báo
+            forecast_data = []
+            for forecast in data["list"][1:6]:  # 5 dự báo tiếp theo
+                forecast_data.append(
+                    {
+                        "time": datetime.fromtimestamp(forecast["dt"]).strftime(
+                            "%Y-%m-%d %H:%M:%S"
+                        ),
+                        "temperature": round(forecast["main"]["temp"], 1),
+                        "description": forecast["weather"][0]["description"],
+                        "humidity": forecast["main"]["humidity"],
+                        "wind_speed": round(
+                            forecast["wind"]["speed"] * 3.6, 1
+                        ),  # Chuyển đổi từ m/s sang km/h
+                    }
+                )
+
+            return jsonify(
+                {
+                    "current_weather": current_weather_data,
+                    "forecast_info": forecast_data,
+                }
+            )
+        else:
+            return jsonify({"error": f"Lỗi: {data['message']}"}), 400
+
+    except requests.RequestException as e:
+        return jsonify({"error": f"Yêu cầu thất bại: {str(e)}"}), 500
 
 
 @app.route("/urldownload", methods=["GET", "POST"])
