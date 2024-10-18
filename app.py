@@ -7,7 +7,6 @@ import requests
 import yt_dlp
 import sys
 import re
-import os
 import subprocess
 from deep_translator import GoogleTranslator
 
