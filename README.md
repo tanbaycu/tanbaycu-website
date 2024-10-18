@@ -6,6 +6,7 @@ Welcome to **Tanbaycu**, a versatile web project designed with multiple function
 - **Project Type**: Multi-tasking Website  
 - **Status**: 🟢 Ongoing (Started on: 12/10/2024)  
 - **Author**: Me & Flask
+- **Support**: `Github` `VSCode` `Github Copilot` `ChatGPT` `Gemini` `Thonny`
 
 ---
 ![Chào em](static/mota.jpg)
@@ -14,8 +15,13 @@ Welcome to **Tanbaycu**, a versatile web project designed with multiple function
 
 This website project comes with a rich set of features, designed to simplify tasks and enhance user experience. Below are some of the core services provided:
 
-- 📁 **File Upload**  
-  Easily upload files to GoFile and Pixeldrain with a fast and user-friendly interface.
+- 📁 **File Upload** 
+
+  Easily upload files to API GoFile and Pixeldrain with a fast and user-friendly interface.
+
+- 🤖 **Chat with Gemini**
+
+  Console-like web interface combined with Gemini chat. - Update 18/10
 
 - 🔗 **Link Shortening**  
   Convert long URLs into short, easy-to-share links using TinyURL and v.gd.
@@ -57,6 +63,7 @@ Each of these features is designed to enhance productivity and deliver a seamles
 ## 🛠️ Version Details:
 
 - **Gemini Chat** (Beta) - Released on 18/10/2024 | New Form
+
   A chat feature currently in beta testing, designed to enhance user interaction on the site.
 
 ---
@@ -83,5 +90,8 @@ Thank you for visiting **my website**. Stay tuned for future updates and new fea
 ---
 
 ### Tags:
-`Python` `Flask` `API` `Pexels` `HTML` `OpenWeatherMap` `GoFile` `Tiny URL` `QR Code` `Pixeldrains` 
+`Python` `Flask` `API` `Pexels` `HTML` `OpenWeatherMap` `GoFile` `Tiny URL` `QR Code` `Pixeldrains` `v.gd` 
+
+
+
 
