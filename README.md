@@ -8,6 +8,7 @@ Welcome to **Tanbaycu**, a versatile web project designed with multiple function
 - **Author**: Me & Flask
 
 ---
+![Chào em](static/mota.jpg)
 
 ## 🚀 Key Features:
 
