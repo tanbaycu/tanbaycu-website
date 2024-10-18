@@ -2,221 +2,279 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Video Download</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/dracula-dracula/1.0.0/dracula.min.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flexible Video Downloader</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
   <style>
+    :root {
+      --primary-color: #4A90E2;
+      --secondary-color: #50E3C2;
+      --accent-color: #F5A623;
+      --background-color: #F8F8F8;
+      --text-color: #333333;
+      --card-bg: #FFFFFF;
+      --error-color: #FF4757;
+      --success-color: #28C76F;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     body {
-      background-color: #1e1e2f;
-      color: #f8f8f2;
-      font-family: "Arial", sans-serif;
+      font-family: 'Poppins', sans-serif;
+      background-color: var(--background-color);
+      color: var(--text-color);
+      line-height: 1.6;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
     }
 
     .container {
-      flex: 1;
-      max-width: 900px;
-      margin: auto;
-      padding: 40px;
-      border-radius: 15px;
-      background: #2e2e4c;
-      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.6);
-      transition: transform 0.3s;
-    }
-
-    .container:hover {
-      transform: translateY(-5px);
-    }
-
-    h1 {
-      text-align: center;
-      color: #50fa7b;
-      margin-bottom: 20px;
-    }
-
-    h2 {
-      text-align: center;
-      color: #ffb86c;
-    }
-
-    input[type="text"] {
+      max-width: 1200px;
       width: 100%;
-      padding: 12px;
-      border: 2px solid #50fa7b;
-      border-radius: 5px;
-      margin-bottom: 20px;
-      font-size: 14px;
-      background: #44475a;
-      color: #f8f8f2;
-      transition: border-color 0.3s;
+      margin: 0 auto;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      flex-grow: 1;
     }
 
-    input[type="text"]:focus {
-      border-color: #ffb86c;
+    .app-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    .app-title {
+      font-size: 2.5rem;
+      font-weight: 700;
+      color: var(--primary-color);
+      margin-bottom: 0.5rem;
+    }
+
+    .app-description {
+      font-size: 1.1rem;
+      color: var(--text-color);
+    }
+
+    .main-content {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 2rem;
+      justify-content: center;
+      flex-grow: 1;
+    }
+
+    .input-section,
+    .result-section {
+      flex: 1 1 300px;
+      max-width: 100%;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .card-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--primary-color);
+      margin-bottom: 1rem;
+    }
+
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .url-input {
+      padding: 0.75rem 1rem;
+      border: 2px solid #E0E0E0;
+      border-radius: 8px;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .url-input:focus {
       outline: none;
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.1);
     }
 
-    button,
-    .download-link {
-      padding: 12px 25px;
+    .submit-btn {
+      padding: 0.75rem 1.5rem;
       border: none;
-      border-radius: 5px;
-      font-size: 16px;
+      border-radius: 8px;
+      background-color: var(--primary-color);
+      color: white;
+      font-size: 1rem;
+      font-weight: 600;
       cursor: pointer;
       transition: all 0.3s ease;
-      background: linear-gradient(45deg, #50fa7b, #ffb86c);
-      color: #282a36;
-      text-align: center;
-      margin: 5px;
     }
 
-    button:hover,
+    .submit-btn:hover {
+      background-color: #3A7BD5;
+    }
+
+    .format-buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .format-btn {
+      flex: 1 1 calc(50% - 0.5rem);
+      padding: 0.75rem 1rem;
+      border: 2px solid var(--secondary-color);
+      border-radius: 8px;
+      background-color: transparent;
+      color: var(--secondary-color);
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .format-btn:hover,
+    .format-btn.active {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+
+    #result {
+      margin-top: 1.5rem;
+    }
+
+    .loader {
+      width: 40px;
+      height: 40px;
+      border: 4px solid #f3f3f3;
+      border-top: 4px solid var(--primary-color);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin: 20px auto;
+      display: none;
+    }
+
+    @keyframes spin {
+      0% {
+        transform: rotate(0deg);
+      }
+
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    .download-link {
+      display: inline-block;
+      margin-top: 1rem;
+      padding: 0.75rem 1.5rem;
+      background-color: var(--success-color);
+      color: white;
+      text-decoration: none;
+      border-radius: 8px;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
     .download-link:hover {
-      background: linear-gradient(45deg, #ffb86c, #50fa7b);
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      background-color: #24A85B;
+    }
+
+    .error-message {
+      color: var(--error-color);
+      font-weight: 600;
+      margin-top: 1rem;
+      padding: 1rem;
+      background-color: #FFE8E8;
+      border-radius: 8px;
     }
 
     .format-list {
-      margin-top: 20px;
-      list-style: none;
+      list-style-type: none;
       padding: 0;
+      margin-top: 1rem;
     }
 
-    .format-list li {
-      background: #6272a4;
-      margin-bottom: 15px;
-      padding: 15px;
+    .format-item {
+      background-color: #F8F9FA;
+      margin-bottom: 1rem;
+      padding: 1rem;
       border-radius: 8px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: transform 0.2s;
-    }
-
-    .format-list li:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+      flex-wrap: wrap;
+      gap: 1rem;
     }
 
     .format-info {
-      flex-grow: 1;
-      margin-right: 20px;
+      font-size: 0.9rem;
     }
 
     .format-info strong {
-      display: block;
-      font-size: 16px;
-      color: #50fa7b;
+      color: var(--primary-color);
     }
 
-    .format-info span {
-      color: #f8f8f2;
-      font-size: 12px;
+    .convert-option {
+      margin-top: 1.5rem;
+      padding: 1.5rem;
+      background-color: #F0F7FF;
+      border-radius: 8px;
+      text-align: center;
     }
 
-    .retry-button {
-      background: linear-gradient(45deg, #ff5555, #ff79c6);
+    .convert-option p {
+      margin-bottom: 1rem;
+      font-weight: 600;
+      color: var(--primary-color);
     }
 
-    .retry-button:hover {
-      background: linear-gradient(45deg, #ff79c6, #ff5555);
-    }
-
-    footer {
-      margin-top: auto;
-      /* Đẩy footer xuống dưới cùng */
-      padding: 20px 0;
-      /* Padding trên và dưới */
-      font-size: 1rem;
-      /* Kích thước chữ */
-      display: flex;
-      /* Sử dụng flexbox */
-      justify-content: center;
-      /* Căn giữa nội dung trong footer */
-      align-items: center;
-      /* Căn giữa theo chiều dọc */
-      background-color: transparent;
-      /* Nền trong suốt, không cần phông nền */
-      color: #ffffff;
-      /* Màu chữ sáng */
-    }
-
-    footer a {
-      color: #50fa7b;
-      /* Màu chữ liên kết trong footer */
-      text-decoration: none;
-      /* Không gạch chân */
-      transition: color 0.3s;
-      /* Hiệu ứng chuyển màu */
-      margin: 0 10px;
-      /* Khoảng cách giữa các liên kết */
-    }
-
-    footer a:hover {
-      color: #ffffff;
-      /* Màu chữ khi hover */
-    }
-
-    footer span {
-      margin: 0 10px;
-      /* Khoảng cách giữa các phần tử */
-    }
-
-
-    .video-link {
-      color: #50fa7b;
-      cursor: pointer;
-      font-size: 24px;
-    }
-
-    .video-link:hover {
-      text-decoration: underline;
-    }
-
-    .popup {
-      display: none;
-      position: fixed;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%);
-      background: #44475a;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
-      z-index: 1000;
-    }
-
-    .popup h2 {
-      color: #50fa7b;
-      margin: 0 0 10px;
-    }
-
-    .popup button {
-      background: #ff5555;
-      color: #ffffff;
-    }
-
-    .popup button:hover {
-      background: #ff79c6;
-    }
-
-    @media (max-width: 600px) {
+    @media (max-width: 768px) {
       .container {
-        padding: 20px;
+        padding: 1rem;
       }
 
-      h1,
-      h2 {
-        font-size: 20px;
+      .app-title {
+        font-size: 2rem;
       }
 
-      button,
-      .download-link {
-        font-size: 14px;
+      .main-content {
+        flex-direction: column;
+      }
+
+      .input-section,
+      .result-section {
+        flex-basis: 100%;
+      }
+
+      .format-buttons {
+        flex-direction: column;
+      }
+
+      .format-btn {
+        flex-basis: 100%;
+      }
+
+      .format-item {
+        flex-direction: column;
+        align-items: flex-start;
       }
     }
   </style>
@@ -224,52 +282,124 @@
 
 <body>
   <div class="container">
-    <h1 class="video-link" onclick="window.location.href='{{ url_for('homepage') }}'">Video Download</h1>
-    <form method="POST">
-      <input type="text" name="url" placeholder="Enter YouTube or Facebook URL" required />
-      <button type="submit">Find</button>
-    </form>
+    <header class="app-header">
+      <h1 class="app-title" onclick="location.href='{{ url_for('homepage') }}'" style="cursor: pointer;">
+        Flexible Video Downloader
+      </h1>
+      <p class="app-description">Download videos from YouTube and Facebook with ease</p>
+    </header>
 
-    {% if formats %}
-    <h2>{{ title }}</h2>
-    <ul class="format-list">
-      {% for fmt in formats %}
-      <li>
-        <div class="format-info">
-          <strong>{{ fmt['format_note'] }}</strong>
-          <span>ID: {{ fmt['id'] }}</span>
-          <span>Quality: {{ fmt['quality'] }}</span>
-          <span>Extension: {{ fmt['ext'] }}</span>
+    <main class="main-content">
+      <section class="input-section">
+        <div class="card">
+          <h2 class="card-title">Enter Video URL</h2>
+          <div class="input-group">
+            <input type="text" id="url-input" class="url-input" placeholder="Paste your video URL here">
+            <button onclick="findVideo()" class="submit-btn">Find Video</button>
+          </div>
+          <div class="format-buttons">
+            <button class="format-btn" onclick="setFormat('mp3')">MP3</button>
+            <button class="format-btn active" onclick="setFormat('mp4')">MP4</button>
+          </div>
         </div>
-        <a class="download-link" href="{{ fmt['url'] }}" download>Tải xuống</a>
-      </li>
-      {% endfor %}
-    </ul>
-    <button class="retry-button" onclick="location.reload();">Thử lại</button>
-    {% endif %}
-  </div>
-  <footer>
-    <p>
-      <span>© 2024</span> |
-      <span>Beta 1.26</span> |
-      <a href="{{ url_for('homepage') }}">Trang chủ</a>
-    </p>
-  </footer>
-
-
-  <div class="popup" id="notification-popup">
-    <h2>Thông báo</h2>
-    <p>Vui lòng lưu ý rằng một số liên kết YouTube có thể không khả dụng để tải xuống.</p>
-    <button onclick="closePopup()">Đóng</button>
+      </section>
+      <section class="result-section">
+        <div class="card">
+          <h2 class="card-title">Download Options</h2>
+          <div class="loader" id="loader"></div>
+          <div id="result"></div>
+        </div>
+      </section>
+    </main>
   </div>
 
   <script>
-    window.onload = function () {
-      document.getElementById('notification-popup').style.display = 'block';
-    };
+    let selectedFormat = 'mp4';
 
-    function closePopup() {
-      document.getElementById('notification-popup').style.display = 'none';
+    function setFormat(format) {
+      selectedFormat = format;
+      document.querySelectorAll('.format-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.innerText.toLowerCase() === format);
+      });
+    }
+
+    function findVideo() {
+      const url = document.getElementById('url-input').value;
+      const resultDiv = document.getElementById('result');
+      const loader = document.getElementById('loader');
+
+      if (!url) {
+        showError('Please enter a valid URL');
+        return;
+      }
+
+      loader.style.display = 'block';
+      resultDiv.innerHTML = '';
+
+      fetch('/urldownload', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `url=${encodeURIComponent(url)}`
+      })
+        .then(response => response.json())
+        .then(data => {
+          loader.style.display = 'none';
+          if (data.error) {
+            showError(data.error);
+          } else {
+            showVideoInfo(data);
+          }
+        })
+        .catch(error => {
+          loader.style.display = 'none';
+          showError('An error occurred while processing your request.');
+          console.error('Error:', error);
+        });
+    }
+
+    function showError(message) {
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `<p class="error-message">${message}</p>`;
+    }
+
+    function showVideoInfo(data) {
+      const resultDiv = document.getElementById('result');
+      let formatsList = '<ul class="format-list">';
+      let hasMP4 = false;
+
+      data.formats.forEach(format => {
+        if (format.ext === selectedFormat) {
+          formatsList += `
+                        <li class="format-item">
+                            <span class="format-info"><strong>${format.format_note}</strong> (${format.ext})</span>
+                            <a href="/download?url=${encodeURIComponent(data.url)}&format=${format.format_id}" class="download-link">Download</a>
+                        </li>
+                    `;
+        }
+        if (format.ext === 'mp4') {
+          hasMP4 = true;
+        }
+      });
+      formatsList += '</ul>';
+
+      let convertOption = '';
+      if (selectedFormat === 'mp3' && hasMP4) {
+        convertOption = `
+                    <div class="convert-option">
+                        <p>Convert from MP4 to MP3</p>
+                        <a href="/convert?url=${encodeURIComponent(data.url)}&format=mp3" class="download-link">Convert and Download MP3</a>
+                    </div>
+                `;
+      }
+
+      resultDiv.innerHTML = `
+                <h3 style="font-size: 1.2rem; margin-bottom: 1rem; color: var(--primary-color);">${data.title}</h3>
+                <p style="margin-bottom: 1rem;">Available ${selectedFormat.toUpperCase()} formats:</p>
+                ${formatsList}
+                ${convertOption}
+            `;
     }
   </script>
 </body>

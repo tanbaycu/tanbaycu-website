@@ -677,8 +677,6 @@ def weather_by_location():
 
 @app.route("/urldownload", methods=["GET", "POST"])
 def urldownload():
-    error_message = None  
-    formats = []
     if request.method == "POST":
         url = request.form.get("url")
         if url:
@@ -693,19 +691,77 @@ def urldownload():
                     formats = info_dict.get("formats", [])
 
                     # Check for supported platforms
-                    if "youtube" in info_dict["webpage_url"] or "facebook" in info_dict["webpage_url"]:
-                        return render_template(
-                            "urldownload.html",
-                            formats=formats,
-                            title=info_dict.get("title"),
-                            url=url,
+                    if (
+                        "youtube" in info_dict["webpage_url"]
+                        or "facebook" in info_dict["webpage_url"]
+                    ):
+                        return jsonify(
+                            {
+                                "title": info_dict.get("title"),
+                                "formats": formats,
+                                "url": url,
+                            }
                         )
                     else:
-                        error_message = "Unsupported platform. Please provide a YouTube or Facebook URL."
+                        return jsonify(
+                            {
+                                "error": "Unsupported platform. Please provide a YouTube or Facebook URL."
+                            }
+                        )
             except Exception as e:
-                error_message = str(e)
+                return jsonify({"error": str(e)})
+        else:
+            return jsonify({"error": "No URL provided."})
+    return render_template("urldownload.html")
 
-    return render_template("urldownload.html", formats=None, error_message=error_message)
+
+@app.route("/download")
+def download_video():
+    url = request.args.get("url")
+    format_id = request.args.get("format")
+    if not url or not format_id:
+        return "Missing URL or format", 400
+
+    try:
+        ydl_opts = {
+            "format": format_id,
+            "outtmpl": "downloads/%(title)s.%(ext)s",
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(info_dict)
+
+        return send_file(filename, as_attachment=True)
+    except Exception as e:
+        return str(e), 500
+
+
+@app.route("/convert")
+def convert_to_mp3():
+    url = request.args.get("url")
+    if not url:
+        return "Missing URL", 400
+
+    try:
+        ydl_opts = {
+            "format": "bestaudio/best",
+            "postprocessors": [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": "mp3",
+                    "preferredquality": "192",
+                }
+            ],
+            "outtmpl": "downloads/%(title)s.%(ext)s",
+        }
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info_dict = ydl.extract_info(url, download=True)
+            filename = ydl.prepare_filename(info_dict)
+            mp3_filename = os.path.splitext(filename)[0] + ".mp3"
+
+        return send_file(mp3_filename, as_attachment=True)
+    except Exception as e:
+        return str(e), 500
 
 
 
