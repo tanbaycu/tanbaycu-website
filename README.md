@@ -1,13 +1,26 @@
 
 # Tanbaycu - First Web Project 🌐
+<p align="center">
+  <img src="https://i.postimg.cc/mZm3WQJJ/Tan-7-cu-1.png" alt="Tanbaycu Logo" width="400"/>
+</p>
 
-Welcome to **Tanbaycu**, a versatile web project designed with multiple functionalities and developed as a first step into web development.
-
+---
+![Python](https://img.shields.io/badge/Python-3.9-blue)
+![Flask](https://img.shields.io/badge/Flask-2.0-lightgrey)
+![API](https://img.shields.io/badge/API-Enabled-green)
+---
 - **Project Type**: Multi-tasking Website  
 - **Status**: 🟢 Ongoing (Started on: 12/10/2024)  
 - **Author**: Me & Flask
 - **Support**: `Github` `VSCode` `Github Copilot` `ChatGPT` `Gemini` `Thonny`
 
+--- 
+## 🛠️ Tech Stack
+
+- **Frontend**: HTML, CSS (Bootstrap)
+- **Backend**: Python (Flask)
+- **APIs**: OpenWeatherMap, TinyURL, GoFile, etc.
+- **Hosting**: Vercel
 ---
 ![Chào em](static/mota.jpg)
 
@@ -89,9 +102,45 @@ Thank you for visiting **my website**. Stay tuned for future updates and new fea
 
 ---
 
+## 🚧 Future Roadmap
+
+- [ ] Improve chat functionality (version 2.0)
+- [ ] Add user authentication and profiles
+- [ ] Implement additional APIs for stock market data
+- [ ] Mobile app integration
+
+## 🎥 Demo Video
+
+Xem video giới thiệu dự án tại [đây](https://player.vimeo.com/video/1021034750?badge=0&autopause=0&player_id=0&app_id=58479).
+
+
+
 ### Tags:
 `Python` `Flask` `API` `Pexels` `HTML` `OpenWeatherMap` `GoFile` `Tiny URL` `QR Code` `Pixeldrains` `v.gd` 
 
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## 🙏 Credits
+
+- Project inspired by [Flask Documentation](https://flask.palletsprojects.com/).
+- UI framework powered by [Bootstrap](https://getbootstrap.com/).
+- Hosting provided by [Vercel](https://vercel.com/).
