@@ -1,178 +1,333 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About This Web - Tanbaycu</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-  <style>
-    body {
-      background-color: #282a36;
-      color: #f8f8f2;
-      font-family: "Roboto", sans-serif;
-    }
-
-    .container {
-      margin-top: 100px;
-      border-radius: 10px;
-      padding: 30px;
-      background-color: #44475a;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .section-title {
-      font-size: 2em;
-      margin-bottom: 20px;
-      color: #50fa7b;
-      text-align: center;
-    }
-
-    .service {
-      margin-bottom: 30px;
-      padding: 20px;
-      border: 1px solid #6272a4;
-      border-radius: 10px;
-      transition: transform 0.3s;
-    }
-
-    .service:hover {
-      transform: translateY(-5px);
-    }
-
-    .btn-custom {
-      background-color: #50fa7b;
-      color: #282a36;
-    }
-
-    .btn-custom:hover {
-      background-color: #4bf66f;
-    }
-
-    .footer {
-      text-align: center;
-      margin-top: 40px;
-      color: #6272a4;
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Console Hướng Dẫn Sử Dụng Tanbaycu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
+    <style>
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        @keyframes blink {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        .cursor::after {
+            content: "|";
+            animation: blink 1s infinite;
+        }
+        .typing::after {
+            content: "...";
+            animation: blink 1s infinite;
+        }
+        .command-suggestion {
+            position: absolute;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: #888;
+            padding: 5px;
+            border-radius: 5px;
+            display: none;
+        }
+    </style>
 </head>
-
-<body>
-  <div class="container">
-    <h2 class="section-title">Về Chúng Tôi</h2>
-    <p>
-      Chúng tôi phát triển các công cụ và giải pháp giúp người dùng dễ dàng
-      thực hiện nhiều tác vụ trực tuyến với sự đơn giản và tiện lợi.
-    </p>
-
-    <h3 class="section-title">Các Dịch Vụ Chúng Tôi Cung Cấp</h3>
-
-    <div class="service">
-      <h4>Upload Tệp</h4>
-      <p>
-        Dịch vụ cho phép bạn upload các tệp lên GoFile và Pixeldrain một
-        cách dễ dàng và nhanh chóng.
-      </p>
+<body class="bg-gray-100 font-sans">
+    <div class="container mx-auto p-4 max-w-4xl">
+        <h1 class="text-4xl font-bold mb-6 text-center text-gray-800 fade-in"></h1>
+        <div id="console" class="bg-gray-900 text-green-400 p-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out">
+            <div id="output" class="h-96 overflow-y-auto mb-4 scrollbar-hide space-y-2 pb-2"></div>
+            <div class="flex items-center bg-gray-800 rounded-md p-2 relative">
+                <span class="text-yellow-400 mr-2">$</span>
+                <input type="text" id="input" class="flex-grow bg-transparent outline-none cursor text-white" autofocus />
+                <div id="commandSuggestion" class="command-suggestion"></div>
+            </div>
+        </div>
+        <div class="mt-6 flex justify-between items-center">
+            <button id="darkModeToggle" class="px-4 py-2 bg-gray-800 text-white rounded-md shadow-md hover:bg-gray-700 transition-colors duration-300">
+                <i class="fas fa-moon mr-2"></i>Chế độ tối
+            </button>
+            <button id="copyButton" class="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition-colors duration-300">
+                <i class="fas fa-copy mr-2"></i>Sao chép output
+            </button>
+        </div>
     </div>
 
-    <div class="service">
-      <h4>Rút Gọn Liên Kết</h4>
-      <p>
-        Biến những URL dài dòng thành các liên kết ngắn gọn với TinyURL và
-        v.gd, giúp bạn dễ dàng chia sẻ hơn.
-      </p>
-    </div>
+    <script>
+        const output = document.getElementById("output");
+        const input = document.getElementById("input");
+        const console = document.getElementById("console");
+        const darkModeToggle = document.getElementById("darkModeToggle");
+        const copyButton = document.getElementById("copyButton");
+        const commandSuggestion = document.getElementById("commandSuggestion");
+        let isDarkMode = true;
+        let commandHistory = [];
+        let historyIndex = -1;
 
-    <div class="service">
-      <h4>Kiểm Tra API</h4>
-      <p>
-        Xác minh và xem thông tin chi tiết về các yêu cầu HTTP với công cụ
-        kiểm tra API của chúng tôi.
-      </p>
-    </div>
+        const commands = {
+            help: "Các lệnh có sẵn: <span class='text-yellow-300'>help</span>, <span class='text-yellow-300'>clear</span>, <span class='text-yellow-300'>upload</span>, <span class='text-yellow-300'>shorten</span>, <span class='text-yellow-300'>api</span>, <span class='text-yellow-300'>qr</span>, <span class='text-yellow-300'>python</span>, <span class='text-yellow-300'>facts</span>, <span class='text-yellow-300'>ip</span>, <span class='text-yellow-300'>weather</span>, <span class='text-yellow-300'>video</span>, <span class='text-yellow-300'>echo</span>, <span class='text-yellow-300'>date</span>, <span class='text-yellow-300'>whoami</span>, <span class='text-yellow-300'>version</span>",
+            clear: () => {
+                output.innerHTML = "";
+                return "";
+            },
+            upload: `
+<span class="text-blue-300 font-bold">Hướng dẫn Upload Tệp:</span>
+<ol class="list-decimal list-inside space-y-1 ml-4">
+    <li>Truy cập trang upload tệp</li>
+    <li>Chọn nút "Chọn tệp" hoặc kéo và thả tệp vào khu vực được chỉ định</li>
+    <li>Chọn dịch vụ lưu trữ (<span class="text-yellow-300">GoFile</span> hoặc <span class="text-yellow-300">Pixeldrain</span>)</li>
+    <li>Nhấn nút "Upload" và đợi quá trình hoàn tất</li>
+    <li>Sao chép đường link chia sẻ được cung cấp sau khi upload xong</li>
+</ol>
+            `,
+            shorten: `
+<span class="text-blue-300 font-bold">Hướng dẫn Rút Gọn Liên Kết:</span>
+<ol class="list-decimal list-inside space-y-1 ml-4">
+    <li>Nhập URL dài vào ô văn bản</li>
+    <li>Chọn dịch vụ rút gọn(thông thường sẽ được random) (<span class="text-yellow-300">TinyURL</span> hoặc <span class="text-yellow-300">v.gd</span>)</li>
+    <li>Nhấn nút "Rút gọn"</li>
+    <li>Sao chép liên kết ngắn được tạo ra</li>
+</ol>
+            `,
+            api: `
+<span class="text-blue-300 font-bold">Hướng dẫn Kiểm Tra API:</span>
+<ol class="list-decimal list-inside space-y-1 ml-4">
+    <li>Nhập URL của API cần kiểm tra</li>
+    <li>Chọn phương thức HTTP (<span class="text-yellow-300">GET</span>, <span class="text-yellow-300">POST</span>, <span class="text-yellow-300">PUT</span>, <span class="text-yellow-300">DELETE</span>, etc.)</li>
+    <li>Thêm các headers nếu cần thiết</li>
+    <li>Nhập body request (đối với <span class="text-yellow-300">POST</span> hoặc <span class="text-yellow-300">PUT</span>)</li>
+    <li>Nhấn "Gửi yêu cầu" và xem kết quả</li>
+</ol>
+            `,
+            qr: `
+<span class="text-blue-300 font-bold">Hướng dẫn Tạo Mã QRCODE:</span>
+<ol class="list-decimal list-inside space-y-1 ml-4">
+    <li>Nhập văn bản hoặc URL vào ô văn bản</li>
+    <li>Chọn kích thước mã QR</li>
+    <li>Tùy chọn: Chọn định dạng cho QR</li>
+    <li>Nhấn "Tạo mã QR"</li>
+    <li>Tải xuống hoặc chia sẻ mã QR đã tạo</li>
+</ol>
+            `,
+            python: "<span class='text-blue-300 font-bold'>Hướng dẫn Chạy Python Trực Tuyến:</span> Chức năng này tạm thời đang được triển khai lại.",
+            facts: "<span class='text-blue-300 font-bold'>Hướng dẫn Facts Ngẫu Nhiên:</span> Nhấn nút 'Hiển thị fact' để xem một sự thật ngẫu nhiên.",
+            ip: "<span class='text-blue-300 font-bold'>Hướng dẫn Kiểm Tra Địa Chỉ IP:</span> Nhập địa chỉ IP cần kiểm tra hoặc để trống để kiểm tra IP của bạn, sau đó nhấn 'Kiểm tra'.",
+            weather: "<span class='text-blue-300 font-bold'>Hướng dẫn Dự Báo Thời Tiết:</span> Nhập tên thành phố và chọn đơn vị nhiệt độ, sau đó nhấn 'Xem dự báo'.",
+            video: "<span class='text-blue-300 font-bold'>Hướng dẫn Tải Video:</span> Chức năng này tạm thời đang bị cấm do 'yt-dlp' cần xác nhận yêu cầu gửi đi, đang triển khai lại."
+        };
 
-    <div class="service">
-      <h4>Tạo Mã QRCODE</h4>
-      <p>
-        Tạo mã QR từ văn bản hoặc liên kết, lý tưởng cho quảng cáo và thanh
-        toán.
-      </p>
-    </div>
+        function printToConsole(text, type = 'normal') {
+            const p = document.createElement("p");
+            let className = "mb-2 fade-in ";
+            
+            switch(type) {
+                case 'command':
+                    p.innerHTML = `<span class="text-yellow-400">$ </span>${text}`;
+                    break;
+                case 'error':
+                    className += "text-red-500";
+                    p.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i>${text}`;
+                    break;
+                case 'success':
+                    className += "text-green-500";
+                    p.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${text}`;
+                    break;
+                case 'info':
+                    className += "text-blue-400";
+                    p.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${text}`;
+                    break;
+                case 'warning':
+                    className += "text-yellow-500";
+                    p.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${text}`;
+                    break;
+                default:
+                    p.innerHTML = text;
+            }
+            
+            p.className = className;
+            output.appendChild(p);
+            scrollToBottom();
+        }
 
-    <div class="service">
-      <h4>Chạy Python Trực Tuyến</h4>
-      <p>
-        Thực thi mã Python trực tiếp trên trình duyệt với một số hạn chế,
-        giúp bạn thử nghiệm dễ dàng.
-      </p>
-    </div>
+        function scrollToBottom() {
+            output.scrollTop = output.scrollHeight;
+        }
 
-    <div class="service">
-      <h4>Facts Ngẫu Nhiên</h4>
-      <p>
-        Khám phá những sự thật thú vị về nhiều chủ đề khác nhau từ JokeAPI
-        và UselessAPI.
-      </p>
-    </div>
+        function typeWriter(text, element, index = 0) {
+            if (index === 0) {
+                element.classList.add('typing');
+            }
+            if (index < text.length) {
+                if (text.charAt(index) === '<') {
+                    let endIndex = text.indexOf('>', index);
+                    if (endIndex !== -1) {
+                        element.innerHTML += text.substring(index, endIndex + 1);
+                        index = endIndex;
+                    }
+                } else {
+                    element.innerHTML += text.charAt(index);
+                }
+                setTimeout(() => {
+                    typeWriter(text, element, index + 1);
+                    scrollToBottom();
+                }, 20);
+            } else {
+                element.classList.remove('typing');
+                scrollToBottom();
+            }
+        }
 
-    <div class="service">
-      <h4>Kiểm Tra Địa Chỉ IP</h4>
-      <p>
-        Cung cấp thông tin chi tiết về địa chỉ IP của bạn, bao gồm vị trí và
-        nhà cung cấp dịch vụ.
-      </p>
-    </div>
+        function processCommand(command) {
+            if (commands.hasOwnProperty(command)) {
+                const response = typeof commands[command] === "function" ? commands[command]() : commands[command];
+                const p = document.createElement("p");
+                p.className = "mb-4 fade-in";
+                output.appendChild(p);
+                typeWriter(response, p);
+            } else if (command.startsWith("echo ")) {
+                printToConsole(command.slice(5), 'info');
+            } else if (command === "date") {
+                printToConsole(new Date().toLocaleString(), 'info');
+            } else if (command === "whoami") {
+                printToConsole("Bạn là người dùng của Tanbaycu Console", 'info');
+            } else if (command === "version") {
+                printToConsole("Tanbaycu Console v1.0.0", 'info');
+            } else {
+                printToConsole('Lệnh không hợp lệ. Gõ "help" để xem danh sách lệnh.', 'error');
+            }
+        }
 
-    <div class="service">
-      <h4>Dự Báo Thời Tiết</h4>
-      <p>
-        Nhận thông tin thời tiết chính xác với dịch vụ dự báo từ OpenWeatherMap.
-      </p>
-    </div>
+        input.addEventListener("keydown", function (event) {
+            if (event.key === "Enter") {
+                const command = this.value.trim().toLowerCase();
+                printToConsole(command, 'command');
+                commandHistory.push(command);
+                historyIndex = commandHistory.length;
 
-    <div class="service">
-      <h4>Tải Video</h4>
-      <p>
-        Tải video từ nhiều nguồn khác nhau bằng công cụ yt-dlp, giúp bạn lưu
-        trữ nội dung yêu thích.
-      </p>
-    </div>
+                if (command === "clear") {
+                    commands.clear();
+                } else {
+                    processCommand(command);
+                }
 
-    <div class="service">
-      <h4>Hiển Thị Ảnh Ngẫu Nhiên</h4>
-      <p>
-        Khám phá hình ảnh ngẫu nhiên thông qua API của chúng tôi, mang đến
-        những trải nghiệm thú vị.
-      </p>
-    </div>
+                this.value = "";
+                commandSuggestion.style.display = 'none';
+            } else if (event.key === "ArrowUp") {
+                event.preventDefault();
+                if (historyIndex > 0) {
+                    historyIndex--;
+                    this.value = commandHistory[historyIndex];
+                }
+            } else if (event.key === "ArrowDown") {
+                event.preventDefault();
+                if (historyIndex < commandHistory.length - 1) {
+                    historyIndex++;
+                    this.value = commandHistory[historyIndex];
+                } else {
+                    historyIndex = commandHistory.length;
+                    this.value = "";
+                }
+            } else if (event.key === "Tab") {
+                event.preventDefault();
+                if (commandSuggestion.style.display === 'block') {
+                    this.value = commandSuggestion.textContent;
+                    commandSuggestion.style.display = 'none';
+                }
+            } else if (event.ctrlKey && event.key === "c") {
+                printToConsole("^C", 'command');
+                this.value = "";
+                commandSuggestion.style.display = 'none';
+            }
+        });
 
-    <div class="service">
-      <h4>Tin Tức Mới Nhất</h4>
-      <p>
-        Cập nhật thông tin mới nhất từ các nguồn tin tức bằng cách sử dụng
-        API tin tức.
-      </p>
-    </div>
+        darkModeToggle.addEventListener("click", function () {
+            isDarkMode = !isDarkMode;
+            if (isDarkMode) {
+                console.classList.remove("bg-white", "text-gray-800");
+                console.classList.add("bg-gray-900", "text-green-400");
+                this.innerHTML = '<i class="fas fa-sun mr-2"></i>Chế độ sáng';
+                this.classList.remove("bg-gray-200");
+                this.classList.add("bg-gray-800", "text-white");
+                
+                document.body.classList.remove("bg-white");
+                document.body.classList.add("bg-gray-100");
+            } else {
+                console.classList.remove("bg-gray-900", "text-green-400");
+                console.classList.add("bg-white", "text-gray-800");
+                this.innerHTML = '<i class="fas fa-moon mr-2"></i>Chế độ tối';
+                this.classList.remove("bg-gray-800", "text-white");
+                this.classList.add("bg-gray-200");
+                document.body.classList.remove("bg-gray-100");
+                document.body.classList.add("bg-white");
+            }
+            printToConsole(`Đã chuyển sang ${isDarkMode ? 'chế độ tối' : 'chế độ sáng'}`, 'success');
+        });
 
-    <div class="service">
-      <h4>Toán Học với Newton API</h4>
-      <p>
-        Thực hiện các phép toán phức tạp một cách dễ dàng với API Newton
-        chuyên dụng của chúng tôi.
-      </p>
-    </div>
+        copyButton.addEventListener("click", function () {
+            const outputText = Array.from(output.children).map(p => p.innerText).join("\n");
+            navigator.clipboard.writeText(outputText)
+                .then(() => {
+                    this.innerHTML = '<i class="fas fa-check mr-2"></i>Đã sao chép!';
+                    printToConsole("Đã sao chép nội dung console vào clipboard", 'success');
+                    setTimeout(() => this.innerHTML = '<i class="fas fa-copy mr-2"></i>Sao chép output', 2000);
+                })
+                .catch(err => {
+                    console.error("Không thể sao chép: ", err);
+                    printToConsole("Không thể sao chép nội dung console", 'error');
+                });
+        });
 
-    <div class="text-center">
-      <a href="{{ url_for('homepage') }}" class="btn btn-custom">Về trang chủ</a>
-    </div>
-  </div>
+        // Cải tiến chức năng tự động hoàn thành
+        const autoCompleteCommands = Object.keys(commands);
+        input.addEventListener("input", function() {
+            const inputValue = this.value.toLowerCase();
+            const matchingCommands = autoCompleteCommands.filter(cmd => cmd.startsWith(inputValue));
+            if (matchingCommands.length > 0 && inputValue !== matchingCommands[0]) {
+                commandSuggestion.textContent = matchingCommands[0];
+                commandSuggestion.style.display = 'block';
+            } else {
+                commandSuggestion.style.display = 'none';
+            }
+        });
 
-  <div class="footer">
-    <p>&copy; 2024 - Dự án web thập cẩm | Designed by Me with Flask and ❤️ </p>
-  </div>
+        // Thêm chức năng drag and drop cho tệp
+        console.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+        });
 
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+        console.addEventListener('drop', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            const files = e.dataTransfer.files;
+            if (files.length > 0) {
+                printToConsole(`Đã nhận tệp: ${files[0].name}`, 'info');
+                // Xử lý tệp ở đây (ví dụ: tải lên)
+            }
+        });
+
+        // Thêm chức năng phím tắt
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'l') {
+                e.preventDefault();
+                commands.clear();
+            }
+        });
+
+        printToConsole('<span class="text-blue-300 font-bold">Console Hướng dẫn sử dụng các chức năng của Web</span>', 'info');
+        printToConsole('Gõ "<span class="text-yellow-300">help</span>" để xem danh sách lệnh có sẵn.', 'info');
+    </script>
 </body>
-
 </html>
