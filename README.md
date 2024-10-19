@@ -78,7 +78,9 @@ Each of these features is designed to enhance productivity and deliver a seamles
 - **Gemini Chat** (Beta) - Released on 18/10/2024 | New Form
 
   A chat feature currently in beta testing, designed to enhance user interaction on the site.
+- **Clipython** (Beta) - Update new version 19/10/2024
 
+  simple IDE
 ---
 
 ## ℹ️ Important Notes:
