@@ -8,6 +8,12 @@
 ![Python](https://img.shields.io/badge/Python-3.9-blue)
 ![Flask](https://img.shields.io/badge/Flask-2.0-lightgrey)
 ![API](https://img.shields.io/badge/API-Enabled-green)
+<p align="center">
+  <img src="https://img.shields.io/badge/Active%20Users-1.2k-green?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Files%20Uploaded-10k-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/APIs%20Integrated-12-orange?style=for-the-badge">
+</p>
+
 ---
 - **Project Type**: Multi-tasking Website  
 - **Status**: 🟢 Ongoing (Started on: 12/10/2024)  
@@ -23,6 +29,16 @@
 - **Hosting**: Vercel
 ---
 ![Chào em](static/mota.jpg)
+## 📜 Table of Contents
+1. [Project Overview](#tanbaycu---first-web-project-🌐)
+2. [Tech Stack](#🛠️-tech-stack)
+3. [Key Features](#🚀-key-features)
+4. [Version Details](#🛠️-version-details)
+5. [Important Notes](#ℹ️-important-notes)
+6. [Sample Code](#👨‍💻-sample-code)
+7. [Future Roadmap](#🚧-future-roadmap)
+8. [Demo Video](#🎥-demo-video)
+9. [Credits](#🙏-credits)
 
 ## 🚀 Key Features:
 
@@ -78,9 +94,11 @@ Each of these features is designed to enhance productivity and deliver a seamles
 - **Gemini Chat** (Beta) - Released on 18/10/2024 | New Form
 
   A chat feature currently in beta testing, designed to enhance user interaction on the site.
-- **Clipython** (Beta) - Update new version 19/10/2024
 
-  simple IDE
+- **About** 
+
+  New version -e 
+  
 ---
 
 ## ℹ️ Important Notes:
@@ -121,9 +139,48 @@ Xem video giới thiệu dự án tại [đây](https://player.vimeo.com/video/1
 `Python` `Flask` `API` `Pexels` `HTML` `OpenWeatherMap` `GoFile` `Tiny URL` `QR Code` `Pixeldrains` `v.gd` 
 
 
+## 🚀 Project Milestones
+
+| Milestone           | Status        | Progress      |
+|---------------------|---------------|---------------|
+| Add authentication  | 🟡 In progress | [=======     ] 70% |
+| API integrations    | 🟢 Done        | [==========] 100% |
+| Mobile integration  | 🔴 Not started | [            ] 0% |
+
+---
+
+
+## 🎉 Live Demo
+Check out the live demo of Tanbaycu [here](https://tanbaycu.vercel.app).
+
+Or click the button below to launch it directly:
+
+<p align="center">
+  <a href="https://tanbaycu.vercel.app"><img src="https://img.shields.io/badge/Live%20Demo-Click%20Here-brightgreen?style=for-the-badge"></a>
+</p>
+
+---
 
 
 
+
+
+
+<style>
+  @media (prefers-color-scheme: dark) {
+    body {
+      background-color: #1e1e1e;
+      color: #c9d1d9;
+    }
+  }
+
+  @media (prefers-color-scheme: light) {
+    body {
+      background-color: #fff;
+      color: #000;
+    }
+  }
+</style>
 
 
 
