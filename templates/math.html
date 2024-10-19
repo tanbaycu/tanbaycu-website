@@ -1,174 +1,165 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Math Operations</title>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='style.css') }}"
-    />
-  </head>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
 
-    body {
-      font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      background-color: #121212;
-      color: #e0e0e0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Math Operations</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+</head>
+<style>
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
 
-    .container {
-      background-color: #181818;
-      padding: 40px;
-      border-radius: 12px;
-      box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-      max-width: 450px;
-      width: 100%;
-    }
+  body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #121212;
+    color: #e0e0e0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
 
-    h1 {
-      font-size: 28px;
-      color: #1db954;
-      margin-bottom: 30px;
-      text-align: center;
-    }
+  .container {
+    background-color: #181818;
+    padding: 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    max-width: 450px;
+    width: 100%;
+  }
 
-    form {
-      display: flex;
-      flex-direction: column;
-      gap: 20px;
-    }
+  h1 {
+    font-size: 28px;
+    color: #1db954;
+    margin-bottom: 30px;
+    text-align: center;
+  }
 
-    label {
-      font-size: 16px;
-      font-weight: 500;
-      color: #b3b3b3;
-    }
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
 
-    input,
-    select {
-      padding: 12px;
-      font-size: 16px;
-      background-color: #333;
-      border: 2px solid #333;
-      border-radius: 8px;
-      color: #e0e0e0;
-      transition: all 0.3s ease;
-      outline: none;
-    }
+  label {
+    font-size: 16px;
+    font-weight: 500;
+    color: #b3b3b3;
+  }
 
-    input:focus,
-    select:focus {
-      border-color: #1db954;
-    }
+  input,
+  select {
+    padding: 12px;
+    font-size: 16px;
+    background-color: #333;
+    border: 2px solid #333;
+    border-radius: 8px;
+    color: #e0e0e0;
+    transition: all 0.3s ease;
+    outline: none;
+  }
 
-    button {
-      padding: 12px;
-      font-size: 16px;
-      background-color: #1db954;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: background-color 0.3s ease;
-    }
+  input:focus,
+  select:focus {
+    border-color: #1db954;
+  }
 
-    button:hover {
-      background-color: #148a39;
-    }
+  button {
+    padding: 12px;
+    font-size: 16px;
+    background-color: #1db954;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
 
-    .result,
-    .error {
-      margin-top: 30px;
-      padding: 20px;
-      border-radius: 8px;
-      font-size: 18px;
-    }
+  button:hover {
+    background-color: #148a39;
+  }
 
-    .result {
-      background-color: #1b3e30;
-      color: #a4d8b7;
-      border: 1px solid #1db954;
-    }
+  .result,
+  .error {
+    margin-top: 30px;
+    padding: 20px;
+    border-radius: 8px;
+    font-size: 18px;
+  }
 
-    .error {
-      background-color: #531b1d;
-      color: #f5646e;
-      border: 1px solid #f03a47;
-    }
+  .result {
+    background-color: #1b3e30;
+    color: #a4d8b7;
+    border: 1px solid #1db954;
+  }
 
-    .result h2 {
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-  </style>
+  .error {
+    background-color: #531b1d;
+    color: #f5646e;
+    border: 1px solid #f03a47;
+  }
 
-  <body>
-    <div class="container">
-      <h1>Math Operations with Newton API</h1>
+  .result h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+</style>
 
-      <form method="POST">
-        <label for="operation">Chọn phép toán:</label>
-        <select name="operation" id="operation" required>
-          <option value="" disabled selected>Chọn một phép toán</option>
-          <option value="simplify">Rút gọn</option>
-          <option value="factor">Phân tích nhân tử</option>
-          <option value="derive">Tính đạo hàm (d/dx)</option>
-          <option value="integrate">Tính tích phân (∫)</option>
-          <option value="zeroes">Tìm nghiệm (x = ?)</option>
-          <option value="tangent">Tìm tiếp tuyến (dy/dx)</option>
-          <option value="area">Diện tích dưới đường cong (∫)</option>
-          <option value="cos">Cosine (cos)</option>
-          <option value="sin">Sine (sin)</option>
-          <option value="tan">Tangent (tan)</option>
-          <option value="arccos">Cosine nghịch đảo (arccos)</option>
-          <option value="arcsin">Sine nghịch đảo (arcsin)</option>
-          <option value="arctan">Tangent nghịch đảo (arctan)</option>
-          <option value="abs">Giá trị tuyệt đối (|x|)</option>
-          <option value="log">Logarithm (log)</option>
-        </select>
+<body>
+  <div class="container">
+    <h1>Math Operations with Newton API</h1>
 
-        <label for="expression">Enter Expression:</label>
-        <input
-          type="text"
-          name="expression"
-          id="expression"
-          required
-          placeholder="e.g., x^2 + 2x"
-        />
+    <form method="POST">
+      <label for="operation">Chọn phép toán:</label>
+      <select name="operation" id="operation" required>
+        <option value="" disabled selected>Chọn một phép toán</option>
+        <option value="simplify">Rút gọn</option>
+        <option value="factor">Phân tích nhân tử</option>
+        <option value="derive">Tính đạo hàm (d/dx)</option>
+        <option value="integrate">Tính tích phân (∫)</option>
+        <option value="zeroes">Tìm nghiệm (x = ?)</option>
+        <option value="tangent">Tìm tiếp tuyến (dy/dx)</option>
+        <option value="area">Diện tích dưới đường cong (∫)</option>
+        <option value="cos">Cosine (cos)</option>
+        <option value="sin">Sine (sin)</option>
+        <option value="tan">Tangent (tan)</option>
+        <option value="arccos">Cosine nghịch đảo (arccos)</option>
+        <option value="arcsin">Sine nghịch đảo (arcsin)</option>
+        <option value="arctan">Tangent nghịch đảo (arctan)</option>
+        <option value="abs">Giá trị tuyệt đối (|x|)</option>
+        <option value="log">Logarithm (log)</option>
+      </select>
 
-        <button type="submit">Calculate</button>
-        <div class="d-flex justify-content-end mt-4">
-            <button
-              onclick="location.href='{{ url_for('homepage') }}'"
-              class="btn btn-custom"
-            >
-              Quay về trang chủ
-            </button>
-          </div>
-      </form>
+      <label for="expression">Enter Expression:</label>
+      <input type="text" name="expression" id="expression" required placeholder="e.g., x^2 + 2x" />
 
-      <!-- Hiển thị kết quả hoặc lỗi -->
-      {% if result %}
-      <div class="result">
-        <h2>Kết quả: {{ result }}</h2>
-        <p><strong>Biểu thức:</strong> {{ expression }}</p>
-        <p><strong>Phép toán:</strong> {{ operation }}</p>
+      <button type="submit">Calculate</button>
+      <div class="d-flex justify-content-end mt-4">
+        <button onclick="location.href='{{ url_for('homepage') }}'" class="btn btn-custom">
+          Quay về trang chủ
+        </button>
       </div>
-      {% elif error %}
-      <div class="error">{{ error }}</div>
-      {% endif %}
-      
+    </form>
+
+    <!-- Hiển thị kết quả hoặc lỗi -->
+    {% if result %}
+    <div class="result">
+      <h2>Kết quả: {{ result }}</h2>
+      <p><strong>Biểu thức:</strong> {{ expression }}</p>
+      <p><strong>Phép toán:</strong> {{ operation }}</p>
     </div>
-    
-  </body>
+    {% elif error %}
+    <div class="error">{{ error }}</div>
+    {% endif %}
+
+  </div>
+
+</body>
+
 </html>
