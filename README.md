@@ -166,21 +166,7 @@ Or click the button below to launch it directly:
 
 
 
-<style>
-  @media (prefers-color-scheme: dark) {
-    body {
-      background-color: #1e1e1e;
-      color: #c9d1d9;
-    }
-  }
 
-  @media (prefers-color-scheme: light) {
-    body {
-      background-color: #fff;
-      color: #000;
-    }
-  }
-</style>
 
 
 
