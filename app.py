@@ -1,4 +1,7 @@
+from io import StringIO
+import contextlib
 import os
+import traceback
 import random
 import base64
 # import google.generativeai as genai
@@ -349,61 +352,55 @@ def clipython_page():
     return render_template("clipython.html")
 
 
-@app.route("/run-python", methods=["POST"])
-def run_python_code_temp():
-    data = request.json
+SAVE_DIRECTORY = "saved_files"
+if not os.path.exists(SAVE_DIRECTORY):
+    os.makedirs(SAVE_DIRECTORY)
 
-    if "code" not in data:
-        return jsonify({"error": "Không có mã Python nào được gửi."}), 400
+@app.route('/run', methods=['POST'])
+def run_code():
+    code = request.json['code']
+    output, error = execute_python_code(code)
+    if error:
+        return jsonify({'error': error})
+    return jsonify({'output': output})
 
-    code = data.get("code", "")
-    input_values = data.get("input_values", [])  # Nhận danh sách giá trị đầu vào
-
-    # Lưu mã Python vào tệp tạm thời
-    with open("temp_script.py", "w", encoding="utf-8") as f:
-        f.write(code)
-
-    # Tạo một iterator để gửi lần lượt các giá trị vào input()
-    input_values_iter = iter(input_values)
+@app.route('/save', methods=['POST'])
+def save_code():
+    code = request.json['code']
+    filename = request.json['filename']
     try:
-        # Tạo một hàm để thay thế input() trong mã Python
-        def mock_input(prompt):
-            return next(input_values_iter)
+        with open(os.path.join(SAVE_DIRECTORY, filename), 'w') as f:
+            f.write(code)
+        return jsonify({'success': True})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
 
-        # Ghi đè hàm input trong mã Python
-        result = subprocess.run(
-            ["python", "temp_script.py"],
-            capture_output=True,
-            text=True,
-            check=True,
-            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
-            input="\n".join(input_values),  # Gửi tất cả các giá trị đầu vào
-        )
-        output = result.stdout
-    except subprocess.CalledProcessError as e:
-        output = e.stderr
-
-    os.remove("temp_script.py")
-
-    return jsonify({"output": output})
-
-
-@app.route("/install-library", methods=["POST"])
-def install_library():
-    data = request.json
-    library_name = data.get("library")
-
-    if not library_name:
-        return jsonify({"error": "Vui lòng cung cấp tên thư viện."}), 400
-
+@app.route('/load', methods=['POST'])
+def load_code():
+    filename = request.json['filename']
     try:
-        # Cài đặt thư viện bằng pip
-        subprocess.check_call([sys.executable, "-m", "pip", "install", library_name])
-        return jsonify(
-            {"message": f"Thư viện {library_name} đã được cài đặt thành công."}
-        )
-    except subprocess.CalledProcessError as e:
-        return jsonify({"error": f"Lỗi khi cài đặt thư viện: {str(e)}"}), 500
+        with open(os.path.join(SAVE_DIRECTORY, filename), 'r') as f:
+            code = f.read()
+        return jsonify({'code': code})
+    except Exception as e:
+        return jsonify({'error': str(e)})
+
+def execute_python_code(code):
+    old_stdout = sys.stdout
+    redirected_output = sys.stdout = StringIO()
+    
+    try:
+        exec(code, {})
+        output = redirected_output.getvalue()
+        error = None
+    except Exception as e:
+        output = None
+        error = f"{type(e).__name__}: {str(e)}\n{traceback.format_exc()}"
+    finally:
+        sys.stdout = old_stdout
+    
+    return output, error
+
 
 
 # Route để hiển thị trang facts.html
