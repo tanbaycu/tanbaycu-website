@@ -864,6 +864,10 @@ def pdf_page():
 def tools():
     return render_template('tools.html')
 
+@app.route('/spotify')
+def spotify_page():
+    return render_template('spotify.html')
+
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")

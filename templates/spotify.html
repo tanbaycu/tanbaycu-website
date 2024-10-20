@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Spotify Player v1.1</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <style>
+        :root {
+            --spotify-green: #1db954;
+            --spotify-black: #191414;
+            --spotify-light-black: #282828;
+            --spotify-white: #ffffff;
+            --spotify-grey: #b3b3b3;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: "Inter", sans-serif;
+            background-color: var(--spotify-black);
+            color: var(--spotify-white);
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        body.light-mode {
+            --spotify-black: #f0f0f0;
+            --spotify-light-black: #e0e0e0;
+            --spotify-white: #191414;
+            --spotify-grey: #555555;
+        }
+
+        .sidebar {
+            width: 230px;
+            background-color: var(--spotify-black);
+            padding: 24px;
+            overflow-y: auto;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .sidebar:hover {
+            width: 260px;
+        }
+
+        .logo {
+            color: var(--spotify-white);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            color: var(--spotify-green);
+            margin-right: 10px;
+        }
+
+        .nav-item {
+            display: flex;
+            align-items: center;
+            color: var(--spotify-grey);
+            padding: 10px 0;
+            transition: color var(--transition-speed) ease;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            color: var(--spotify-white);
+        }
+
+        .nav-item i {
+            margin-right: 15px;
+            font-size: 20px;
+        }
+
+        .main-content {
+            flex-grow: 1;
+            background: linear-gradient(to bottom, #3333cc, var(--spotify-black));
+            overflow-y: auto;
+            padding: 24px;
+            position: relative;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 24px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 5px 15px;
+        }
+
+        .search-bar input {
+            background: none;
+            border: none;
+            color: var(--spotify-white);
+            margin-left: 10px;
+            outline: none;
+        }
+
+        .user-profile {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: var(--spotify-white);
+            border: none;
+            border-radius: 23px;
+            padding: 5px 10px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            transition: background-color var(--transition-speed) ease;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(0, 0, 0, 0.9);
+        }
+
+        .user-profile i {
+            margin-right: 8px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 24px;
+        }
+
+        .player-container {
+            background-color: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 60px rgba(0, 0, 0, 0.5);
+            position: relative;
+        }
+
+        .player {
+            aspect-ratio: 16 / 9;
+            width: 100%;
+            border: none;
+        }
+
+        .playlist {
+            margin-top: 24px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .playlist-item {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 16px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .playlist-item:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-5px);
+        }
+
+        .playlist-item img {
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            object-fit: cover;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+            transition: all var(--transition-speed) ease;
+        }
+
+        .playlist-item:hover img {
+            transform: scale(1.05);
+        }
+
+        .playlist-item .title {
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .playlist-item .artist {
+            color: var(--spotify-grey);
+            font-size: 14px;
+        }
+
+        .player-controls {
+            background-color: var(--spotify-light-black);
+            padding: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+        }
+
+        .control-button {
+            background: none;
+            border: none;
+            color: var(--spotify-white);
+            font-size: 24px;
+            margin: 0 16px;
+            cursor: pointer;
+            transition: all var(--transition-speed) ease;
+        }
+
+        .control-button:hover {
+            color: var(--spotify-green);
+            transform: scale(1.1);
+        }
+
+        .play-pause {
+            font-size: 40px;
+        }
+
+        .progress-bar {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            height: 4px;
+            background-color: var(--spotify-grey);
+            width: 100%;
+        }
+
+        .progress {
+            height: 100%;
+            background-color: var(--spotify-green);
+            width: 0;
+            transition: width 0.1s linear;
+        }
+
+        .visualizer {
+            position: absolute;
+            bottom: 4px;
+            left: 0;
+            right: 0;
+            height: 50px;
+            display: flex;
+            align-items: flex-end;
+            padding: 0 20px;
+        }
+
+        .visualizer-bar {
+            flex: 1;
+            background-color: var(--spotify-green);
+            margin: 0 1px;
+            transition: height 0.1s ease;
+        }
+
+        .mode-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: none;
+            border: none;
+            color: var(--spotify-white);
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 16px;
+            }
+
+            .main-content {
+                padding: 16px;
+            }
+
+            .playlist {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+
+            .player-controls {
+                flex-wrap: wrap;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo">
+            <i class="fab fa-spotify"></i>
+            Spotify
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-home"></i>
+            Home
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-search"></i>
+            Search
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-book"></i>
+            Your Library
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-plus-square"></i>
+            Create Playlist
+        </div>
+        <div class="nav-item">
+            <i class="fas fa-heart"></i>
+            Liked Songs
+        </div>
+    </div>
+    <div class="main-content">
+        <div class="header">
+            <div class="search-bar">
+                <i class="fas fa-search"></i>
+                <input type="text" placeholder="Search for Artists, Songs, or Podcasts" />
+            </div>
+            <button class="user-profile">
+                <i class="fas fa-user-circle"></i>
+                User
+            </button>
+        </div>
+        <h1>Enhanced Spotify Player v1.1</h1>
+        <div class="player-container">
+            <iframe id="spotify-player" class="player" src="https://open.spotify.com/embed/album/2NV1oWfcR9fuXWKKDaTp25"
+                frameborder="0" allowtransparency="true" allow="encrypted-media"></iframe>
+            <div class="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
+            <div class="visualizer" id="visualizer"></div>
+        </div>
+        <div class="playlist">
+            <div class="playlist-item" onclick="changeTrack('album/2NV1oWfcR9fuXWKKDaTp25')">
+                <img src="https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228" alt="Album cover" />
+                <div class="title">Random Access Memories</div>
+                <div class="artist">Daft Punk</div>
+            </div>
+            <div class="playlist-item" onclick="changeTrack('album/4LH4d3cOWNNsVw41Gqt2kv')">
+                <img src="https://i.scdn.co/image/ab67616d00001e02b6d4566db0d12894a1a3b7a2" alt="Album cover" />
+                <div class="title">After Hours</div>
+                <div class="artist">The Weeknd</div>
+            </div>
+            <div class="playlist-item" onclick="changeTrack('album/2ODvWsOgouMbaA5xf0RkJe')">
+                <img src="https://i.scdn.co/image/ab67616d00001e0213b3e37318a0c247b550bccd" alt="Album cover" />
+                <div class="title">1989</div>
+                <div class="artist">Taylor Swift</div>
+            </div>
+            <div class="playlist-item" onclick="changeTrack('album/6trNtQUgC8cgbWcqoMYkOR')">
+                <img src="https://i.scdn.co/image/ab67616d00001e0282b243023e937b0ed56f6877" alt="Album cover" />
+                <div class="title">Viva La Vida</div>
+                <div class="artist">Coldplay</div>
+            </div>
+            <div class="playlist-item" onclick="changeTrack('album/3WFTGIO6E3Xh4paEOBY9OU')">
+                <img src="https://i.scdn.co/image/ab67616d00001e029478c87599550dd73bfa7e02" alt="Album cover" />
+                <div class="title">WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?</div>
+                <div class="artist">Billie Eilish</div>
+            </div>
+        </div>
+    </div>
+    <div class="player-controls">
+        <button class="control-button" id="shuffle">
+            <i class="fas fa-random"></i>
+        </button>
+        <button class="control-button" id="previous">
+            <i class="fas fa-step-backward"></i>
+        </button>
+        <button class="control-button play-pause" id="play-pause">
+            <i class="fas fa-play-circle"></i>
+        </button>
+        <button class="control-button" id="next">
+            <i class="fas fa-step-forward"></i>
+        </button>
+        <button class="control-button" id="repeat">
+            <i class="fas fa-redo-alt"></i>
+        </button>
+    </div>
+    <button class="mode-toggle" id="mode-toggle">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <script>
+        const player = document.getElementById("spotify-player");
+        const playPauseBtn = document.getElementById("play-pause");
+        const previousBtn = document.getElementById("previous");
+        const nextBtn = document.getElementById("next");
+        const shuffleBtn = document.getElementById("shuffle");
+        const repeatBtn = document.getElementById("repeat");
+        const progressBar = document.getElementById("progress");
+        const visualizer = document.getElementById("visualizer");
+        const modeToggle = document.getElementById("mode-toggle");
+
+        let isPlaying = false;
+        let currentTrackIndex = 0;
+        let progressInterval;
+        let isShuffled = false;
+        let repeatMode = "off"; // 'off', 'all', 'one'
+
+        const playlist = [
+            {
+                id: "album/2NV1oWfcR9fuXWKKDaTp25",
+                title: "Random Access Memories",
+                artist: "Daft Punk"
+            },
+            {
+                id: "album/4LH4d3cOWNNsVw41Gqt2kv",
+                title: "After Hours",
+                artist: "The Weeknd"
+            },
+            {
+                id: "album/2ODvWsOgouMbaA5xf0RkJe",
+                title: "1989",
+                artist: "Taylor Swift"
+            },
+            {
+                id: "album/6trNtQUgC8cgbWcqoMYkOR",
+                title: "Viva La Vida",
+                artist: "Coldplay"
+            },
+            {
+                id: "album/3WFTGIO6E3Xh4paEOBY9OU",
+                title: "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
+                artist: "Billie Eilish"
+            }
+        ];
+
+        function changeTrack(trackId) {
+            player.src = `https://open.spotify.com/embed/${trackId}`;
+            startProgressBar();
+            isPlaying = true;
+            updatePlayPauseButton();
+        }
+
+        function togglePlayPause() {
+            isPlaying = !isPlaying;
+            if (isPlaying) {
+                startProgressBar();
+            } else {
+                clearInterval(progressInterval);
+            }
+            updatePlayPauseButton();
+        }
+
+        function updatePlayPauseButton() {
+            playPauseBtn.innerHTML = isPlaying
+                ? '<i class="fas fa-pause-circle"></i>'
+                : '<i class="fas fa-play-circle"></i>';
+        }
+
+        function previousTrack() {
+            currentTrackIndex =
+                (currentTrackIndex - 1 + playlist.length) % playlist.length;
+            changeTrack(playlist[currentTrackIndex].id);
+        }
+
+        function nextTrack() {
+            if (repeatMode === "one") {
+                // Nếu đang ở chế độ lặp lại một bài, chỉ phát lại bài hiện tại
+                changeTrack(playlist[currentTrackIndex].id);
+            } else {
+                currentTrackIndex = (currentTrackIndex + 1) % playlist.length;
+                changeTrack(playlist[currentTrackIndex].id);
+                if (currentTrackIndex === 0 && repeatMode === "off") {
+                    // Nếu đã hết playlist và không ở chế độ lặp lại, dừng phát nhạc
+                    isPlaying = false;
+                    clearInterval(progressInterval);
+                    updatePlayPauseButton();
+                }
+            }
+        }
+
+        function toggleShuffle() {
+            isShuffled = !isShuffled;
+            shuffleBtn.style.color = isShuffled
+                ? "var(--spotify-green)"
+                : "var(--spotify-white)";
+            if (isShuffled) {
+                // Xáo trộn playlist
+                for (let i = playlist.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [playlist[i], playlist[j]] = [playlist[j], playlist[i]];
+                }
+            } else {
+                // Khôi phục thứ tự ban đầu của playlist
+                playlist.sort((a, b) => a.id.localeCompare(b.id));
+            }
+            // Cập nhật currentTrackIndex sau khi xáo trộn
+            currentTrackIndex = playlist.findIndex(
+                (track) => track.id === player.src.split("/").pop()
+            );
+        }
+
+        function toggleRepeat() {
+            switch (repeatMode) {
+                case "off":
+                    repeatMode = "all";
+                    repeatBtn.style.color = "var(--spotify-green)";
+                    break;
+                case "all":
+                    repeatMode = "one";
+                    repeatBtn.innerHTML =
+                        '<i class="fas fa-redo-alt"></i><span style="font-size: 12px; position: absolute; bottom: -5px; right: -5px;">1</span>';
+                    break;
+                case "one":
+                    repeatMode = "off";
+                    repeatBtn.innerHTML = '<i class="fas fa-redo-alt"></i>';
+                    repeatBtn.style.color = "var(--spotify-white)";
+                    break;
+            }
+        }
+
+        function startProgressBar() {
+            let width = 0;
+            clearInterval(progressInterval);
+            progressInterval = setInterval(() => {
+                if (width >= 100) {
+                    width = 0;
+                    nextTrack(); // Tự động chuyển bài khi kết thúc
+                } else {
+                    width++;
+                    progressBar.style.width = width + "%";
+                    updateVisualizer();
+                }
+            }, 1000); // Giả lập 100 giây cho mỗi bài hát
+        }
+
+        function updateVisualizer() {
+            visualizer.innerHTML = "";
+            for (let i = 0; i < 50; i++) {
+                const bar = document.createElement("div");
+                bar.className = "visualizer-bar";
+                bar.style.height = Math.random() * 50 + "px";
+                visualizer.appendChild(bar);
+            }
+        }
+
+        function toggleMode() {
+            document.body.classList.toggle("light-mode");
+            const icon = modeToggle.querySelector("i");
+            icon.classList.toggle("fa-moon");
+            icon.classList.toggle("fa-sun");
+        }
+
+        playPauseBtn.addEventListener("click", togglePlayPause);
+        previousBtn.addEventListener("click", previousTrack);
+        nextBtn.addEventListener("click", nextTrack);
+        shuffleBtn.addEventListener("click", toggleShuffle);
+        repeatBtn.addEventListener("click", toggleRepeat);
+        modeToggle.addEventListener("click", toggleMode);
+
+        // Khởi tạo player với bài hát đầu tiên
+        changeTrack(playlist[currentTrackIndex].id);
+        updateVisualizer();
+    </script>
+</body>
+
+</html>
