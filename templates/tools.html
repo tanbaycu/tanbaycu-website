@@ -114,7 +114,18 @@
     </div>
     <div class="container mx-auto px-4 py-12">
         <h1 class="text-5xl font-bold text-center mb-12 glow">DevHub: Ultimate Developer Toolkit</h1>
-        <div id="tools-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"></div>
+        <div id="tools-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Tools will be dynamically added here -->
+            <div class="tool-card rounded-lg shadow-lg p-6 hover:shadow-2xl transition duration-300" id="add-new-tool">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-400"><i class="fas fa-plus-circle mr-2"></i>Add New
+                    Tool</h2>
+                <p class="text-gray-300 mb-4">Expand your toolkit by adding custom developer resources and tools.</p>
+                <button
+                    class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                    <i class="fas fa-plus mr-2"></i>Add Tool
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Modal for adding/editing tool -->
@@ -142,7 +153,6 @@
         </div>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script>
         particlesJS('particles-js', {
             particles: {
@@ -167,11 +177,16 @@
         const toolsContainer = document.getElementById('tools-container');
         let editingToolId = null;
 
-        // Load tools from localStorage when the page loads
-        window.onload = function () {
-            const tools = JSON.parse(localStorage.getItem('tools')) || [];
-            tools.forEach(addToolCard);
-        };
+        // Load tools from localStorage
+        function loadTools() {
+            const tools = JSON.parse(localStorage.getItem('devTools')) || [];
+            tools.forEach(tool => addToolCard(tool));
+        }
+
+        // Save tools to localStorage
+        function saveTools(tools) {
+            localStorage.setItem('devTools', JSON.stringify(tools));
+        }
 
         document.querySelector('#add-new-tool button').addEventListener('click', () => {
             editingToolId = null;
@@ -185,59 +200,89 @@
             e.preventDefault();
             const formData = new FormData(toolForm);
             const toolData = Object.fromEntries(formData.entries());
-            let tools = JSON.parse(localStorage.getItem('tools')) || [];
+            toolData.id = editingToolId || Date.now().toString();
+
+            const tools = JSON.parse(localStorage.getItem('devTools')) || [];
 
             if (editingToolId) {
-                tools = tools.map(tool => tool.id === editingToolId ? { ...tool, ...toolData } : tool);
-                alert('Tool updated!');
+                const index = tools.findIndex(tool => tool.id === editingToolId);
+                if (index !== -1) {
+                    tools[index] = toolData;
+                    updateToolCard(editingToolId, toolData);
+                }
             } else {
-                toolData.id = Date.now().toString();
                 tools.push(toolData);
-                alert('Tool added!');
+                addToolCard(toolData);
             }
 
-            localStorage.setItem('tools', JSON.stringify(tools));
-            updateToolsDisplay(tools);
+            saveTools(tools);
             modal.classList.add('hidden');
         });
 
-        function updateToolsDisplay(tools) {
-            toolsContainer.innerHTML = '';
-            tools.forEach(addToolCard);
-        }
+        toolsContainer.addEventListener('click', (e) => {
+            if (e.target.classList.contains('edit-tool') || e.target.parentElement.classList.contains('edit-tool')) {
+                const toolCard = e.target.closest('.tool-card');
+                editingToolId = toolCard.dataset.id;
+                const tool = JSON.parse(localStorage.getItem('devTools')).find(t => t.id === editingToolId);
+
+                document.getElementById('tool-name').value = tool.name;
+                document.getElementById('tool-url').value = tool.url;
+                document.getElementById('tool-description').value = tool.description;
+                document.getElementById('modal-title').textContent = 'Edit Tool';
+                document.getElementById('submit-tool').textContent = 'Update Tool';
+                modal.classList.remove('hidden');
+            } else if (e.target.classList.contains('delete-tool') || e.target.parentElement.classList.contains('delete-tool')) {
+                const toolCard = e.target.closest('.tool-card');
+                const toolId = toolCard.dataset.id;
+                if (confirm('Are you sure you want to delete this tool?')) {
+                    const tools = JSON.parse(localStorage.getItem('devTools')).filter(t => t.id !== toolId);
+                    saveTools(tools);
+                    toolCard.classList.add('fade-out');
+                    setTimeout(() => toolCard.remove(), 500);
+                }
+            }
+        });
 
         function addToolCard(tool) {
-            const toolCard = document.createElement('div');
-            toolCard.classList.add('tool-card', 'p-6', 'rounded-lg', 'shadow-lg', 'text-center');
-            toolCard.innerHTML = `
-                <h2 class="text-2xl font-bold">${tool.name}</h2>
-                <p class="text-sm">${tool.description}</p>
-                <a href="${tool.url}" target="_blank" class="text-blue-400 hover:underline">Visit Tool</a>
-                <button class="mt-2 text-red-500" onclick="deleteTool('${tool.id}')">Delete</button>
-                <button class="mt-2 text-yellow-500" onclick="editTool('${tool.id}')">Edit</button>
+            const newCard = document.createElement('div');
+            newCard.className = 'tool-card rounded-lg shadow-lg p-6 hover:shadow-2xl transition duration-300 fade-in slide-up';
+            newCard.dataset.id = tool.id;
+            newCard.innerHTML = `
+                <h2 class="text-2xl font-semibold mb-4 text-blue-400"><i class="fas fa-tools mr-2"></i>${tool.name}</h2>
+                <p class="text-gray-300 mb-4">${tool.description}</p>
+                <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 inline-block">
+                    <i class="fas fa-external-link-alt mr-2"></i>Launch Tool
+                </a>
+                <div class="mt-4 flex justify-end space-x-2">
+                    <button class="edit-tool bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded transition duration-300">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-tool bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded transition duration-300">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
             `;
-            toolsContainer.appendChild(toolCard);
+            toolsContainer.insertBefore(newCard, document.getElementById('add-new-tool'));
         }
 
-        function deleteTool(id) {
-            let tools = JSON.parse(localStorage.getItem('tools')) || [];
-            tools = tools.filter(tool => tool.id !== id);
-            localStorage.setItem('tools', JSON.stringify(tools));
-            updateToolsDisplay(tools);
-            alert('Tool deleted!');
+        function updateToolCard(id, tool) {
+            const toolCard = document.querySelector(`.tool-card[data-id="${id}"]`);
+            toolCard.querySelector('h2').textContent = tool.name;
+            toolCard.querySelector('p').textContent = tool.description;
+            toolCard.querySelector('a').href = tool.url;
+            toolCard.classList.add('fade-in');
+            setTimeout(() => toolCard.classList.remove('fade-in'), 500);
         }
 
-        function editTool(id) {
-            editingToolId = id;
-            const tools = JSON.parse(localStorage.getItem('tools')) || [];
-            const toolToEdit = tools.find(tool => tool.id === id);
-            document.getElementById('tool-name').value = toolToEdit.name;
-            document.getElementById('tool-url').value = toolToEdit.url;
-            document.getElementById('tool-description').value = toolToEdit.description;
-            document.getElementById('modal-title').textContent = 'Edit Tool';
-            document.getElementById('submit-tool').textContent = 'Update Tool';
-            modal.classList.remove('hidden');
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            if (event.target == modal) {
+                modal.classList.add('hidden');
+            }
         }
+
+        // Load tools when the page loads
+        loadTools();
     </script>
 </body>
 
