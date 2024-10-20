@@ -4,48 +4,98 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Upload Result - Tanbaycu</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="icon"
-      type="image/x-icon"
-      href="{{ url_for('static', filename='favicon.ico') }}"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     <style>
+      :root {
+        --primary-color: #6366f1;
+        --secondary-color: #8b5cf6;
+        --background-color: #111827;
+        --surface-color: #1f2937;
+        --text-color: #f3f4f6;
+        --text-muted: #9ca3af;
+      }
+
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
       body {
-        font-family: "Roboto", sans-serif;
-        background-color: #282a36;
-        color: #f8f8f2;
+        font-family: 'Inter', sans-serif;
+        background-color: var(--background-color);
+        color: var(--text-color);
         display: flex;
         justify-content: center;
         align-items: center;
         min-height: 100vh;
-      }
-      .container {
-        background-color: #44475a;
         padding: 20px;
+      }
+
+      .container {
+        background-color: var(--surface-color);
+        padding: 40px;
         border-radius: 10px;
-        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
         max-width: 600px;
+        width: 100%;
         text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
       }
+
+      .container:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+      }
+
       .message {
-        margin-bottom: 20px;
+        margin-bottom: 30px;
+        font-size: 1.1rem;
+        line-height: 1.6;
       }
+
       a {
-        color: #50fa7b;
+        background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+        color: #fff;
         text-decoration: none;
+        padding: 12px 25px;
+        border-radius: 25px;
+        font-size: 1rem;
+        font-weight: 500;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        display: inline-block;
+      }
+
+      a:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+      }
+
+      @media (max-width: 480px) {
+        .container {
+          padding: 30px;
+        }
+
+        .message {
+          font-size: 1rem;
+        }
+
+        a {
+          font-size: 0.9rem;
+          padding: 10px 20px;
+        }
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="message">
-        {% if response %} {{ response[0] | safe }}
-        <!-- Use | safe to render HTML -->
-        {% else %} No response available. {% endif %}
+        {% if response %}
+          {{ response[0] | safe }}
+        {% else %}
+          <p>No response available.</p>
+        {% endif %}
       </div>
       <a href="/upload_file">Go back to upload another file</a>
     </div>
