@@ -1,165 +1,264 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Math Operations - Tanbaycu</title>
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Math Operations - Tanbaycu</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Roboto:wght@300;400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #00ffff;
+            --secondary-color: #ff00ff;
+            --bg-color: #000000;
+            --text-color: #ffffff;
+            --input-bg: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(from 0deg at 50% 50%, var(--primary-color), var(--secondary-color), var(--primary-color));
+            animation: rotate 10s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes rotate {
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 28px;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+        }
+
+        h1::after {
+            content: '';
+            display: block;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary-color);
+            margin: 10px auto;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        label {
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-color);
+            display: flex;
+            align-items: center;
+        }
+
+        label i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        input,
+        select {
+            padding: 12px;
+            font-size: 16px;
+            background-color: var(--input-bg);
+            border: 2px solid transparent;
+            border-radius: 8px;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            outline: none;
+        }
+
+        input:focus,
+        select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+        }
+
+        button {
+            padding: 12px;
+            font-size: 16px;
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: var(--bg-color);
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .result,
+        .error {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            font-size: 18px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result {
+            background: linear-gradient(135deg, rgba(0, 255, 255, 0.1), rgba(255, 0, 255, 0.1));
+            border: 1px solid var(--primary-color);
+        }
+
+        .error {
+            background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(255, 165, 0, 0.1));
+            border: 1px solid #ff0000;
+        }
+
+        .result h2 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: var(--primary-color);
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+                margin: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            input, select, button {
+                font-size: 14px;
+            }
+        }
+    </style>
 </head>
-<style>
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-  }
-
-  body {
-    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #121212;
-    color: #e0e0e0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-  }
-
-  .container {
-    background-color: #181818;
-    padding: 40px;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
-    max-width: 450px;
-    width: 100%;
-  }
-
-  h1 {
-    font-size: 28px;
-    color: #1db954;
-    margin-bottom: 30px;
-    text-align: center;
-  }
-
-  form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-
-  label {
-    font-size: 16px;
-    font-weight: 500;
-    color: #b3b3b3;
-  }
-
-  input,
-  select {
-    padding: 12px;
-    font-size: 16px;
-    background-color: #333;
-    border: 2px solid #333;
-    border-radius: 8px;
-    color: #e0e0e0;
-    transition: all 0.3s ease;
-    outline: none;
-  }
-
-  input:focus,
-  select:focus {
-    border-color: #1db954;
-  }
-
-  button {
-    padding: 12px;
-    font-size: 16px;
-    background-color: #1db954;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-
-  button:hover {
-    background-color: #148a39;
-  }
-
-  .result,
-  .error {
-    margin-top: 30px;
-    padding: 20px;
-    border-radius: 8px;
-    font-size: 18px;
-  }
-
-  .result {
-    background-color: #1b3e30;
-    color: #a4d8b7;
-    border: 1px solid #1db954;
-  }
-
-  .error {
-    background-color: #531b1d;
-    color: #f5646e;
-    border: 1px solid #f03a47;
-  }
-
-  .result h2 {
-    font-size: 24px;
-    margin-bottom: 10px;
-  }
-</style>
-
 <body>
-  <div class="container">
-    <h1>Math Operations with Newton API</h1>
+    <div class="container">
+        <h1><i class="fas fa-calculator"></i> Math Operations</h1>
 
-    <form method="POST">
-      <label for="operation">Chọn phép toán:</label>
-      <select name="operation" id="operation" required>
-        <option value="" disabled selected>Chọn một phép toán</option>
-        <option value="simplify">Rút gọn</option>
-        <option value="factor">Phân tích nhân tử</option>
-        <option value="derive">Tính đạo hàm (d/dx)</option>
-        <option value="integrate">Tính tích phân (∫)</option>
-        <option value="zeroes">Tìm nghiệm (x = ?)</option>
-        <option value="tangent">Tìm tiếp tuyến (dy/dx)</option>
-        <option value="area">Diện tích dưới đường cong (∫)</option>
-        <option value="cos">Cosine (cos)</option>
-        <option value="sin">Sine (sin)</option>
-        <option value="tan">Tangent (tan)</option>
-        <option value="arccos">Cosine nghịch đảo (arccos)</option>
-        <option value="arcsin">Sine nghịch đảo (arcsin)</option>
-        <option value="arctan">Tangent nghịch đảo (arctan)</option>
-        <option value="abs">Giá trị tuyệt đối (|x|)</option>
-        <option value="log">Logarithm (log)</option>
-      </select>
+        <form method="POST">
+            <label for="operation"><i class="fas fa-cogs"></i> Chọn phép toán:</label>
+            <select name="operation" id="operation" required>
+                <option value="" disabled selected>Chọn một phép toán</option>
+                <option value="simplify">Rút gọn</option>
+                <option value="factor">Phân tích nhân tử</option>
+                <option value="derive">Tính đạo hàm (d/dx)</option>
+                <option value="integrate">Tính tích phân (∫)</option>
+                <option value="zeroes">Tìm nghiệm (x = ?)</option>
+                <option value="tangent">Tìm tiếp tuyến (dy/dx)</option>
+                <option value="area">Diện tích dưới đường cong (∫)</option>
+                <option value="cos">Cosine (cos)</option>
+                <option value="sin">Sine (sin)</option>
+                <option value="tan">Tangent (tan)</option>
+                <option value="arccos">Cosine nghịch đảo (arccos)</option>
+                <option value="arcsin">Sine nghịch đảo (arcsin)</option>
+                <option value="arctan">Tangent nghịch đảo (arctan)</option>
+                <option value="abs">Giá trị tuyệt đối (|x|)</option>
+                <option value="log">Logarithm (log)</option>
+            </select>
 
-      <label for="expression">Enter Expression:</label>
-      <input type="text" name="expression" id="expression" required placeholder="e.g., x^2 + 2x" />
+            <label for="expression"><i class="fas fa-function"></i> Nhập biểu thức:</label>
+            <input type="text" name="expression" id="expression" required placeholder="Ví dụ: x^2 + 2x" />
 
-      <button type="submit">Calculate</button>
-      <div class="d-flex justify-content-end mt-4">
-        <button onclick="location.href='{{ url_for('homepage') }}'" class="btn btn-custom">
-          Quay về trang chủ
-        </button>
-      </div>
-    </form>
+            <button type="submit"><i class="fas fa-equals"></i> Tính toán</button>
+        </form>
 
-    <!-- Hiển thị kết quả hoặc lỗi -->
-    {% if result %}
-    <div class="result">
-      <h2>Kết quả: {{ result }}</h2>
-      <p><strong>Biểu thức:</strong> {{ expression }}</p>
-      <p><strong>Phép toán:</strong> {{ operation }}</p>
+        {% if result %}
+        <div class="result">
+            <h2><i class="fas fa-chart-line"></i> Kết quả:</h2>
+            <p>{{ result }}</p>
+            <p><strong>Biểu thức:</strong> {{ expression }}</p>
+            <p><strong>Phép toán:</strong> {{ operation }}</p>
+        </div>
+        {% elif error %}
+        <div class="error">
+            <i class="fas fa-exclamation-triangle"></i> {{ error }}
+        </div>
+        {% endif %}
+
+        <div style="text-align: center; margin-top: 20px;">
+            <button onclick="location.href='{{ url_for('homepage') }}'" style="background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));">
+                <i class="fas fa-home"></i> Quay về trang chủ
+            </button>
+        </div>
     </div>
-    {% elif error %}
-    <div class="error">{{ error }}</div>
-    {% endif %}
 
-  </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const form = document.querySelector('form');
+            const inputs = form.querySelectorAll('input, select');
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', () => {
+                    input.style.transform = 'scale(1.05)';
+                });
+                
+                input.addEventListener('blur', () => {
+                    input.style.transform = 'scale(1)';
+                });
+            });
 
+            form.addEventListener('submit', (e) => {
+                e.preventDefault();
+                const button = form.querySelector('button[type="submit"]');
+                button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Đang tính...';
+                setTimeout(() => form.submit(), 1000);
+            });
+        });
+    </script>
 </body>
-
 </html>
