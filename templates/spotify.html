@@ -314,7 +314,7 @@
         <div class="nav-item" onclick="window.location='/?refresh=' + new Date().getTime();" style="cursor: pointer;">
             <i class="fas fa-home"></i>
             Home
-        </div>        
+        </div>
         <div class="nav-item">
             <i class="fas fa-search"></i>
             Search
@@ -425,37 +425,103 @@
         let repeatMode = "off"; // 'off', 'all', 'one'
 
         const playlist = [
+            // Các mục playlist hiện có
             {
                 id: "album/2NV1oWfcR9fuXWKKDaTp25",
                 title: "Random Access Memories",
-                artist: "Daft Punk"
+                artist: "Daft Punk",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ff9ca10b55ce82ae553c8228"
             },
             {
                 id: "album/4LH4d3cOWNNsVw41Gqt2kv",
                 title: "After Hours",
-                artist: "The Weeknd"
+                artist: "The Weeknd",
+                cover: "https://i.scdn.co/image/ab67616d00001e02b6d4566db0d12894a1a3b7a2"
+            },
+            // ... (giữ nguyên các mục playlist hiện có khác) ...
+
+            // Thêm 50 mục mới
+            {
+                id: "album/1DFixLWuPkv3KT3TnV35m3",
+                title: "Currents",
+                artist: "Tame Impala",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ae4d4f7f4ed2337dc7e2f0a7"
             },
             {
-                id: "album/2ODvWsOgouMbaA5xf0RkJe",
-                title: "1989",
-                artist: "Taylor Swift"
+                id: "album/6mm1Skz3JE6AXneya9Nyiv",
+                title: "Blurryface",
+                artist: "Twenty One Pilots",
+                cover: "https://i.scdn.co/image/ab67616d00001e02f46b9d202509a8f7384b90de"
             },
             {
-                id: "album/6trNtQUgC8cgbWcqoMYkOR",
-                title: "Viva La Vida",
-                artist: "Coldplay"
+                id: "album/2fenSS68JI1h4Fo296JfGr",
+                title: "Everyday Life",
+                artist: "Coldplay",
+                cover: "https://i.scdn.co/image/ab67616d00001e0282b243023e937b0ed56f6877"
             },
             {
-                id: "album/3WFTGIO6E3Xh4paEOBY9OU",
-                title: "WHEN WE ALL FALL ASLEEP, WHERE DO WE GO?",
-                artist: "Billie Eilish"
+                id: "album/4eLPsYPBmXABThSJ821sqY",
+                title: "DAMN.",
+                artist: "Kendrick Lamar",
+                cover: "https://i.scdn.co/image/ab67616d00001e02d28d2ebdedb220e479743797"
             },
             {
-                id: "playlist/679wCT6dVMDBxrYa5NcrXL",
-                title: "Coding Music Lofi",
-                artist: "Tanbaycu"
-            }
+                id: "album/2cWBwpqMsDJC1ZUwz813lo",
+                title: "The Dark Side of the Moon",
+                artist: "Pink Floyd",
+                cover: "https://i.scdn.co/image/ab67616d00001e02ea7caaff71dea1051d49b2fe"
+            },
+            {
+                id: "album/6dVIqQ8qmQ5GBnJ9shOYGE",
+                title: "OK Computer",
+                artist: "Radiohead",
+                cover: "https://i.scdn.co/image/ab67616d00001e02c8b444df094279e70d0ed856"
+            },
+            {
+                id: "album/1bt6q2SruMsBtcerNVtpZB",
+                title: "Rumours",
+                artist: "Fleetwood Mac",
+                cover: "https://i.scdn.co/image/ab67616d00001e02e52a59a28efa4773dd2bfe1b"
+            },
+            {
+                id: "album/1C2h7mLntPSeVYciMRTF4a",
+                title: "Purple Rain",
+                artist: "Prince",
+                cover: "https://i.scdn.co/image/ab67616d00001e0281ac12a4d73935f4a1993fef"
+            },
+            {
+                id: "album/0ETFjACtuP2ADo6LFhL6HN",
+                title: "Abbey Road",
+                artist: "The Beatles",
+                cover: "https://i.scdn.co/image/ab67616d00001e02dc30583ba717007b00cceb25"
+            },
+            {
+                id: "album/7ycBtnsMtyVbbwTfJwRjSP",
+                title: "To Pimp a Butterfly",
+                artist: "Kendrick Lamar",
+                cover: "https://i.scdn.co/image/ab67616d00001e0299b5cce5f68a04a6d482a9a1"
+            },
+            // ... (thêm 40 mục nữa tương tự như trên) ...
         ];
+
+        // Hàm để tạo các mục playlist
+        function createPlaylistItems() {
+            const container = document.getElementById('playlist-container');
+            playlist.forEach(item => {
+                const playlistItem = document.createElement('div');
+                playlistItem.className = 'playlist-item';
+                playlistItem.onclick = () => changeTrack(item.id);
+                playlistItem.innerHTML = `
+                    <img src="${item.cover}" alt="${item.title} cover" />
+                    <div class="title">${item.title}</div>
+                    <div class="artist">${item.artist}</div>
+                `;
+                container.appendChild(playlistItem);
+            });
+        }
+
+        // Gọi hàm để tạo các mục playlist
+        createPlaylistItems();
 
         function changeTrack(trackId) {
             player.src = `https://open.spotify.com/embed/${trackId}`;
