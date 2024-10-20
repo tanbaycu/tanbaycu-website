@@ -2,262 +2,279 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>File Upload - Tanbaycu</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>File Upload - Tanbaycu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <style>
+        :root {
+            --primary-color: #6366f1;
+            --secondary-color: #8b5cf6;
+            --background-color: #111827;
+            --surface-color: #1f2937;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+        }
 
-    body {
-      font-family: "Montserrat", sans-serif;
-      background-color: #1e1e2f;
-      /* Nền tối */
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding: 20px;
-      transition: background-color 0.5s;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Navbar */
-    .navbar {
-      background-color: rgba(59, 89, 152, 0.9);
-      display: flex;
-      justify-content: center;
-      padding: 15px 0;
-      position: fixed;
-      width: 100%;
-      top: 0;
-      z-index: 1000;
-    }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
 
-    .navbar a {
-      color: #ffffff;
-      text-decoration: none;
-      font-size: 18px;
-      font-weight: 600;
-      margin: 0 20px;
-      transition: color 0.3s, transform 0.3s;
-    }
+        .navbar {
+            background-color: var(--surface-color);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
 
-    .navbar a:hover {
-      color: #50fa7b;
-      transform: scale(1.1);
-    }
+        .navbar-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
 
-    /* Header */
-    .header {
-      font-size: 36px;
-      color: #50fa7b;
-      padding: 30px;
-      text-align: center;
-      width: 100%;
-      max-width: 800px;
-      margin-top: 80px;
-      border-bottom: 2px solid #50fa7b;
-    }
+        .navbar a {
+            color: var(--text-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
 
-    /* Main container */
-    .main-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      margin-top: 20px;
-      width: 100%;
-      max-width: 800px;
-    }
+        .navbar a:hover {
+            color: var(--primary-color);
+        }
 
-    /* Upload section */
-    .upload-section {
-      width: 100%;
-      background-color: #282a36;
-      /* Màu nền cho phần tải lên */
-      border-radius: 10px;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
-      padding: 30px;
-      position: relative;
-      text-align: center;
-      overflow: hidden;
-    }
+        .main-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+        }
 
-    .upload-area {
-      border: 2px dashed #50fa7b;
-      /* Đường viền cho khu vực tải lên */
-      border-radius: 10px;
-      padding: 40px;
-      margin: 20px 0;
-      transition: background-color 0.3s;
-      cursor: pointer;
-    }
+        .header {
+            font-size: 2.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            text-align: center;
+        }
 
-    .upload-area:hover {
-      background-color: #44475a;
-      /* Màu nền khi hover */
-    }
+        .upload-section {
+            background-color: var(--surface-color);
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            padding: 40px;
+            width: 100%;
+            max-width: 500px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
 
-    .upload-area input[type="file"] {
-      display: none;
-    }
+        .upload-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+        }
 
-    .upload-button {
-      background: linear-gradient(135deg,
-          #50fa7b,
-          #00bfff);
-      /* Gradient cho nút */
-      color: #ffffff;
-      border: none;
-      padding: 15px 30px;
-      font-size: 18px;
-      border-radius: 5px;
-      cursor: pointer;
-      transition: background 0.3s, transform 0.3s, box-shadow 0.3s;
-      margin: 10px;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-      /* Bóng mềm */
-    }
+        .upload-area {
+            border: 2px dashed var(--primary-color);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
 
-    .upload-button:hover {
-      background: linear-gradient(135deg,
-          #00bfff,
-          #50fa7b);
-      /* Chuyển đổi màu khi hover */
-      transform: translateY(-2px) scale(1.05);
-      /* Hiệu ứng nhấc lên */
-      box-shadow: 0 6px 20px rgba(0, 191, 255, 0.4);
-      /* Hiệu ứng bóng */
-    }
+        .upload-area:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
 
-    /* Tên file hiển thị */
-    .file-name {
-      margin-top: 20px;
-      font-size: 18px;
-      color: #50fa7b;
-    }
+        .upload-icon {
+            width: 64px;
+            height: 64px;
+            margin-bottom: 20px;
+        }
 
-    /* Footer */
-    footer {
-      text-align: center;
-      margin-top: auto;
-      padding: 15px;
-      color: #ffffff;
-      width: 100%;
-      background-color: #1e1e2f;
-      border-top: 2px solid #50fa7b;
-    }
+        .upload-text {
+            color: var(--text-muted);
+            margin-bottom: 20px;
+        }
 
-    /* Responsive styles */
-    @media (max-width: 768px) {
-      .navbar a {
-        font-size: 14px;
-      }
+        .upload-button {
+            background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            margin-top: 20px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-      .header {
-        font-size: 28px;
-      }
+        .upload-button svg {
+            margin-right: 8px;
+        }
 
-      .upload-area {
-        padding: 20px;
-      }
+        .upload-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+        }
 
-      .upload-button {
-        font-size: 16px;
-        padding: 12px 25px;
-        /* Giảm kích thước nút */
-      }
-    }
+        .file-name {
+            margin-top: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
 
-    @media (max-width: 480px) {
-      .navbar {
-        padding: 5px;
-      }
+        footer {
+            text-align: center;
+            padding: 20px;
+            background-color: var(--surface-color);
+            color: var(--text-muted);
+        }
 
-      .header {
-        font-size: 24px;
-      }
+        @media (max-width: 768px) {
+            .header {
+                font-size: 2rem;
+            }
 
-      .upload-area {
-        padding: 10px;
-      }
+            .upload-section {
+                padding: 30px;
+            }
 
-      .upload-button {
-        font-size: 14px;
-        padding: 10px 20px;
-        /* Giảm kích thước nút */
-      }
-    }
-  </style>
+            .upload-area {
+                padding: 30px;
+            }
+        }
+    </style>
 </head>
 
 <body>
-  <div class="navbar">
-    <a href="{{ url_for('homepage') }}">Home</a>
-    <a href="/upload-history">Upload History</a>
-    <a href="/download-history">Download History</a>
-  </div>
+    <nav class="navbar">
+        <div class="navbar-container">
+            <a href="{{ url_for('homepage') }}">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
+                </svg>
+            </a>
+            <div>
+                <a href="/upload-history">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 5v14"></path>
+                        <path d="M5 12h14"></path>
+                    </svg>
+                </a>
+                <a href="/download-history" style="margin-left: 20px;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </nav>
 
-  <div class="main-container">
-    <div class="header">Upload File</div>
-    <div class="upload-section">
-      <div class="upload-area" id="file-drop-area">
-        <p>Drag & drop your files here or click to upload</p>
-        <form method="POST" enctype="multipart/form-data" id="upload-form">
-          <input type="file" name="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.pdf" required />
-          <label for="file-input" class="upload-button">Chọn tệp</label>
-          <button type="submit" class="upload-button">Tải lên</button>
-        </form>
-      </div>
-      <!-- Hiển thị tên file được chọn -->
-      <div class="file-name" id="file-name">Chưa có file nào được chọn</div>
+    <div class="main-container">
+        <h1 class="header">File Upload</h1>
+        <div class="upload-section">
+            <div class="upload-area" id="file-drop-area">
+                <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="17 8 12 3 7 8"></polyline>
+                    <line x1="12" y1="3" x2="12" y2="15"></line>
+                </svg>
+                <p class="upload-text">Drag & drop your file here or click to select</p>
+                <form method="POST" enctype="multipart/form-data" id="upload-form">
+                    <input type="file" name="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.pdf" required hidden />
+                    <button type="button" class="upload-button" onclick="document.getElementById('file-input').click()">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Choose File
+                    </button>
+                    <button type="submit" class="upload-button">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="17 8 12 3 7 8"></polyline>
+                            <line x1="12" y1="3" x2="12" y2="15"></line>
+                        </svg>
+                        Upload File
+                    </button>
+                </form>
+            </div>
+            <div class="file-name" id="file-name">No file chosen</div>
+        </div>
     </div>
-  </div>
 
-  <footer>
-    <div>© 2024 | Upload File</div>
-  </footer>
+    <footer>
+        <div>© 2024 File Upload </div>
+    </footer>
 
-  <script>
-    const dropArea = document.getElementById("file-drop-area");
-    const fileInput = document.getElementById("file-input");
-    const fileNameDisplay = document.getElementById("file-name");
+    <script>
+        const dropArea = document.getElementById("file-drop-area");
+        const fileInput = document.getElementById("file-input");
+        const fileNameDisplay = document.getElementById("file-name");
 
-    // Hiển thị tên file khi chọn
-    fileInput.addEventListener("change", () => {
-      const fileName = fileInput.files[0]
-        ? fileInput.files[0].name
-        : "No file chosen";
-      fileNameDisplay.textContent = fileName;
-    });
+        fileInput.addEventListener("change", () => {
+            const fileName = fileInput.files[0] ? fileInput.files[0].name : "No file chosen";
+            fileNameDisplay.textContent = fileName;
+            animateFileName();
+        });
 
-    // Highlight the drop area when dragging files over it
-    dropArea.addEventListener("dragover", (event) => {
-      event.preventDefault();
-      dropArea.classList.add("dragover");
-    });
+        dropArea.addEventListener("dragover", (event) => {
+            event.preventDefault();
+            dropArea.style.backgroundColor = "rgba(99, 102, 241, 0.1)";
+        });
 
-    // Remove highlight when leaving drop area
-    dropArea.addEventListener("dragleave", () => {
-      dropArea.classList.remove("dragover");
-    });
+        dropArea.addEventListener("dragleave", () => {
+            dropArea.style.backgroundColor = "transparent";
+        });
 
-    // Handle file drop
-    dropArea.addEventListener("drop", (event) => {
-      event.preventDefault();
-      const files = event.dataTransfer.files;
-      if (files.length) {
-        fileInput.files = files;
-        fileNameDisplay.textContent = files[0].name; // Hiển thị tên file
-      }
-    });
-  </script>
+        dropArea.addEventListener("drop", (event) => {
+            event.preventDefault();
+            dropArea.style.backgroundColor = "transparent";
+            const files = event.dataTransfer.files;
+            if (files.length) {
+                fileInput.files = files;
+                fileNameDisplay.textContent = files[0].name;
+                animateFileName();
+            }
+        });
+
+        function animateFileName() {
+            fileNameDisplay.style.opacity = "0";
+            setTimeout(() => {
+                fileNameDisplay.style.transition = "opacity 0.5s ease";
+                fileNameDisplay.style.opacity = "1";
+            }, 50);
+        }
+    </script>
 </body>
 
 </html>
