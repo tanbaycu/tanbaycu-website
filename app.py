@@ -899,7 +899,14 @@ def get_exchange_rates(base_currency):
         return jsonify(response.json())
     else:
         return jsonify({"error": "Failed to fetch exchange rates"}), 400
-        
+
+
+
+@app.route('/formatcode')
+def format_code():
+    return render_template('format.html')  
+
+    
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")

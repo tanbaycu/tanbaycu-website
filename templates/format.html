@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Beautifier - Tanbaycu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code&family=Inter:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify-css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.14.7/beautify-html.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/acorn/8.8.2/acorn.min.js"></script>
+    <style>
+        :root {
+            --bg-color: #1a1a1a;
+            --text-color: #ffffff;
+            --accent-color: #ff6b6b;
+            --secondary-color: #4ecdc4;
+            --tertiary-color: #45b7d1;
+            --error-color: #ff4757;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+        }
+
+        .header {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: var(--accent-color);
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .editor, .preview {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .editor-header, .preview-header {
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 0.5rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        textarea, .preview-content {
+            flex: 1;
+            background-color: rgba(0, 0, 0, 0.2);
+            color: var(--text-color);
+            border: none;
+            padding: 1rem;
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            resize: none;
+            min-height: 200px;
+        }
+
+        .preview-content {
+            overflow: auto;
+        }
+
+        .controls {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            padding: 1rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        select, button {
+            background-color: var(--secondary-color);
+            color: var(--bg-color);
+            border: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        select:hover, button:hover {
+            background-color: var(--tertiary-color);
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .theme-option {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        pre {
+            margin: 0;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+        }
+
+        .icon-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem;
+        }
+
+        .icon-button svg {
+            width: 24px;
+            height: 24px;
+            fill: currentColor;
+        }
+
+        #errorMessage {
+            color: var(--error-color);
+            margin-top: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        /* Theme options */
+        .theme-dark { background-color: #1a1a1a; }
+        .theme-light { background-color: #ffffff; }
+        .theme-blue { background-color: #1e3a8a; }
+        .theme-green { background-color: #065f46; }
+        .theme-purple { background-color: #5b21b6; }
+
+        @media (min-width: 768px) {
+            .container {
+                flex-direction: row;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Code Beautifier</h1>
+    </div>
+    <div class="container">
+        <div class="editor">
+            <div class="editor-header">
+                <span>Input</span>
+                <button id="pasteBtn" class="icon-button" title="Paste">
+                    <svg viewBox="0 0 24 24"><path d="M19,20H5V4H7V7H17V4H19M12,2A1,1 0 0,1 13,3A1,1 0 0,1 12,4A1,1 0 0,1 11,3A1,1 0 0,1 12,2M19,2H14.82C14.4,0.84 13.3,0 12,0C10.7,0 9.6,0.84 9.18,2H5A2,2 0 0,0 3,4V20A2,2 0 0,0 5,22H19A2,2 0 0,0 21,20V4A2,2 0 0,0 19,2Z" /></svg>
+                </button>
+            </div>
+            <textarea id="codeInput" placeholder="Paste your code here..."></textarea>
+        </div>
+        <div class="preview">
+            <div class="preview-header">
+                <span>Output</span>
+                <button id="copyBtn" class="icon-button" title="Copy">
+                    <svg viewBox="0 0 24 24"><path d="M19,21H8V7H19M19,5H8A2,2 0 0,0 6,7V21A2,2 0 0,0 8,23H19A2,2 0 0,0 21,21V7A2,2 0 0,0 19,5M16,1H4A2,2 0 0,0 2,3V17H4V3H16V1Z" /></svg>
+                </button>
+            </div>
+            <div class="preview-content">
+                <pre><code id="codeOutput"></code></pre>
+            </div>
+        </div>
+    </div>
+    <div class="controls">
+        <div>
+            <select id="languageSelect">
+                <option value="javascript">JavaScript</option>
+                <option value="html">HTML</option>
+                <option value="css">CSS</option>
+                <option value="python">Python</option>
+            </select>
+            <select id="fontSelect">
+                <option value="'Fira Code', monospace">Fira Code</option>
+                <option value="'Courier New', monospace">Courier New</option>
+                <option value="'Roboto Mono', monospace">Roboto Mono</option>
+            </select>
+        </div>
+        <div class="theme-selector">
+            <div class="theme-option theme-dark" data-theme="dark"></div>
+            <div class="theme-option theme-light" data-theme="light"></div>
+            <div class="theme-option theme-blue" data-theme="blue"></div>
+            <div class="theme-option theme-green" data-theme="green"></div>
+            <div class="theme-option theme-purple" data-theme="purple"></div>
+        </div>
+        <button id="beautifyBtn">
+            <svg viewBox="0 0 24 24" style="width: 24px; height: 24px; vertical-align: middle;"><path fill="currentColor" d="M5,3C3.89,3 3,3.89 3,5V19C3,20.11 3.89,21 5,21H19C20.11,21 21,20.11 21,19V5C21,3.89 20.11,3 19,3H5M5,5H19V19H5V5M7,7V9H17V7H7M7,11V13H17V11H7M7,15V17H14V15H7Z" /></svg>
+            Beautify
+        </button>
+    </div>
+    <div id="errorMessage"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const codeInput = document.getElementById('codeInput');
+            const codeOutput = document.getElementById('codeOutput');
+            const languageSelect = document.getElementById('languageSelect');
+            const beautifyBtn = document.getElementById('beautifyBtn');
+            const fontSelect = document.getElementById('fontSelect');
+            const themeOptions = document.querySelectorAll('.theme-option');
+            const pasteBtn = document.getElementById('pasteBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const errorMessage = document.getElementById('errorMessage');
+
+            const beautifyOptions = {
+                indent_size: 2,
+                indent_char: ' ',
+                max_preserve_newlines: 5,
+                preserve_newlines: true,
+                keep_array_indentation: false,
+                break_chained_methods: false,
+                indent_scripts: 'normal',
+                brace_style: 'collapse',
+                space_before_conditional: true,
+                unescape_strings: false,
+                jslint_happy: false,
+                end_with_newline: false,
+                wrap_line_length: 0,
+                indent_inner_html: false,
+                comma_first: false,
+                e4x: false,
+                indent_empty_lines: false
+            };
+
+            function updateCode() {
+                const code = codeInput.value;
+                const language = languageSelect.value;
+                let beautifiedCode;
+
+                try {
+                    switch (language) {
+                        case 'javascript':
+                            beautifiedCode = js_beautify(code, beautifyOptions);
+                            // Syntax check for JavaScript
+                            try {
+                                acorn.parse(beautifiedCode, {ecmaVersion: 2022});
+                                errorMessage.textContent = '';
+                            } catch (syntaxError) {
+                                errorMessage.textContent = `Syntax Error: ${syntaxError.message}`;
+                            }
+                            break;
+                        case 'html':
+                            beautifiedCode = html_beautify(code, beautifyOptions);
+                            break;
+                        case 'css':
+                            beautifiedCode = css_beautify(code, beautifyOptions);
+                            break;
+                        case 'python':
+                            // For Python, we'll just indent the code as js-beautify doesn't support Python
+                            beautifiedCode = code.split('\n').map(line => '  ' + line).join('\n');
+                            break;
+                        default:
+                            beautifiedCode = code;
+                    }
+
+                    codeOutput.textContent = beautifiedCode;
+                    codeOutput.className = language;
+                    hljs.highlightElement(codeOutput);
+                } catch (error) {
+                    console.error('Beautification error:', error);
+                    errorMessage.textContent = `Error during beautification: ${error.message}`;
+                }
+            }
+
+            function changeFont() {
+                const selectedFont = fontSelect.value;
+                codeInput.style.fontFamily = selectedFont;
+                codeOutput.style.fontFamily = selectedFont;
+            }
+
+            function changeTheme(theme) {
+                const root = document.documentElement;
+                switch (theme) {
+                    case 'light':
+                        root.style.setProperty('--bg-color', '#ffffff');
+                        root.style.setProperty('--text-color', '#1a1a1a');
+                        break;
+                    case 'blue':
+                        root.style.setProperty('--bg-color', '#1e3a8a');
+                        root.style.setProperty('--text-color', '#ffffff');
+                        break;
+                    case 'green':
+                        root.style.setProperty('--bg-color', '#065f46');
+                        root.style.setProperty('--text-color', '#ffffff');
+                        break;
+                    case 'purple':
+                        root.style.setProperty('--bg-color', '#5b21b6');
+                        
+                        root.style.setProperty('--text-color', '#ffffff');
+                        break;
+                    default: // dark
+                        root.style.setProperty('--bg-color', '#1a1a1a');
+                        root.style.setProperty('--text-color', '#ffffff');
+                }
+            }
+
+            async function pasteCode() {
+                try {
+                    const text = await navigator.clipboard.readText();
+                    codeInput.value = text;
+                    updateCode();
+                } catch (err) {
+                    console.error('Failed to read clipboard contents: ', err);
+                    errorMessage.textContent = 'Failed to paste from clipboard. Please paste manually.';
+                }
+            }
+
+            async function copyCode() {
+                try {
+                    await navigator.clipboard.writeText(codeOutput.textContent);
+                    errorMessage.textContent = 'Code copied to clipboard!';
+                    setTimeout(() => {
+                        errorMessage.textContent = '';
+                    }, 3000);
+                } catch (err) {
+                    console.error('Failed to copy: ', err);
+                    errorMessage.textContent = 'Failed to copy to clipboard. Please copy manually.';
+                }
+            }
+
+            beautifyBtn.addEventListener('click', updateCode);
+            languageSelect.addEventListener('change', updateCode);
+            fontSelect.addEventListener('change', changeFont);
+            pasteBtn.addEventListener('click', pasteCode);
+            copyBtn.addEventListener('click', copyCode);
+
+            themeOptions.forEach(option => {
+                option.addEventListener('click', () => {
+                    changeTheme(option.dataset.theme);
+                });
+            });
+
+            // Initial update
+            updateCode();
+        });
+    </script>
+</body>
+</html>
