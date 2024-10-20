@@ -20,6 +20,7 @@ from flask import (
     get_flashed_messages,
     jsonify,
     send_file,
+    Response
 )
 
 app = Flask(__name__)
@@ -854,6 +855,11 @@ def projects():
 @app.route("/aichat", methods=["GET"])
 def aichat():
     return render_template("aichat.html")
+
+@app.route('/pdf')
+def pdf_page():
+    return render_template('pdf.html')
+       
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
