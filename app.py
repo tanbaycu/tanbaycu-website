@@ -9,8 +9,6 @@ import sys
 import re
 import subprocess
 from deep_translator import GoogleTranslator
-from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime
 # from vercel_kv import VercelKV
 from flask import (
     Flask,
