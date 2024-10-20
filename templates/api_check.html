@@ -97,7 +97,7 @@
         <p class="mt-2 text-sm">Đang xử lý yêu cầu...</p>
       </div>
       <div id="response" class="hidden mt-6 p-4 bg-gray-700 rounded-md overflow-x-auto"></div>
-      <a href="{{ url_for('homepage', refresh=time()) }}"
+      <a href="{{ url_for('homepage') }}"
         class="block mt-6 text-center bg-secondary text-white font-semibold py-2 px-4 rounded-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-200">
         Quay trở về trang chủ
       </a>
@@ -105,7 +105,7 @@
   </main>
 
   <footer class="bg-surface py-4 text-center text-sm">
-    <p>&copy; 2024 | Kiểm Tra API | <a href="{{ url_for('homepage', refresh=time()) }}" class="text-primary hover:underline">Trang
+    <p>&copy; 2024 | Kiểm Tra API | <a href="{{ url_for('homepage') }}" class="text-primary hover:underline">Trang
         chủ</a></p>
   </footer>
 
