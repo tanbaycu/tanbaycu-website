@@ -1,340 +1,499 @@
 <!DOCTYPE html>
 <html lang="vi">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="description"
-    content="Tạo mã QR miễn phí với công cụ hiện đại và đỉnh cao. Tùy chỉnh kích thước, định dạng và tải về ngay lập tức." />
-  <title>QR Code Generator - Tanbaycu</title>
-  <link rel="icon" type="image/svg+xml"
-    href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>" />
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&display=swap" rel="stylesheet" />
-  <style>
-    :root {
-      --primary-color: #6c63ff;
-      --secondary-color: #4caf50;
-      --background-dark: #1a1a2e;
-      --surface-dark: #16213e;
-      --text-light: #ffffff;
-      --text-dark: #0f3460;
-      --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-    }
-
-    body {
-      font-family: "Roboto", sans-serif;
-      margin: 0;
-      padding: 0;
-      background: var(--background-dark);
-      color: var(--text-light);
-      transition: var(--transition);
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
-    }
-
-    .container {
-      max-width: 800px;
-      margin: 2rem auto;
-      padding: 2rem;
-      background: var(--surface-dark);
-      border-radius: 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-    }
-
-    h1 {
-      font-size: 2.5rem;
-      text-align: center;
-      margin-bottom: 2rem;
-      background: linear-gradient(45deg,
-          var(--primary-color),
-          var(--secondary-color));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      animation: gradientText 5s ease infinite;
-    }
-
-    @keyframes gradientText {
-
-      0%,
-      100% {
-        background-position: 0% 50%;
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Tạo mã QR miễn phí với công cụ hiện đại và đỉnh cao. Tùy chỉnh kích thước, định dạng và tải về ngay lập tức."
+    />
+    <title>QR Code Generator Pro - Tanbaycu</title>
+    <link
+      rel="icon"
+      type="image/svg+xml"
+      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --primary-color: #6366f1;
+        --secondary-color: #10b981;
+        --background-dark: #0f172a;
+        --surface-dark: #1e293b;
+        --text-light: #f1f5f9;
+        --text-dark: #334155;
+        --accent-color: #f59e0b;
+        --danger-color: #ef4444;
+        --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
       }
 
-      50% {
-        background-position: 100% 50%;
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
       }
-    }
 
-    .input-group {
-      margin-bottom: 1.5rem;
-    }
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background-dark);
+        color: var(--text-light);
+        transition: var(--transition);
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        background-image: radial-gradient(
+            circle at 10% 20%,
+            rgba(99, 102, 241, 0.1) 0%,
+            transparent 20%
+          ),
+          radial-gradient(
+            circle at 90% 80%,
+            rgba(16, 185, 129, 0.1) 0%,
+            transparent 20%
+          );
+        background-attachment: fixed;
+      }
 
-    label {
-      display: block;
-      margin-bottom: 0.5rem;
-      font-weight: bold;
-    }
-
-    input[type="text"],
-    select {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background-color: rgba(255, 255, 255, 0.1);
-      color: var(--text-light);
-      font-size: 1rem;
-      transition: var(--transition);
-    }
-
-    input[type="text"]:focus,
-    select:focus {
-      outline: none;
-      box-shadow: 0 0 0 2px var(--primary-color);
-    }
-
-    button {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 10px;
-      background: linear-gradient(45deg,
-          var(--primary-color),
-          var(--secondary-color));
-      color: white;
-      font-size: 1rem;
-      font-weight: bold;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    button:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
-    }
-
-    #qrCode {
-      display: flex;
-      justify-content: center;
-      margin-top: 2rem;
-    }
-
-    #qrCode img {
-      max-width: 100%;
-      border-radius: 10px;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
-      transition: var(--transition);
-    }
-
-    #qrCode img:hover {
-      transform: scale(1.05);
-    }
-
-    #downloadLink {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      margin-top: 1rem;
-      padding: 12px 20px;
-      background: var(--secondary-color);
-      color: white;
-      text-decoration: none;
-      border-radius: 10px;
-      font-weight: bold;
-      transition: var(--transition);
-    }
-
-    #downloadLink:hover {
-      background: #45a049;
-      transform: translateY(-2px);
-    }
-
-    #downloadLink svg {
-      margin-left: 8px;
-    }
-
-    .theme-toggle {
-      position: fixed;
-      top: 20px;
-      right: 20px;
-      background: none;
-      border: none;
-      color: var(--text-light);
-      font-size: 1.5rem;
-      cursor: pointer;
-    }
-
-    footer {
-      margin-top: auto;
-      text-align: center;
-      padding: 1rem;
-      background: var(--surface-dark);
-    }
-
-    footer a {
-      color: var(--primary-color);
-      text-decoration: none;
-    }
-
-    @media (max-width: 768px) {
       .container {
-        margin: 1rem;
-        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        max-width: 800px;
+        margin: 3rem auto;
+        padding: 3rem;
+        background-color: var(--surface-dark);
+        border-radius: 2rem;
+        box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+        transition: var(--transition);
+        position: relative;
+        overflow: hidden;
+      }
+
+      .container::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: conic-gradient(
+          from 0deg at 50% 50%,
+          var(--primary-color) 0deg,
+          transparent 60deg,
+          var(--secondary-color) 120deg,
+          transparent 180deg,
+          var(--accent-color) 240deg,
+          transparent 300deg
+        );
+        animation: rotate 20s linear infinite;
+        opacity: 0.1;
+        z-index: -1;
+      }
+
+      @keyframes rotate {
+        100% {
+          transform: rotate(360deg);
+        }
       }
 
       h1 {
-        font-size: 2rem;
-      }
-    }
-
-    .light-mode {
-      --background-dark: #f0f2f5;
-      --surface-dark: #ffffff;
-      --text-light: var(--text-dark);
-    }
-
-    .loading {
-      display: inline-block;
-      width: 50px;
-      height: 50px;
-      border: 3px solid rgba(255, 255, 255, 0.3);
-      border-radius: 50%;
-      border-top-color: var(--primary-color);
-      animation: spin 1s ease-in-out infinite;
-    }
-
-    @keyframes spin {
-      to {
-        transform: rotate(360deg);
-      }
-    }
-  </style>
-</head>
-
-<body>
-  <button class="theme-toggle" id="themeToggle" aria-label="Chuyển đổi chế độ tối/sáng">
-    🌓
-  </button>
-  <div class="container">
-    <h1>QR Code Generator</h1>
-    <form id="qrForm">
-      <div class="input-group">
-        <label for="dataInput">Nhập dữ liệu cho mã QR</label>
-        <input type="text" id="dataInput" placeholder="Nhập văn bản hoặc URL" required aria-required="true" />
-      </div>
-      <div class="input-group">
-        <label for="qrSize">Chọn kích thước mã QR</label>
-        <select id="qrSize" aria-label="Kích thước mã QR">
-          <option value="200">200x200</option>
-          <option value="300">300x300</option>
-          <option value="400">400x400</option>
-        </select>
-      </div>
-      <div class="input-group">
-        <label for="qrFormat">Chọn định dạng mã QR</label>
-        <select id="qrFormat" aria-label="Định dạng mã QR">
-          <option value="png">PNG</option>
-          <option value="jpg">JPG</option>
-          <option value="svg">SVG</option>
-        </select>
-      </div>
-      <button type="submit" id="generateButton">Tạo Mã QR</button>
-    </form>
-    <div id="qrCode" aria-live="polite"></div>
-    <a id="downloadLink" href="#" download style="display: none">
-      Tải về Mã QR
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-        <polyline points="7 10 12 15 17 10"></polyline>
-        <line x1="12" y1="15" x2="12" y2="3"></line>
-      </svg>
-    </a>
-  </div>
-  <footer>
-    <p>&copy; 2024 | <a href="{{ url_for('homepage') }}">QR Code Generator</a> | Được tạo bởi AI</p>
-  </footer>
-
-  <script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const form = document.getElementById("qrForm");
-      const qrCode = document.getElementById("qrCode");
-      const downloadLink = document.getElementById("downloadLink");
-      const themeToggle = document.getElementById("themeToggle");
-
-      function setTheme(isDark) {
-        document.body.classList.toggle("light-mode", !isDark);
-        localStorage.setItem("darkMode", isDark);
+        font-size: 3.5rem;
+        text-align: center;
+        margin-bottom: 2.5rem;
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientText 5s ease infinite;
       }
 
-      const savedTheme = localStorage.getItem("darkMode");
-      if (savedTheme !== null) {
-        setTheme(savedTheme === "true");
-      }
-
-      themeToggle.addEventListener("click", () => {
-        const isDarkMode = document.body.classList.toggle("light-mode");
-        setTheme(!isDarkMode);
-      });
-
-      form.addEventListener("submit", async function (e) {
-        e.preventDefault();
-        const data = document.getElementById("dataInput").value;
-        const size = document.getElementById("qrSize").value;
-        const format = document.getElementById("qrFormat").value;
-
-        if (data) {
-          qrCode.innerHTML = '<div class="loading"></div>';
-          downloadLink.style.display = "none";
-
-          const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
-            data
-          )}&size=${size}x${size}&format=${format}`;
-
-
-          try {
-            const response = await fetch(qrCodeUrl);
-            if (!response.ok) throw new Error("Network response was not ok");
-            const blob = await response.blob();
-            const objectURL = URL.createObjectURL(blob);
-
-            qrCode.innerHTML = `<img src="${objectURL}" alt="Generated QR Code" style="width:${size}px; height:${size}px;">`;
-            downloadLink.href = objectURL;
-            downloadLink.setAttribute("download", `QRCode.${format}`);
-            downloadLink.style.display = "inline-flex";
-
-            qrCode.scrollIntoView({ behavior: "smooth", block: "start" });
-          } catch (error) {
-            console.error(
-              "There was a problem with the fetch operation:",
-              error.message
-            );
-            qrCode.innerHTML =
-              "<p>Có lỗi xảy ra khi tạo mã QR. Vui lòng thử lại.</p>";
-          }
-        } else {
-          alert("Vui lòng nhập dữ liệu để tạo mã QR.");
+      @keyframes gradientText {
+        0%,
+        100% {
+          background-position: 0% 50%;
         }
-      });
+        50% {
+          background-position: 100% 50%;
+        }
+      }
 
+      .input-group {
+        margin-bottom: 1.5rem;
+      }
 
-      const buttons = document.querySelectorAll("button");
-      buttons.forEach((button) => {
-        button.addEventListener("click", function (e) {
-          let x = e.clientX - e.target.offsetLeft;
-          let y = e.clientY - e.target.offsetTop;
-          let ripples = document.createElement("span");
-          ripples.style.left = x + "px";
-          ripples.style.top = y + "px";
-          this.appendChild(ripples);
-          setTimeout(() => {
-            ripples.remove();
-          }, 1000);
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--accent-color);
+      }
+
+      input[type="text"],
+      select {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: var(--text-light);
+        font-size: 1rem;
+        transition: var(--transition);
+      }
+
+      input[type="text"]:focus,
+      select:focus {
+        outline: none;
+        box-shadow: 0 0 0 3px var(--primary-color);
+        transform: translateY(-2px);
+      }
+
+      button {
+        width: 100%;
+        padding: 1rem;
+        border: none;
+        border-radius: 1rem;
+        background: linear-gradient(
+          45deg,
+          var(--primary-color),
+          var(--secondary-color)
+        );
+        color: white;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 7px 14px rgba(0, 0, 0, 0.2);
+      }
+
+      button::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%);
+        transform-origin: 50% 50%;
+      }
+
+      @keyframes ripple {
+        0% {
+          transform: scale(0, 0);
+          opacity: 1;
+        }
+        20% {
+          transform: scale(25, 25);
+          opacity: 1;
+        }
+        100% {
+          opacity: 0;
+          transform: scale(40, 40);
+        }
+      }
+
+      button:focus:not(:active)::after {
+        animation: ripple 1s ease-out;
+      }
+
+      .theme-toggle {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: none;
+        border: none;
+        color: var(--text-light);
+        cursor: pointer;
+        z-index: 1000;
+        padding: 10px;
+        border-radius: 50%;
+        transition: var(--transition);
+      }
+
+      #qrForm {
+        width: 100%;
+        max-width: 500px;
+      }
+
+      .result-container {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-top: 2rem;
+      }
+
+      #qrCode {
+        display: flex;
+        justify-content: center;
+        margin-bottom: 1rem;
+      }
+
+      #qrCode img {
+        max-width: 100%;
+        height: auto;
+        border-radius: 1rem;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        transition: var(--transition);
+      }
+
+      #downloadLink {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 1.5rem;
+        padding: 1rem 1.5rem;
+        background: var(--secondary-color);
+        color: white;
+        text-decoration: none;
+        border-radius: 1rem;
+        font-weight: 600;
+        transition: var(--transition);
+      }
+
+      #downloadLink:hover {
+        background: #0ea5e9;
+        transform: translateY(-2px);
+        box-shadow: 0 5px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      #downloadLink svg {
+        margin-left: 8px;
+      }
+
+      footer {
+        margin-top: auto;
+        text-align: center;
+        padding: 1.5rem;
+        background: var(--surface-dark);
+        backdrop-filter: blur(10px);
+      }
+
+      footer a {
+        color: var(--accent-color);
+        text-decoration: none;
+        transition: var(--transition);
+        font-weight: 600;
+      }
+
+      footer a:hover {
+        color: var(--primary-color);
+      }
+
+      .loading {
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: var(--primary-color);
+        animation: spin 1s ease-in-out infinite;
+      }
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .light-mode {
+        --background-dark: #f1f5f9;
+        --surface-dark: #ffffff;
+        --text-light: var(--text-dark);
+      }
+
+      @media (max-width: 768px) {
+        .container {
+          margin: 1.5rem;
+          padding: 1.5rem;
+        }
+
+        h1 {
+          font-size: 2.5rem;
+        }
+
+        input[type="text"],
+        select,
+        button {
+          font-size: 1rem;
+          padding: 0.8rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <button
+        class="theme-toggle"
+        id="themeToggle"
+        aria-label="Chuyển đổi chế độ tối/sáng"
+      >
+        🌓
+      </button>
+      <h1></h1>
+      <form id="qrForm">
+        <div class="input-group">
+          <label for="dataInput">Nhập dữ liệu cho mã QR</label>
+          <input
+            type="text"
+            id="dataInput"
+            placeholder="Nhập văn bản hoặc URL"
+            required
+            aria-required="true"
+          />
+        </div>
+        <div class="input-group">
+          <label for="qrSize">Chọn kích thước mã QR</label>
+          <select id="qrSize" aria-label="Kích thước mã QR">
+            <option value="200">200x200</option>
+            <option value="300">300x300</option>
+            <option value="400">400x400</option>
+            <option value="500">500x500</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label for="qrFormat">Chọn định dạng mã QR</label>
+          <select id="qrFormat" aria-label="Định dạng mã QR">
+            <option value="png">PNG</option>
+            <option value="jpg">JPG</option>
+            <option value="svg">SVG</option>
+          </select>
+        </div>
+        <button type="submit" id="generateButton">Tạo Mã QR</button>
+        <div id="result" class="result-container" style="display: none">
+          <div id="qrCode" aria-live="polite"></div>
+          <a id="downloadLink" href="#" download style="display: none">
+            Tải về Mã QR
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+          </a>
+        </div>
+      </form>
+    </div>
+    <footer>
+      <p>
+        &copy; 2024 |
+        <a href="{{ url_for('homepage') }}">QR Code Generator Pro</a> | Được tạo
+        bởi AI
+      </p>
+    </footer>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const form = document.getElementById("qrForm");
+        const qrCode = document.getElementById("qrCode");
+        const downloadLink = document.getElementById("downloadLink");
+        const themeToggle = document.getElementById("themeToggle");
+
+        function setTheme(isDark) {
+          document.body.classList.toggle("light-mode", !isDark);
+          localStorage.setItem("darkMode", isDark);
+        }
+
+        const savedTheme = localStorage.getItem("darkMode");
+        if (savedTheme !== null) {
+          setTheme(savedTheme === "true");
+        }
+
+        themeToggle.addEventListener("click", () => {
+          const isDarkMode = document.body.classList.toggle("light-mode");
+          setTheme(!isDarkMode);
+        });
+
+        function showNotification(message, isError = false) {
+          // Implement your notification logic here
+          alert(message);
+        }
+
+        form.addEventListener("submit", async function (e) {
+          e.preventDefault();
+          const data = document.getElementById("dataInput").value;
+          const size = document.getElementById("qrSize").value;
+          const format = document.getElementById("qrFormat").value;
+
+          if (data) {
+            const resultContainer = document.getElementById("result");
+            resultContainer.style.display = "flex";
+            qrCode.innerHTML = '<div class="loading"></div>';
+            downloadLink.style.display = "none";
+
+            const qrCodeUrl = `https://api.qrserver.com/v1/create-qr-code/?data=${encodeURIComponent(
+              data
+            )}&size=${size}x${size}&format=${format}`;
+
+            try {
+              const response = await fetch(qrCodeUrl);
+              if (!response.ok) throw new Error("Network response was not ok");
+              const blob = await response.blob();
+              const objectURL = URL.createObjectURL(blob);
+
+              qrCode.innerHTML = `<img src="${objectURL}" alt="Generated QR Code" style="width:${size}px; height:${size}px;">`;
+              downloadLink.href = objectURL;
+              downloadLink.setAttribute("download", `QRCode.${format}`);
+              downloadLink.style.display = "inline-flex";
+
+              showNotification("Mã QR đã được tạo thành công!");
+            } catch (error) {
+              console.error(
+                "There was a problem with the fetch operation:",
+                error.message
+              );
+              qrCode.innerHTML =
+                "<p>Có lỗi xảy ra khi tạo mã QR. Vui lòng thử lại.</p>";
+              showNotification(
+                "Có lỗi xảy ra khi tạo mã QR. Vui lòng thử lại.",
+                true
+              );
+            }
+          } else {
+            showNotification("Vui lòng nhập dữ liệu để tạo mã QR.", true);
+          }
+        });
+
+        const buttons = document.querySelectorAll("button");
+        buttons.forEach((button) => {
+          button.addEventListener("click", function (e) {
+            let x = e.clientX - e.target.offsetLeft;
+            let y = e.clientY - e.target.offsetTop;
+            let ripples = document.createElement("span");
+            ripples.style.left = x + "px";
+            ripples.style.top = y + "px";
+            this.appendChild(ripples);
+            setTimeout(() => {
+              ripples.remove();
+            }, 1000);
+          });
         });
       });
-    });
-  </script>
-</body>
-
+    </script>
+  </body>
 </html>
