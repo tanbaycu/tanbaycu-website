@@ -167,8 +167,6 @@
     footer a:hover {
       color: var(--secondary-color);
     }
-
-    
   </style>
 </head>
 
@@ -200,13 +198,15 @@
     {% endwith %}
 
     <div class="home-button">
-      <a href="{{ url_for('homepage') }}">Về trang chủ <i class="fas fa-home"></i></a>
+      <a href="{{ url_for('homepage', refresh=time()) }}">Về trang chủ <i class="fas fa-home"></i></a>
     </div>
+
   </div>
 
   <footer>
-    <p>&copy; 2024 | URL Shortener | <a href="{{ url_for('homepage') }}">Trang chủ</a></p>
+    <p>&copy; 2024 | URL Shortener | <a href="{{ url_for('homepage', refresh=time()) }}">Trang chủ</a></p>
   </footer>
+
 
   <script>
     function validateForm() {

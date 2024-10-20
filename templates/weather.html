@@ -388,7 +388,9 @@
         </aside>
         <main class="main-content">
             <header class="header">
-                <h1>Bảng Điều Khiển Thời Tiết</h1>
+                <a href="{{ url_for('homepage', refresh=time()) }}">
+                    <h1>Bảng Điều Khiển Thời Tiết</h1>
+                </a>                
                 <button id="get-weather" class="button">
                     <i class="fas fa-map-marker-alt"></i> Lấy Vị Trí Hiện Tại
                 </button>

@@ -403,8 +403,9 @@
     <header>
         <nav class="container">
             <div class="logo">
-                <a href="/">Docs</a>
+                <a href="{{ url_for('homepage', refresh=time()) }}">Docs</a>
             </div>
+            
             <div class="nav-links">
                 <a href="#services">Services</a>
                 <a href="#projects">Projects</a>

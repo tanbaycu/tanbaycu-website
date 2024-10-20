@@ -289,7 +289,10 @@
   </button>
 
   <div class="container">
-    <h1 onclick="location.href='{{ url_for('homepage') }}'">Fact or Joke</h1>
+    <h1 onclick="location.href='{{ url_for('homepage', refresh=time()) }}'" style="cursor: pointer;">
+      Fact or Joke
+  </h1>
+  
 
     <div class="form-group">
       <label for="factType">Chọn loại thông tin:</label>

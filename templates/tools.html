@@ -115,7 +115,10 @@
         </svg>
     </div>
     <div class="container mx-auto px-4 py-12">
-        <h1 class="text-5xl font-bold text-center mb-12 glow">DevHub</h1>
+        <h1 class="text-5xl font-bold text-center mb-12 glow"
+            onclick="window.location='/?refresh=' + new Date().getTime();" style="cursor: pointer;">
+            DevHub
+        </h1>
         <div id="tools-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             <div class="tool-card rounded-lg shadow-lg p-6 hover:shadow-2xl transition duration-300">
                 <h2 class="text-2xl font-semibold mb-4 text-blue-400"><i class="fas fa-rocket mr-2"></i>EB2 Vercel App
