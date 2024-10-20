@@ -1,7 +1,7 @@
 
 # Tanbaycu - First Web Project 🌐
 <p align="center">
-  <img src="https://i.postimg.cc/mZm3WQJJ/Tan-7-cu-1.png" alt="Tanbaycu Logo" width="400"/>
+  <img src="https://i.postimg.cc/BnGBcWDd/Thi-t-k-ch-a-c-t-n-2.png" alt="Tanbaycu Logo" width="400"/>
 </p>
 
 ---
