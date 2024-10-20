@@ -8,11 +8,7 @@
       content="Tạo mã QR miễn phí với công cụ hiện đại và đỉnh cao. Tùy chỉnh kích thước, định dạng và tải về ngay lập tức."
     />
     <title>QR Code Generator Pro - Tanbaycu</title>
-    <link
-      rel="icon"
-      type="image/svg+xml"
-      href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>"
-    />
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     <link
       href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
       rel="stylesheet"
@@ -318,23 +314,8 @@
         --text-light: var(--text-dark);
       }
 
-      @media (max-width: 768px) {
-        .container {
-          margin: 1.5rem;
-          padding: 1.5rem;
-        }
-
-        h1 {
-          font-size: 2.5rem;
-        }
-
-        input[type="text"],
-        select,
-        button {
-          font-size: 1rem;
-          padding: 0.8rem;
-        }
-      }
+      
+      
     </style>
   </head>
   <body>
@@ -402,8 +383,7 @@
     <footer>
       <p>
         &copy; 2024 |
-        <a href="{{ url_for('homepage') }}">QR Code Generator Pro</a> | Được tạo
-        bởi AI
+        <a href="{{ url_for('homepage') }}">QR Code Generator</a> 
       </p>
     </footer>
 
