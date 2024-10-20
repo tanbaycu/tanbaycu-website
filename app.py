@@ -868,6 +868,38 @@ def tools():
 def spotify_page():
     return render_template('spotify.html')
 
+API_KEY = "1373341a3e6d7cb9a723fff1"
+BASE_URL = "https://v6.exchangerate-api.com/v6/{API_KEY}/latest/{base_currency}"
+
+@app.route('/crypto')
+def crypto():
+    response = requests.get(BASE_URL.format(API_KEY=API_KEY, base_currency="USD"))
+    if response.status_code == 200:
+        data = response.json()
+        currencies = list(data['conversion_rates'].keys())
+    else:
+        currencies = []
+    
+    currency_symbols = {
+        'USD': '🇺🇸', 'EUR': '🇪🇺', 'GBP': '🇬🇧', 'JPY': '🇯🇵', 'AUD': '🇦🇺',
+        'CAD': '🇨🇦', 'CHF': '🇨🇭', 'CNY': '🇨🇳', 'HKD': '🇭🇰', 'NZD': '🇳🇿',
+        'SEK': '🇸🇪', 'KRW': '🇰🇷', 'SGD': '🇸🇬', 'NOK': '🇳🇴', 'MXN': '🇲🇽',
+        'INR': '🇮🇳', 'RUB': '🇷🇺', 'ZAR': '🇿🇦', 'TRY': '🇹🇷', 'BRL': '🇧🇷',
+        'TWD': '🇹🇼', 'DKK': '🇩🇰', 'PLN': '🇵🇱', 'THB': '🇹🇭', 'IDR': '🇮🇩',
+        'HUF': '🇭🇺', 'CZK': '🇨🇿', 'ILS': '🇮🇱', 'CLP': '🇨🇱', 'PHP': '🇵🇭',
+        'AED': '🇦🇪', 'COP': '🇨🇴', 'SAR': '🇸🇦', 'MYR': '🇲🇾', 'RON': '🇷🇴'
+    }
+    
+    return render_template('crypto.html', currencies=currencies, currency_symbols=currency_symbols)
+
+@app.route('/get_exchange_rates/<base_currency>')
+def get_exchange_rates(base_currency):
+    response = requests.get(BASE_URL.format(API_KEY=API_KEY, base_currency=base_currency))
+    if response.status_code == 200:
+        return jsonify(response.json())
+    else:
+        return jsonify({"error": "Failed to fetch exchange rates"}), 400
+        
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")

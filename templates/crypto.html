@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Currency Converter</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #10b981;
+            --background-color: #f3f4f6;
+            --card-color: #ffffff;
+            --text-color: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #e5e7eb;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-light);
+        }
+        .converter-card {
+            background-color: var(--card-color);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+            margin-bottom: 2rem;
+        }
+        .input-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        select, input {
+            flex-grow: 1;
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background-color: var(--card-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+        select:focus, input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+        .result-item {
+            background-color: var(--card-color);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+        .result-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .currency-flag {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .currency-code {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+        .converted-amount {
+            font-size: 1.2rem;
+            color: var(--secondary-color);
+            margin-top: 0.5rem;
+            font-weight: 700;
+        }
+        .chart-container {
+            background-color: var(--card-color);
+            border-radius: 1rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            padding: 2rem;
+        }
+        @media (max-width: 768px) {
+            .input-group {
+                flex-direction: column;
+            }
+            .results {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>Global Currency Converter</h1>
+            <p class="subtitle">Real-time exchange rates for global currencies</p>
+        </header>
+        <div class="converter-card">
+            <div class="input-group">
+                <select id="baseCurrency">
+                    {% for currency in currencies %}
+                    <option value="{{ currency }}">{{ currency_symbols.get(currency, '') }} {{ currency }}</option>
+                    {% endfor %}
+                </select>
+                <input type="number" id="amount" placeholder="Enter amount" value="1">
+            </div>
+            <div class="results" id="results"></div>
+        </div>
+        <div class="chart-container">
+            <canvas id="exchangeRateChart"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const baseCurrency = document.getElementById('baseCurrency');
+        const amount = document.getElementById('amount');
+        const results = document.getElementById('results');
+        const currencySymbols = {{ currency_symbols | tojson | safe }};
+
+        let exchangeRates = {};
+        let chart;
+
+        async function fetchExchangeRates(base) {
+            try {
+                const response = await fetch(`/get_exchange_rates/${base}`);
+                const data = await response.json();
+                exchangeRates = data.conversion_rates;
+                convertCurrency();
+                updateChart();
+            } catch (error) {
+                console.error('Error fetching exchange rates:', error);
+                results.innerHTML = '<p>Error fetching exchange rates</p>';
+            }
+        }
+
+        function convertCurrency() {
+            const base = baseCurrency.value;
+            const amountValue = parseFloat(amount.value);
+
+            if (isNaN(amountValue)) {
+                results.innerHTML = '<p>Please enter a valid amount</p>';
+                return;
+            }
+
+            let resultsHTML = '';
+            for (const [currency, rate] of Object.entries(exchangeRates)) {
+                if (currency !== base) {
+                    const convertedAmount = amountValue * rate;
+                    resultsHTML += `
+                        <div class="result-item">
+                            <div class="currency-flag">${currencySymbols[currency] || currency}</div>
+                            <div class="currency-code">${currency}</div>
+                            <div class="converted-amount">${convertedAmount.toFixed(2)}</div>
+                        </div>
+                    `;
+                }
+            }
+            results.innerHTML = resultsHTML;
+        }
+
+        function updateChart() {
+            const base = baseCurrency.value;
+            const labels = Object.keys(exchangeRates).filter(currency => currency !== base).slice(0, 10);
+            const data = labels.map(currency => exchangeRates[currency]);
+
+            if (chart) {
+                chart.destroy();
+            }
+
+            const ctx = document.getElementById('exchangeRateChart').getContext('2d');
+            chart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [{
+                        label: `Exchange Rates (${base})`,
+                        data: data,
+                        backgroundColor: 'rgba(79, 70, 229, 0.6)',
+                        borderColor: 'rgba(79, 70, 229, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        }
+
+        baseCurrency.addEventListener('change', () => fetchExchangeRates(baseCurrency.value));
+        amount.addEventListener('input', convertCurrency);
+
+        // Initial fetch
+        fetchExchangeRates(baseCurrency.value);
+    </script>
+</body>
+</html>
