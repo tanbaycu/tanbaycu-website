@@ -1,126 +1,193 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>News - Tanbaycu</title>
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-      body {
-        font-family: "Arial", sans-serif;
-        background-color: #f0f0f0; /* Màu nền sáng */
-        color: #333; /* Màu chữ */
-        margin: 0;
-        padding: 0;
-        line-height: 1.6;
-      }
+        :root {
+            --primary-color: #4a90e2;
+            --secondary-color: #f39c12;
+            --text-color: #333;
+            --bg-color: #f0f2f5;
+        }
 
-      header {
-        background-color: #333; /* Nền tối cho header */
-        color: #fff; /* Màu chữ sáng */
-        padding: 20px;
-        text-align: center;
-      }
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, var(--bg-color) 0%, #ffffff 100%);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
 
-      h1 {
-        margin: 0;
-      }
+        header {
+            background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+            color: #fff;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
 
-      .container {
-        max-width: 1200px;
-        margin: 20px auto;
-        padding: 20px;
-      }
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+            font-weight: 600;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
 
-      .article {
-        background-color: #fff; /* Nền trắng cho bài viết */
-        border-radius: 8px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        margin-bottom: 20px;
-        padding: 15px;
-        transition: transform 0.3s;
-      }
-
-      .article:hover {
-        transform: translateY(-5px); /* Hiệu ứng phóng lên khi hover */
-      }
-
-      .article img {
-        max-width: 100%;
-        border-radius: 8px;
-      }
-
-      .article h2 {
-        margin: 10px 0 5px;
-        color: #2c3e50; /* Màu tiêu đề */
-      }
-
-      .article p {
-        color: #7f8c8d; /* Màu chữ cho đoạn văn */
-      }
-
-      .article a {
-        display: inline-block;
-        margin-top: 10px;
-        padding: 10px 15px;
-        background-color: #2980b9; /* Nền cho nút */
-        color: #fff;
-        border-radius: 5px;
-        text-decoration: none;
-        transition: background-color 0.3s;
-      }
-
-      .article a:hover {
-        background-color: #3498db; /* Màu nền khi hover */
-      }
-
-      footer {
-        text-align: center;
-        margin-top: 20px;
-        padding: 10px;
-        background-color: #333;
-        color: #fff;
-      }
-
-      @media (max-width: 600px) {
         .container {
-          padding: 10px;
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
         }
 
         .article {
-          padding: 10px;
+            background-color: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .article:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .article img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-top-left-radius: 15px;
+            border-top-right-radius: 15px;
+            transition: transform 0.3s ease;
+        }
+
+        .article:hover img {
+            transform: scale(1.05);
+        }
+
+        .article-content {
+            padding: 20px;
         }
 
         .article h2 {
-          font-size: 1.5em; /* Giảm kích thước tiêu đề trên thiết bị di động */
+            margin: 10px 0 15px;
+            color: var(--primary-color);
+            font-size: 1.4em;
+            font-weight: 600;
         }
-      }
+
+        .article p {
+            color: var(--text-color);
+            font-size: 0.9em;
+            margin-bottom: 20px;
+        }
+
+        .article a {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .article a:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            background-color: var(--primary-color);
+            color: #fff;
+            font-size: 0.9em;
+        }
+
+        .no-news {
+            grid-column: 1 / -1;
+            text-align: center;
+            font-size: 1.2em;
+            color: var(--text-color);
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+                padding: 10px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .article {
+                margin-bottom: 20px;
+            }
+        }
     </style>
-  </head>
-  <body>
+</head>
+<body>
     <header>
-      <h1>Tin Tức Mới Nhất</h1>
+        <h1><i class="fas fa-newspaper"></i> Tin Tức Mới Nhất</h1>
     </header>
 
     <div class="container">
-      {% if articles %}
-        {% for article in articles %}
-          <div class="article">
-            {% if article.urlToImage %}
-              <img src="{{ article.urlToImage }}" alt="Article Image" />
-            {% endif %}
-            <h2>{{ article.title }}</h2>
-            <p>{{ article.description }}</p>
-            <a href="{{ article.url }}" target="_blank">Đọc thêm</a>
-          </div>
-        {% endfor %}
-      {% else %}
-        <p>Không có tin tức nào để hiển thị.</p>
-      {% endif %}
+        {% if articles %}
+            {% for article in articles %}
+                <div class="article">
+                    {% if article.urlToImage %}
+                        <img src="{{ article.urlToImage }}" alt="Article Image" loading="lazy" />
+                    {% else %}
+                        <img src="https://via.placeholder.com/300x200?text=No+Image" alt="Placeholder" loading="lazy" />
+                    {% endif %}
+                    <div class="article-content">
+                        <h2>{{ article.title }}</h2>
+                        <p>{{ article.description }}</p>
+                        <a href="{{ article.url }}" target="_blank"><i class="fas fa-book-open"></i> Đọc thêm</a>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            <div class="no-news">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>Không có tin tức nào để hiển thị.</p>
+            </div>
+        {% endif %}
     </div>
 
-    <footer>
-      <p>&copy; 2024 Tin Tức. Tất cả các quyền được bảo lưu.</p>
-    </footer>
-  </body>
+    <script>
+        document.addEventListener('DOMContentLoaded', (event) => {
+            const articles = document.querySelectorAll('.article');
+            articles.forEach((article, index) => {
+                article.style.opacity = '0';
+                article.style.transform = 'translateY(20px)';
+                setTimeout(() => {
+                    article.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+                    article.style.opacity = '1';
+                    article.style.transform = 'translateY(0)';
+                }, index * 100);
+            });
+        });
+    </script>
+</body>
 </html>
