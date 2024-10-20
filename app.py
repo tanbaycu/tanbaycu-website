@@ -11,6 +11,7 @@ import subprocess
 from deep_translator import GoogleTranslator
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
+# from vercel_kv import VercelKV
 from flask import (
     Flask,
     request,
@@ -23,7 +24,7 @@ from flask import (
     send_file,
     Response
 )
-
+# kv = VercelKV()
 app = Flask(__name__)
 UPLOAD_FOLDER = '/tmp/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
@@ -864,7 +865,7 @@ def pdf_page():
 @app.route('/tools')
 def tools():
     return render_template('tools.html')
-    
+
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")

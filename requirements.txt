@@ -1,4 +1,3 @@
 Flask
 deep-translator
 yt-dlp
-Flask-SQLAlchemy
