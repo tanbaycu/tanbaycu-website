@@ -25,9 +25,6 @@ from flask import (
 )
 
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///tools.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
 UPLOAD_FOLDER = '/tmp/uploads'
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
@@ -864,50 +861,9 @@ def aichat():
 def pdf_page():
     return render_template('pdf.html')
 
-class Tool(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    url = db.Column(db.String(200), nullable=False)
-    description = db.Column(db.Text, nullable=False)
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
-
-    def __repr__(self):
-        return f'<Tool {self.name}>'
-
-with app.app_context():
-    db.create_all()
-
-@app.route('/')
 @app.route('/tools')
 def tools():
-    tools = Tool.query.all()
-    return render_template('tools.html', tools=tools)
-
-@app.route('/add_tool', methods=['POST'])
-def add_tool():
-    data = request.json
-    new_tool = Tool(name=data['name'], url=data['url'], description=data['description'])
-    db.session.add(new_tool)
-    db.session.commit()
-    return jsonify({'id': new_tool.id, 'name': new_tool.name, 'url': new_tool.url, 'description': new_tool.description})
-
-@app.route('/edit_tool/<int:id>', methods=['PUT'])
-def edit_tool(id):
-    tool = Tool.query.get_or_404(id)
-    data = request.json
-    tool.name = data['name']
-    tool.url = data['url']
-    tool.description = data['description']
-    db.session.commit()
-    return jsonify({'id': tool.id, 'name': tool.name, 'url': tool.url, 'description': tool.description})
-
-@app.route('/delete_tool/<int:id>', methods=['DELETE'])
-def delete_tool(id):
-    tool = Tool.query.get_or_404(id)
-    db.session.delete(tool)
-    db.session.commit()
-    return '', 204
-
+    return render_template('tools.html')
     
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
