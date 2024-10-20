@@ -9,8 +9,8 @@
 ![Flask](https://img.shields.io/badge/Flask-2.0-lightgrey)
 ![API](https://img.shields.io/badge/API-Enabled-green)
 <p align="center">
-  <img src="https://img.shields.io/badge/Active%20Users-1.2k-green?style=for-the-badge">
-  <img src="https://img.shields.io/badge/Files%20Uploaded-10k-blue?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Active%20Users-1.21k-green?style=for-the-badge">
+  <img src="https://img.shields.io/badge/Files%20Uploaded-1m-blue?style=for-the-badge">
   <img src="https://img.shields.io/badge/APIs%20Integrated-12-orange?style=for-the-badge">
 </p>
 
@@ -23,20 +23,22 @@
 --- 
 ## 🛠️ Tech Stack
 
-- **Frontend**: HTML, CSS (Bootstrap)
-- **Backend**: Python (Flask)
-- **APIs**: OpenWeatherMap, TinyURL, GoFile, etc.
-- **Hosting**: Vercel
+- **Frontend**: `HTML`, `CSS (Bootstrap)`, `Tailwind CSS`, `Javascript`
+- **Backend**: `Python (Flask)`
+- **APIs**: `OpenWeatherMap`, `TinyURL`, `GoFile`, etc.
+- **Database**: `Flask-SQLAlchemy`, `Vercel-KV`
+- **Hosting**: `Vercel`
 ---
-![Chào em](static/mota.jpg)
+![Chào em](static/mota.png)
+---
 ## 📜 Table of Contents
-1. [Project Overview](#tanbaycu---first-web-project-🌐)
+1. [Overview](#tanbaycu---first-web-project-🌐)
 2. [Tech Stack](#🛠️-tech-stack)
-3. [Key Features](#🚀-key-features)
-4. [Version Details](#🛠️-version-details)
+3. [Features](#🚀-key-features)
+4. [Version History](#🛠️-version-details)
 5. [Important Notes](#ℹ️-important-notes)
 6. [Sample Code](#👨‍💻-sample-code)
-7. [Future Roadmap](#🚧-future-roadmap)
+7. [Future Plans](#🚧-future-roadmap)
 8. [Demo Video](#🎥-demo-video)
 9. [Credits](#🙏-credits)
 
@@ -89,24 +91,23 @@ Each of these features is designed to enhance productivity and deliver a seamles
 
 ---
 
-## 🛠️ Version Details:
+## 🛠️ Version Details
 
-- **Gemini Chat** (Beta) - Released on 18/10/2024 | New Form
+| Feature                      | Type     | Release Date     | Description                                                       |
+|------------------------------|----------|-------------------|------------------------------------------------------------------|
+| **Gemini Chat**              | New Form | 18/10/2024        | A chat feature currently in beta testing, designed to enhance user interaction on the site. |
+| **About**                    | Update   | 19/10/2024        | New version -e.                                                 |
+| **PDF Upload**               | New      | 20/10/2024        | Added PDF upload functionality for users.                       |
+| **More Tools**           | New      | 20/10/2024        | Added a web page containing various tools for developers.       |
 
-  A chat feature currently in beta testing, designed to enhance user interaction on the site.
-
-- **About** 
-
-  New version -e 
-  
----
-
-## ℹ️ Important Notes:
-
-- To view the latest interface updates, please visit [Tanbaycu on Vercel](https://tanbaycu.vercel.app) and **clear your browsing history**.
-- All website functionalities are powered by APIs for seamless integration and performance.
 
 ---
+
+## ℹ️ Important Notes
+
+- Để xem các bản cập nhật giao diện mới nhất, vui lòng truy cập [Trang chủ](https://tanbaycu.vercel.app) và **xóa bộ nhớ cache của trình duyệt**. Do ứng dụng sử dụng các route, trình duyệt của bạn có thể tải một phiên bản cũ của trang web từ bộ nhớ cache thay vì phiên bản mới nhất. Việc xóa cache sẽ đảm bảo rằng bạn thấy giao diện và tính năng mới nhất.
+- Tất cả các chức năng của trang web đều được hỗ trợ bởi các API để đảm bảo tích hợp và hiệu suất liền mạch.
+
 
 ## 👨‍💻 Sample Code:
 
@@ -124,7 +125,7 @@ Thank you for visiting **my website**. Stay tuned for future updates and new fea
 
 ## 🚧 Future Roadmap
 
-- [ ] Improve chat functionality (version 2.0)
+- [ ] Add web convert files
 - [ ] Add user authentication and profiles
 - [ ] Implement additional APIs for stock market data
 - [ ] Mobile app integration
@@ -133,10 +134,7 @@ Thank you for visiting **my website**. Stay tuned for future updates and new fea
 
 Xem video giới thiệu dự án tại [đây](https://player.vimeo.com/video/1021034750?badge=0&autopause=0&player_id=0&app_id=58479).
 
-
-
-### Tags:
-`Python` `Flask` `API` `Pexels` `HTML` `OpenWeatherMap` `GoFile` `Tiny URL` `QR Code` `Pixeldrains` `v.gd` 
+ 
 
 
 ## 🚀 Project Milestones
@@ -160,32 +158,30 @@ Or click the button below to launch it directly:
 </p>
 
 ---
+## 🌐 For More
+- [AI EB2](https://eb2.vercel.app)
+- [Dự án B](https://pdf-05.engineer.run) 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+---
 
 ## 🙏 Credits
 
-- Project inspired by [Flask Documentation](https://flask.palletsprojects.com/).
-- UI framework powered by [Bootstrap](https://getbootstrap.com/).
+- The project is inspired by the [Flask Documentation](https://flask.palletsprojects.com/) and its community.
+- UI frameworks used: [Bootstrap](https://getbootstrap.com/) for responsive design and [Tailwind CSS](https://tailwindcss.com/) for utility-first styling.
 - Hosting provided by [Vercel](https://vercel.com/).
+- API integrations include:
+  - [OpenWeatherMap](https://openweathermap.org/api) for weather data.
+  - [TinyURL](https://tinyurl.com/) for URL shortening.
+  - [GoFile](https://gofile.io/) for file uploads.
+  - [JokeAPI](https://v2.jokeapi.dev/) and [UselessAPI](https://uselessapi.com/) for fun facts.
+  - [Newton API](https://newton.now.sh/) for complex mathematical operations.
+- Special thanks to:
+  - [ChatGPT](https://chat.openai.com/) for assistance in project development.
+  - [Github Copilot](https://github.com/features/copilot) for coding support.
+- Community support from Stack Overflow and Reddit.
+- Learning resources from Udemy and Coursera.
+- Graphics and icons sourced from [Flaticon](https://www.flaticon.com/) and [Unsplash](https://unsplash.com/).
+
+
+
+
