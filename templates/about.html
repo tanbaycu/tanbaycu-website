@@ -78,7 +78,7 @@
         let historyIndex = -1;
 
         const commands = {
-            help: "Các lệnh có sẵn: <span class='text-yellow-300'>help</span>, <span class='text-yellow-300'>clear</span>, <span class='text-yellow-300'>upload</span>, <span class='text-yellow-300'>shorten</span>, <span class='text-yellow-300'>api</span>, <span class='text-yellow-300'>qr</span>, <span class='text-yellow-300'>python</span>, <span class='text-yellow-300'>facts</span>, <span class='text-yellow-300'>ip</span>, <span class='text-yellow-300'>weather</span>, <span class='text-yellow-300'>video</span>, <span class='text-yellow-300'>echo</span>, <span class='text-yellow-300'>date</span>, <span class='text-yellow-300'>whoami</span>, <span class='text-yellow-300'>version</span>",
+            help: "Các lệnh có sẵn: <span class='text-yellow-300'>help</span>, <span class='text-yellow-300'>clear</span>, <span class='text-yellow-300'>upload</span>, <span class='text-yellow-300'>shorten</span>, <span class='text-yellow-300'>api</span>, <span class='text-yellow-300'>qr</span>, <span class='text-yellow-300'>python</span>, <span class='text-yellow-300'>facts</span>, <span class='text-yellow-300'>ip</span>, <span class='text-yellow-300'>weather</span>, <span class='text-yellow-300'>video</span>, <pan class='text-yellow-300'>pdf</span>, <span class='text-yellow-300'>echo</span>, <span class='text-yellow-300'>date</span>, <span class='text-yellow-300'>whoami</span>, <span class='text-yellow-300'>version</span>",
             clear: () => {
                 output.innerHTML = "";
                 return "";
@@ -126,7 +126,8 @@
             facts: "<span class='text-blue-300 font-bold'>Hướng dẫn Facts Ngẫu Nhiên:</span> Nhấn nút 'Hiển thị fact' để xem một sự thật ngẫu nhiên.",
             ip: "<span class='text-blue-300 font-bold'>Hướng dẫn Kiểm Tra Địa Chỉ IP:</span> Nhập địa chỉ IP cần kiểm tra hoặc để trống để kiểm tra IP của bạn, sau đó nhấn 'Kiểm tra'.",
             weather: "<span class='text-blue-300 font-bold'>Hướng dẫn Dự Báo Thời Tiết:</span> Nhập tên thành phố và chọn đơn vị nhiệt độ, sau đó nhấn 'Xem dự báo'.",
-            video: "<span class='text-blue-300 font-bold'>Hướng dẫn Tải Video:</span> Chức năng này tạm thời đang bị cấm do 'yt-dlp' cần xác nhận yêu cầu gửi đi, đang triển khai lại."
+            video: "<span class='text-blue-300 font-bold'>Hướng dẫn Tải Video:</span> Chức năng này tạm thời đang bị cấm do 'yt-dlp' cần xác nhận yêu cầu gửi đi, đang triển khai lại.",
+            pdf: "<span class='text-blue-300 font bold'>Hướng dẫn sử dụng PDF:</span> Tải lên file PDF của bạn để sử dụng các chức năng trên web."
         };
 
         function printToConsole(text, type = 'normal') {

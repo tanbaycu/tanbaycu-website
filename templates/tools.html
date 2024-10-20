@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevHub: Ultimate Developer Toolkit</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+        
+        body {
+            font-family: 'Roboto Mono', monospace;
+            background-color: #0f172a;
+            color: #e2e8f0;
+        }
+        
+        .tool-card {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+        }
+        
+        .tool-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .glow {
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+        
+        @keyframes glow {
+            from {
+                text-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #0ff, 0 0 20px #0ff, 0 0 35px #0ff, 0 0 40px #0ff, 0 0 50px #0ff;
+            }
+            to {
+                text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #0ff, 0 0 40px #0ff, 0 0 70px #0ff, 0 0 80px #0ff, 0 0 100px #0ff;
+            }
+        }
+        
+        #particles-js {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .custom-shape-divider-bottom-1688384887 {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            overflow: hidden;
+            line-height: 0;
+            transform: rotate(180deg);
+            z-index: -1;
+        }
+
+        .custom-shape-divider-bottom-1688384887 svg {
+            position: relative;
+            display: block;
+            width: calc(100% + 1.3px);
+            height: 150px;
+        }
+
+        .custom-shape-divider-bottom-1688384887 .shape-fill {
+            fill: #1E3A8A;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .slide-up {
+            animation: slideUp 0.5s;
+        }
+
+        @keyframes slideUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+    <div id="particles-js"></div>
+    <div class="custom-shape-divider-bottom-1688384887">
+        <svg data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 120" preserveAspectRatio="none">
+            <path d="M321.39,56.44c58-10.79,114.16-30.13,172-41.86,82.39-16.72,168.19-17.73,250.45-.39C823.78,31,906.67,72,985.66,92.83c70.05,18.48,146.53,26.09,214.34,3V0H0V27.35A600.21,600.21,0,0,0,321.39,56.44Z" class="shape-fill"></path>
+        </svg>
+    </div>
+    <div class="container mx-auto px-4 py-12">
+        <h1 class="text-5xl font-bold text-center mb-12 glow">DevHub: Ultimate Developer Toolkit</h1>
+        <div id="tools-container" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for tool in tools %}
+            <div class="tool-card rounded-lg shadow-lg p-6 hover:shadow-2xl transition duration-300" data-id="{{ tool.id }}">
+                <h2 class="text-2xl font-semibold mb-4 text-blue-400"><i class="fas fa-tools mr-2"></i>{{ tool.name }}</h2>
+                <p class="text-gray-300 mb-4">{{ tool.description }}</p>
+                <a href="{{ tool.url }}" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 inline-block">
+                    <i class="fas fa-external-link-alt mr-2"></i>Launch Tool
+                </a>
+                <div class="mt-4 flex justify-end space-x-2">
+                    <button class="edit-tool bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded transition duration-300">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-tool bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded transition duration-300">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+            <div class="tool-card rounded-lg shadow-lg p-6 hover:shadow-2xl transition duration-300" id="add-new-tool">
+                <h2 class="text-2xl font-semibold mb-4 text-purple-400"><i class="fas fa-plus-circle mr-2"></i>Add New Tool</h2>
+                <p class="text-gray-300 mb-4">Expand your toolkit by adding custom developer resources and tools.</p>
+                <button class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded transition duration-300">
+                    <i class="fas fa-plus mr-2"></i>Add Tool
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal for adding/editing tool -->
+    <div id="modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full hidden">
+        <div class="relative top-20 mx-auto p-5 border w-96 shadow-lg rounded-md bg-gray-800">
+            <div class="mt-3 text-center">
+                <h3 class="text-lg leading-6 font-medium text-white" id="modal-title">Add New Tool</h3>
+                <form id="tool-form">
+                    <div class="mt-2 px-7 py-3">
+                        <input id="tool-name" name="name" type="text" placeholder="Tool Name" class="mb-3 px-3 py-2 bg-gray-700 text-white rounded w-full" required>
+                        <input id="tool-url" name="url" type="url" placeholder="Tool URL" class="mb-3 px-3 py-2 bg-gray-700 text-white rounded w-full" required>
+                        <textarea id="tool-description" name="description" placeholder="Tool Description" class="mb-3 px-3 py-2 bg-gray-700 text-white rounded w-full" required></textarea>
+                    </div>
+                    <div class="items-center px-4 py-3">
+                        <button type="submit" id="submit-tool" class="px-4 py-2 bg-green-500 text-white text-base font-medium rounded-md w-full shadow-sm hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-300">
+                            Add Tool
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
+            },
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            retina_detect: true
+        });
+
+        const modal = document.getElementById('modal');
+        const toolForm = document.getElementById('tool-form');
+        const toolsContainer = document.getElementById('tools-container');
+        let editingToolId = null;
+
+        document.querySelector('#add-new-tool button').addEventListener('click', () => {
+            editingToolId = null;
+            document.getElementById('modal-title').textContent = 'Add New Tool';
+            document.getElementById('submit-tool').textContent = 'Add Tool';
+            toolForm.reset();
+            modal.classList.remove('hidden');
+        });
+
+        toolForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const formData = new FormData(toolForm);
+            const toolData = Object.fromEntries(formData.entries());
+
+            try {
+                let response;
+                if (editingToolId) {
+                    response = await axios.put(`/edit_tool/${editingToolId}`, toolData);
+                    updateToolCard(editingToolId, response.data);
+                } else {
+                    response = await axios.post('/add_tool', toolData);
+                    addToolCard(response.data);
+                }
+                modal.classList.add('hidden');
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        });
+
+        toolsContainer.addEventListener('click', async (e) => {
+            if (e.target.classList.contains('edit-tool') || e.target.parentElement.classList.contains('edit-tool')) {
+                const toolCard = e.target.closest('.tool-card');
+                editingToolId = 
+
+ toolCard.dataset.id;
+                const name = toolCard.querySelector('h2').textContent;
+                const description = toolCard.querySelector('p').textContent;
+                const url = toolCard.querySelector('a').href;
+
+                document.getElementById('tool-name').value = name;
+                document.getElementById('tool-url').value = url;
+                document.getElementById('tool-description').value = description;
+                document.getElementById('modal-title').textContent = 'Edit Tool';
+                document.getElementById('submit-tool').textContent = 'Update Tool';
+                modal.classList.remove('hidden');
+            } else if (e.target.classList.contains('delete-tool') || e.target.parentElement.classList.contains('delete-tool')) {
+                const toolCard = e.target.closest('.tool-card');
+                const toolId = toolCard.dataset.id;
+                if (confirm('Are you sure you want to delete this tool?')) {
+                    try {
+                        await axios.delete(`/delete_tool/${toolId}`);
+                        toolCard.classList.add('fade-out');
+                        setTimeout(() => toolCard.remove(), 500);
+                    } catch (error) {
+                        console.error('Error:', error);
+                    }
+                }
+            }
+        });
+
+        function addToolCard(tool) {
+            const newCard = document.createElement('div');
+            newCard.className = 'tool-card rounded-lg shadow-lg p-6 hover:shadow-2xl transition duration-300 fade-in slide-up';
+            newCard.dataset.id = tool.id;
+            newCard.innerHTML = `
+                <h2 class="text-2xl font-semibold mb-4 text-blue-400"><i class="fas fa-tools mr-2"></i>${tool.name}</h2>
+                <p class="text-gray-300 mb-4">${tool.description}</p>
+                <a href="${tool.url}" target="_blank" rel="noopener noreferrer" class="bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-300 inline-block">
+                    <i class="fas fa-external-link-alt mr-2"></i>Launch Tool
+                </a>
+                <div class="mt-4 flex justify-end space-x-2">
+                    <button class="edit-tool bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded transition duration-300">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="delete-tool bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-2 rounded transition duration-300">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            toolsContainer.insertBefore(newCard, document.getElementById('add-new-tool'));
+        }
+
+        function updateToolCard(id, tool) {
+            const toolCard = document.querySelector(`.tool-card[data-id="${id}"]`);
+            toolCard.querySelector('h2').textContent = tool.name;
+            toolCard.querySelector('p').textContent = tool.description;
+            toolCard.querySelector('a').href = tool.url;
+            toolCard.classList.add('fade-in');
+            setTimeout(() => toolCard.classList.remove('fade-in'), 500);
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            if (event.target == modal) {
+                modal.classList.add('hidden');
+            }
+        }
+    </script>
+</body>
+</html>
