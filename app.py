@@ -909,6 +909,46 @@ def format_code():
 @app.route('/password')
 def password():
     return render_template('password.html')
+
+
+
+@app.route('/country', methods=['GET', 'POST'])
+def country():
+    if request.method == 'POST':
+        country_name = request.form.get('country')
+        try:
+            country_url = f"https://restcountries.com/v3.1/name/{country_name}"
+            response = requests.get(country_url)
+            response.raise_for_status()
+            country_data = response.json()[0]
+            
+            return jsonify({
+                'name': country_data['name']['common'],
+                'official_name': country_data['name']['official'],
+                'capital': country_data['capital'][0] if 'capital' in country_data else 'N/A',
+                'population': country_data['population'],
+                'area': country_data['area'],
+                'region': country_data['region'],
+                'subregion': country_data.get('subregion', 'N/A'),
+                'languages': list(country_data['languages'].values()) if 'languages' in country_data else [],
+                'currencies': [f"{code} ({data['name']})" for code, data in country_data.get('currencies', {}).items()],
+                'flag': country_data['flags']['svg'],
+                'coat_of_arms': country_data.get('coatOfArms', {}).get('svg', ''),
+                'map': country_data['maps']['googleMaps'],
+                'timezones': country_data['timezones'],
+                'continents': country_data['continents'],
+                'borders': country_data.get('borders', []),
+                'independent': country_data['independent'],
+                'un_member': country_data['unMember'],
+                'gini': country_data.get('gini', {}),
+                'car': country_data['car']['side'],
+            })
+        except requests.RequestException as e:
+            return jsonify({'error': f'Error fetching country data: {str(e)}'}), 500
+        except (KeyError, IndexError) as e:
+            return jsonify({'error': f'Error processing country data: {str(e)}'}), 500
+
+    return render_template('country.html')
     
 if __name__ == "__main__":
     if not os.path.exists("uploads"):

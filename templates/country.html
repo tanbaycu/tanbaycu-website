@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Country Explorer - Tanbaycu</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .country-info-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100 min-h-screen font-sans">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl md:text-5xl font-bold mb-8 text-center text-gray-800 fade-in">
+            <a href="{{ url_for('homepage') }}" class="text-gray-800 hover:underline">Country Explorer</a>
+        </h1>
+
+        <form id="searchForm" class="mb-8 fade-in">
+            <div class="flex flex-col sm:flex-row items-center justify-center">
+                <input type="text" id="searchInput" name="country" placeholder="Enter a country name"
+                    class="w-full sm:w-2/3 md:w-1/2 px-4 py-3 border-2 border-blue-300 rounded-lg sm:rounded-r-none focus:outline-none focus:ring-2 focus:ring-blue-500 text-lg mb-4 sm:mb-0 shadow-sm">
+                <button type="submit"
+                    class="w-full sm:w-auto bg-blue-500 text-white px-6 py-3 rounded-lg sm:rounded-l-none hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300 text-lg shadow-md">
+                    <i class="fas fa-search mr-2"></i>Search
+                </button>
+            </div>
+        </form>
+
+        <div id="loader" class="hidden text-center fade-in">
+            <div class="inline-block animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-blue-500"></div>
+            <p class="mt-4 text-2xl text-gray-700">Loading...</p>
+        </div>
+
+        <div id="error" class="hidden text-center text-red-500 text-xl mb-4 p-4 bg-red-100 rounded-lg"></div>
+
+        <div id="countryInfo" class="hidden fade-in bg-white p-6 rounded-lg shadow-lg mb-6">
+            <h2 id="countryName" class="text-3xl font-bold mb-6 text-gray-800 text-center"></h2>
+            <div class="country-info-grid grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div id="countryDetails" class="space-y-4"></div>
+                <div id="countryImages" class="space-y-6 flex flex-col items-center justify-center"></div>
+            </div>
+            <div id="countryCharts" class="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <canvas id="populationChart"></canvas>
+                </div>
+                <div class="bg-white p-4 rounded-lg shadow-md">
+                    <canvas id="areaChart"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const searchForm = document.getElementById('searchForm');
+        const searchInput = document.getElementById('searchInput');
+        const loader = document.getElementById('loader');
+        const error = document.getElementById('error');
+        const countryInfo = document.getElementById('countryInfo');
+        const countryName = document.getElementById('countryName');
+        const countryDetails = document.getElementById('countryDetails');
+        const countryImages = document.getElementById('countryImages');
+
+        let charts = {};
+
+        searchForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const country = searchInput.value.trim();
+
+            if (!country) {
+                showError('Please enter a country name');
+                return;
+            }
+
+            showLoader();
+            hideError();
+            hideCountryInfo();
+
+            try {
+                const response = await fetch('/country', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `country=${encodeURIComponent(country)}`,
+                });
+
+                const data = await response.json();
+
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+
+                displayCountryInfo(data);
+            } catch (error) {
+                showError(error.message || 'An error occurred. Please try again.');
+            } finally {
+                hideLoader();
+            }
+        });
+
+        function showLoader() {
+            loader.classList.remove('hidden');
+        }
+
+        function hideLoader() {
+            loader.classList.add('hidden');
+        }
+
+        function showError(message) {
+            error.textContent = message;
+            error.classList.remove('hidden');
+        }
+
+        function hideError() {
+            error.classList.add('hidden');
+        }
+
+        function hideCountryInfo() {
+            countryInfo.classList.add('hidden');
+        }
+
+        function displayCountryInfo(country) {
+            countryName.textContent = `${country.name} (${country.official_name})`;
+
+            const currenciesStr = country.currencies.join(', ');
+            const languagesStr = country.languages.join(', ');
+            const timezonesStr = country.timezones.join(', ');
+            const bordersStr = country.borders.join(', ') || 'None';
+
+            countryDetails.innerHTML = `
+                <div class="space-y-4">
+                    <p class="flex items-center"><i class="fas fa-city mr-2 text-blue-500"></i><strong>Capital:</strong> <span class="ml-2">${country.capital}</span></p>
+                    <p class="flex items-center"><i class="fas fa-users mr-2 text-blue-500"></i><strong>Population:</strong> <span class="ml-2">${country.population.toLocaleString()}</span></p>
+                    <p class="flex items-center"><i class="fas fa-expand-arrows-alt mr-2 text-blue-500"></i><strong>Area:</strong> <span class="ml-2">${country.area.toLocaleString()} km²</span></p>
+                    <p class="flex items-center"><i class="fas fa-globe-americas mr-2 text-blue-500"></i><strong>Region:</strong> <span class="ml-2">${country.region} (${country.subregion})</span></p>
+                    <p class="flex items-center"><i class="fas fa-language mr-2 text-blue-500"></i><strong>Languages:</strong> <span class="ml-2">${languagesStr}</span></p>
+                    <p class="flex items-center"><i class="fas fa-money-bill-wave mr-2 text-blue-500"></i><strong>Currencies:</strong> <span class="ml-2">${currenciesStr}</span></p>
+                    <p class="flex items-center"><i class="fas fa-clock mr-2 text-blue-500"></i><strong>Timezones:</strong> <span class="ml-2">${timezonesStr}</span></p>
+                    <p class="flex items-center"><i class="fas fa-mountain mr-2 text-blue-500"></i><strong>Continents:</strong> <span class="ml-2">${country.continents.join(', ')}</span></p>
+                    <p class="flex items-center"><i class="fas fa-border-all mr-2 text-blue-500"></i><strong>Bordering Countries:</strong> <span class="ml-2">${bordersStr}</span></p>
+                    <p class="flex items-center"><i class="fas fa-flag-checkered mr-2 text-blue-500"></i><strong>UN Member:</strong> <span class="ml-2">${country.un_member ? 'Yes' : 'No'}</span></p>
+                    <p class="flex items-center"><i class="fas fa-chess-rook mr-2 text-blue-500"></i><strong>Independent:</strong> <span class="ml-2">${country.independent ? 'Yes' : 'No'}</span></p>
+                    <p class="flex items-center"><i class="fas fa-car-side mr-2 text-blue-500"></i><strong>Driving Side:</strong> <span class="ml-2">${country.car}</span></p>
+                    <a href="${country.map}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-blue-500 hover:underline mt-4">
+                        <i class="fas fa-map-marked-alt mr-2"></i>View on Google Maps
+                    </a>
+                </div>
+            `;
+
+            countryImages.innerHTML = `
+                <div class="w-full max-w-sm mx-auto">
+                    <img src="${country.flag}" alt="${country.name} flag" class="w-full rounded-lg shadow-md mb-4">
+                    ${country.coat_of_arms ? `<img src="${country.coat_of_arms}" alt="${country.name} coat of arms" class="w-full max-w-[200px] mx-auto rounded-lg shadow-md">` : ''}
+                </div>
+            `;
+
+            createPopulationChart(country);
+            createAreaChart(country);
+
+            countryInfo.classList.remove('hidden');
+        }
+
+        function createPopulationChart(country) {
+            const ctx = document.getElementById('populationChart').getContext('2d');
+
+            if (charts.populationChart) {
+                charts.populationChart.destroy();
+            }
+
+            charts.populationChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: [country.name, 'World Average'],
+                    datasets: [{
+                        label: 'Population',
+                        data: [country.population, 7794798739], // World population as of 2021
+                        backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Population'
+                            }
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Population Comparison'
+                        },
+                        legend: {
+                            display: false
+                        }
+                    }
+                }
+            });
+        }
+
+        function createAreaChart(country) {
+            const ctx = document.getElementById('areaChart').getContext('2d');
+
+            if (charts.areaChart) {
+                charts.areaChart.destroy();
+            }
+
+            charts.areaChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: [country.name, 'Rest of World'],
+                    datasets: [{
+                        data: [country.area, 510072000 - country.area], // Total land area of Earth: 510,072,000 km²
+                        backgroundColor: ['rgba(54, 162, 235, 0.5)', 'rgba(255, 99, 132, 0.5)'],
+                        borderColor: ['rgba(54, 162, 235, 1)', 'rgba(255, 99, 132, 1)'],
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Land Area Comparison'
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
