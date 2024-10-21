@@ -1,748 +1,348 @@
 <!DOCTYPE html>
-<html lang="en">
-
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>IDE Chạy mã Python</title>
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css" />
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-
-  <style>
-    #loading-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0, 0, 0, 0.7);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-    }
-
-    #loading-spinner {
-      border: 8px solid #f3f3f3;
-      /* Màu nền của spinner */
-      border-top: 8px solid #3498db;
-      /* Màu cho phần xoay */
-      border-radius: 50%;
-      width: 50px;
-      /* Đường kính của spinner */
-      height: 50px;
-      /* Đường kính của spinner */
-      animation: spin 1s linear infinite;
-      /* Hiệu ứng xoay */
-    }
-
-    @keyframes spin {
-      0% {
-        transform: rotate(0deg);
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Python IDE - test01</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css"
+    />
+    
+    <style>
+      .CodeMirror {
+        height: 300px;
+        border-radius: 0.375rem;
       }
-
-      100% {
-        transform: rotate(360deg);
+      @media (min-width: 768px) {
+        .CodeMirror {
+          height: 400px;
+        }
       }
-    }
-
-    body {
-      background-color: #1e1e1e;
-      color: #d4d4d4;
-      font-family: "Courier New", Courier, monospace;
-      padding: 20px;
-    }
-
-    .container {
-      margin-top: 20px;
-      border-radius: 10px;
-      background-color: #252526;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-    }
-
-    .sidebar {
-      background-color: #333;
-      color: white;
-      border-radius: 5px;
-      padding: 15px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .CodeMirror {
-      height: auto;
-      background-color: #1e1e1e;
-      color: #d4d4d4;
-    }
-
-    .input-value {
-      display: none;
-    }
-
-    .alert {
-      margin-top: 20px;
-    }
-
-    .result-section {
-      margin-top: 20px;
-      padding: 15px;
-      background-color: #333;
-      border-radius: 8px;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-    }
-
-    .result-section h5 {
-      margin-bottom: 10px;
-    }
-
-    .back-home {
-      position: fixed;
-      bottom: 10px;
-      right: 10px;
-      background-color: #007acc;
-      color: white;
-      border-radius: 5px;
-      padding: 10px 20px;
-      text-decoration: none;
-    }
-
-    .back-home:hover {
-      background-color: #0092ff;
-    }
-
-    .result-output {
-      background-color: #2d2d2d;
-      border-radius: 5px;
-      padding: 10px;
-      overflow-x: auto;
-    }
-
-    .result-output code {
-      color: #569cd6;
-    }
-
-    .save-button {
-      background-color: #50fa7b;
-      color: black;
-      margin-top: 10px;
-      display: none;
-      /* Ẩn nút Lưu mã mặc định */
-      width: 12%;
-      /* Đặt độ rộng nút Lưu mã */
-    }
-
-    .save-button:hover {
-      background-color: #77ff8c;
-    }
-
-    .clear-button {
-      background-color: #ff3e3e;
-      color: white;
-      margin-top: 10px;
-      width: 12%;
-      /* Điều chỉnh độ rộng của nút Xóa */
-    }
-
-    .clear-button:hover {
-      background-color: #ff5c5c;
-    }
-
-    .instruction {
-      margin-top: 20px;
-      background-color: #3b3b3b;
-      padding: 15px;
-      border-radius: 5px;
-    }
-
-    .sidebar ul {
-      list-style: none;
-      padding: 0;
-    }
-
-    .sidebar ul li {
-      margin: 10px 0;
-    }
-
-    .sidebar ul li a {
-      color: white;
-      text-decoration: none;
-    }
-
-    .sidebar ul li a:hover {
-      color: #50fa7b;
-    }
-
-    .hidden {
-      display: none;
-    }
-
-    .popup-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      bottom: 0;
-      background-color: rgba(0, 0, 0, 0.8);
-      /* Đặt màu nền mờ tối hơn */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 1000;
-      /* Đảm bảo popup nằm trên tất cả các phần tử khác */
-    }
-
-    .popup {
-      background-color: white;
-      padding: 20px;
-      border-radius: 10px;
-      text-align: center;
-      max-width: 400px;
-      width: 100%;
-      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-    }
-
-    .popup h4 {
-      margin: 0 0 15px;
-      font-size: 24px;
-      color: #333;
-    }
-
-    .popup p {
-      margin: 0 0 20px;
-      font-size: 16px;
-      color: #555;
-    }
-
-    .popup a {
-      text-decoration: none;
-      padding: 10px 20px;
-      background-color: #007bff;
-      color: white;
-      border-radius: 5px;
-      transition: background-color 0.3s;
-    }
-
-    .popup a:hover {
-      background-color: #0056b3;
-    }
-  </style>
-</head>
-
-<body>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-3 sidebar">
-        <h5>Menu</h5>
-        <ul>
-          <li><a href="#" id="run-code-link">Chạy mã</a></li>
-          <li><a href="#" id="docs-link">Tài liệu</a></li>
-          <li><a href="#">Hỗ trợ</a></li>
-          <li><a href="#" id="install-library">Cài đặt thư viện</a></li>
-        </ul>
-      </div>
-
-      <div class="col-md-9">
-        <h2 class="text-center" id="title">Chạy mã Python</h2>
-
-        <div id="run-code-content">
-          <textarea id="code" name="code" placeholder="Nhập mã Python của bạn ở đây..."></textarea>
-
-          <div class="form-check mt-3">
-            <input type="checkbox" class="form-check-input" id="inputRequired" />
-            <label class="form-check-label" for="inputRequired">
-              Yêu cầu nhập dữ liệu từ bàn phím
-            </label>
+      .cm-s-dracula .CodeMirror-activeline-background {
+        background: rgba(255, 255, 255, 0.1);
+      }
+    </style>
+  </head>
+  <body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+      <h1 class="text-2xl md:text-3xl font-bold text-center mb-6">
+      </h1>
+      <div class="bg-white shadow-md rounded-lg p-4 md:p-6">
+        <div id="editor" class="mb-4"></div>
+        <div class="flex flex-col space-y-4">
+          <div class="flex items-center">
+            <input type="checkbox" id="inputRequired" class="mr-2" />
+            <label for="inputRequired" class="text-sm text-gray-600"
+              >Yêu cầu nhập dữ liệu từ bàn phím</label
+            >
           </div>
-
-          <div class="input-value" id="inputValueContainer">
-            <input type="text" id="inputValue" class="form-control mt-3"
-              placeholder="Nhập các giá trị, cách nhau bằng dấu chấm phẩy..." />
+          <div id="inputValueContainer" class="hidden">
+            <textarea
+              id="inputValue"
+              class="w-full p-2 border rounded"
+              rows="3"
+              placeholder="Nhập các giá trị, mỗi giá trị trên một dòng..."
+            ></textarea>
           </div>
-
-          <button id="run-python" class="btn btn-primary w-24 mt-3">
-            Chạy mã Python
-          </button>
-          <div class="d-flex justify-content-between">
-            <button id="clear" class="btn clear-button">Xóa</button>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+            <button
+              id="runPython"
+              class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                ></path>
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                ></path>
+              </svg>
+              Chạy
+            </button>
+            <button
+              id="clear"
+              class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                ></path>
+              </svg>
+              Xóa
+            </button>
+            <button
+              id="save"
+              class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
+                ></path>
+              </svg>
+              Lưu
+            </button>
+            <button
+              id="share"
+              class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
+            >
+              <svg
+                class="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
+                ></path>
+              </svg>
+              Chia sẻ
+            </button>
           </div>
-
-          <div class="instruction hidden">
-            <h6>Hướng dẫn sử dụng:</h6>
-            <p>1. Nhập mã Python vào ô trên.</p>
-            <p>
-              2. Nếu mã yêu cầu nhập giá trị, hãy tích vào ô và nhập giá trị.
-            </p>
-            <p>3. Nhấn nút "Chạy mã Python" để thực thi mã.</p>
-            <p>4. Nhấn nút "Lưu mã" để tải xuống mã của bạn.</p>
-          </div>
-
-          <div class="result-section" id="response">
-            <h5>Kết quả:</h5>
-            <div class="result-output">
-              <pre><code class="language-python"></code></pre>
+          <div
+            class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2"
+          >
+            <label
+              for="libInstall"
+              class="text-sm text-gray-600 w-full md:w-auto"
+              >Cài đặt thư viện:</label
+            >
+            <div class="flex w-full">
+              <input
+                type="text"
+                id="libInstall"
+                class="p-2 border rounded flex-grow"
+                placeholder="Nhập tên thư viện..."
+              />
+              <button
+                id="installLib"
+                class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded ml-2"
+              >
+                Cài đặt
+              </button>
             </div>
           </div>
-
-          <div class="alert alert-warning" id="alert" style="display: none"></div>
-        </div>
-
-        <div id="docs-content" class="hidden">
-          <h2>Hướng dẫn sử dụng</h2>
-          <p>
-            Đây là phần hướng dẫn sử dụng cho IDE. Bạn có thể làm theo các
-            bước sau:
-          </p>
-          <ol>
-            <li>Nhập mã Python vào ô "Chạy mã Python".</li>
-            <li>
-              Chọn các tùy chọn nếu mã yêu cầu nhập dữ liệu từ bàn phím.
-            </li>
-            <li>Nhấn nút "Chạy mã Python" để thực thi mã và xem kết quả.</li>
-            <li>
-              Nếu cần, bạn có thể lưu mã của mình bằng cách nhấn nút "Lưu mã".
-            </li>
-          </ol>
-        </div>
-
-        <div class="d-flex justify-content-between">
-          <button id="save" class="btn save-button">Lưu mã</button>
         </div>
       </div>
+      <div
+        id="output"
+        class="mt-6 bg-white shadow-md rounded-lg p-4 md:p-6 hidden"
+      >
+        <h2 class="text-lg md:text-xl font-semibold mb-4">Kết quả:</h2>
+        <pre
+          id="outputContent"
+          class="bg-gray-100 p-4 rounded whitespace-pre-wrap text-sm md:text-base overflow-x-auto"
+        ></pre>
+      </div>
     </div>
-  </div>
-  <a href="{{ url_for('homepage') }}" class="back-home">Quay về trang chủ</a>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
-
-  <script>
-    const editor = CodeMirror.fromTextArea(document.getElementById("code"), {
-      lineNumbers: true,
-      mode: "python",
-      theme: "dracula",
-      matchBrackets: true,
-      indentUnit: 4,
-      tabSize: 4,
-      autoCloseBrackets: true,
-      extraKeys: {
-        "Ctrl-Space": "autocomplete", // Hiện gợi ý khi nhấn Ctrl + Space
-        Enter: "newlineAndIndentContinueAutocomplete" // Tự động hoàn thành khi nhấn Enter
-      }
-    });
-    // Tự động hiện gợi ý khi người dùng nhập
-    editor.on("inputRead", function (cm, change) {
-      if (change.text[0] && change.text[0].length > 0) {
-        const cursor = cm.getCursor();
-        const lineContent = cm.getLine(cursor.line);
-        const char = change.text[0];
-
-        // Kiểm tra nếu ký tự đầu tiên là một trong các dấu cần thiết
-        const matchingPairs = {
-          '"': '"',
-          "'": "'",
-          "(": ")",
-          "[": "]",
-          "{": "}"
-        };
-
-        // Xử lý thêm dấu đóng cho các ký tự
-        if (matchingPairs[char]) {
-          const count =
-            lineContent.slice(0, cursor.ch).split(char).length - 1;
-
-          // Nếu số lượng dấu là lẻ, thêm dấu tương ứng
-          if (count % 2 === 1) {
-            const closingChar = matchingPairs[char];
-            cm.replaceRange(closingChar, cursor); // Thêm dấu đóng
-            cm.setCursor(cursor.line, cursor.ch); // Đặt lại con trỏ
-          }
-        }
-
-        // Tự động thêm khoảng trắng sau dấu phẩy
-        if (char === ",") {
-          cm.replaceRange(" ", cursor);
-          cm.setCursor(cursor.line, cursor.ch + 1); // Đặt con trỏ sau khoảng trắng
-        }
-
-        // Kiểm tra số lượng dấu đóng hiện tại trong dòng
-        const closingCharCount = (
-          lineContent.slice(0, cursor.ch).match(/\)/g) || []
-        ).length;
-
-        // Tự động thêm dấu ngoặc đơn cho hàm
-        const functionMatch = lineContent
-          .slice(0, cursor.ch)
-          .match(/([a-zA-Z_][a-zA-Z0-9_]*)\s*\($/);
-        if (functionMatch) {
-          // Nếu chưa có dấu đóng cho hàm này, thêm dấu đóng
-          if (closingCharCount === 0) {
-            cm.setCursor(cursor.line, cursor.ch); // Đặt lại con trỏ
-          }
-        }
-
-        cm.showHint(); // Hiện gợi ý tự động
-      }
-    });
-
-    // Mảng từ khóa Python
-    const pythonKeywords = [
-      "def",
-      "return",
-      "if",
-      "else",
-      "elif",
-      "for",
-      "while",
-      "import",
-      "from",
-      "class",
-      "try",
-      "except",
-      "in",
-      "as",
-      "with",
-      "lambda",
-      "global",
-      "nonlocal",
-      "assert",
-      "break",
-      "b",
-      "continue",
-      "del",
-      "pass",
-      "print",
-      "raise",
-      "n"
-    ];
-
-    // Biến toàn cục để lưu trữ tên biến đã định nghĩa
-    const definedVariables = new Set();
-
-    // Đăng ký helper cho gợi ý từ khóa
-    CodeMirror.registerHelper("hint", "python", function (cm) {
-      const cursor = cm.getCursor();
-      const token = cm.getTokenAt(cursor);
-      const start = token.start;
-      const end = cursor.ch;
-
-      // Lấy danh sách từ khóa phù hợp
-      const list = pythonKeywords.filter((word) =>
-        word.startsWith(token.string)
-      );
-
-      // Thêm gợi ý từ biến đã định nghĩa
-      definedVariables.forEach((variable) => {
-        if (variable.startsWith(token.string)) {
-          list.push(variable);
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/python-hint.min.js"></script>
+    <script>
+      const editor = CodeMirror(document.getElementById("editor"), {
+        mode: "python",
+        theme: "dracula",
+        lineNumbers: true,
+        autofocus: true,
+        matchBrackets: true,
+        indentUnit: 4,
+        tabSize: 4,
+        indentWithTabs: false,
+        extraKeys: { "Ctrl-Space": "autocomplete" },
+        hintOptions: {
+          completeSingle: false
         }
       });
 
-      // Trả về danh sách gợi ý
-      return {
-        list: list,
-        from: CodeMirror.Pos(cursor.line, start),
-        to: CodeMirror.Pos(cursor.line, end)
-      };
-    });
-
-    // Tự động hiện gợi ý khi người dùng nhập
-    editor.on("inputRead", function (cm, change) {
-      if (change.text[0] && change.text[0].length > 0) {
-        cm.showHint(); // Hiện gợi ý tự động
-      }
-    });
-
-    // Lắng nghe thay đổi và cập nhật danh sách biến đã định nghĩa
-    editor.on("change", function (cm) {
-      const code = cm.getValue();
-      const lines = code.split("\n");
-
-      // Reset set biến đã định nghĩa
-      definedVariables.clear();
-
-      // Phân tích mã và tìm kiếm các biến đã định nghĩa
-      lines.forEach((line) => {
-        const varMatch = line.match(
-          /^\s*(?:def|class)\s+([a-zA-Z_][a-zA-Z0-9_]*)/
-        );
-        if (varMatch) {
-          definedVariables.add(varMatch[1]); // Lưu tên hàm hoặc lớp
-        }
-        const assignMatch = line.match(/^\s*([a-zA-Z_][a-zA-Z0-9_]*)\s*=/);
-        if (assignMatch) {
-          definedVariables.add(assignMatch[1]); // Lưu tên biến
+      editor.on("inputRead", function (editor, change) {
+        if (
+          change.text[0] === "." ||
+          (change.text[0] === " " &&
+            editor.getLine(change.from.line).trim() !== "")
+        ) {
+          editor.showHint({ completeSingle: false });
         }
       });
 
-      const clearButton = document.getElementById("clear");
-      const saveButton = document.getElementById("save");
-      clearButton.style.display = code.trim() ? "block" : "none";
-      saveButton.style.display = code.trim() ? "block" : "none";
-    });
-
-    async function runCode(endpoint) {
-      const code = editor.getValue();
-      const alertDiv = document.getElementById("alert");
-      const responseDiv = document.getElementById("response");
-      const inputValueContainer = document.getElementById(
-        "inputValueContainer"
-      );
-      const inputRequired = document.getElementById("inputRequired");
-      const payload = { code }; // Tạo đối tượng payload
-
-      alertDiv.style.display = "none"; // Ẩn thông báo lỗi
-      responseDiv.style.display = "none"; // Ẩn phần phản hồi
-
-      if (inputRequired.checked) {
-        const inputValue = document.getElementById("inputValue").value.trim();
-        if (!inputValue) {
-          alertDiv.innerText = "Vui lòng nhập giá trị!";
-          alertDiv.style.display = "block";
-          return;
-        }
-
-        // Tách các giá trị đầu vào bằng dấu chấm phẩy
-        const inputValues = inputValue
-          .split(";")
-          .map((value) => value.trim());
-        payload.input_values = inputValues; // Thêm danh sách các giá trị vào payload
-      } else {
-        inputValueContainer.style.display = "none"; // Ẩn phần đầu vào nếu không cần
-      }
-
-      try {
-        const response = await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
+      document
+        .getElementById("inputRequired")
+        .addEventListener("change", function () {
+          document.getElementById("inputValueContainer").style.display = this
+            .checked
+            ? "block"
+            : "none";
         });
 
-        const result = await response.json();
+      document
+        .getElementById("runPython")
+        .addEventListener("click", async function () {
+          const runButton = this;
+          const originalText = runButton.innerHTML;
+          runButton.disabled = true;
+          runButton.innerHTML =
+            '<svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Đang chạy...';
 
-        if (response.ok) {
-          const codeOutput = document.querySelector(".result-output code");
-          codeOutput.innerText = result.output; // Hiển thị đầu ra trên giao diện
-          responseDiv.style.display = "block"; // Hiển thị phần phản hồi
-        } else {
-          alertDiv.innerText = "Có lỗi xảy ra khi chạy mã!";
-          alertDiv.style.display = "block";
-        }
-      } catch (error) {
-        alertDiv.innerText = "Có lỗi xảy ra khi chạy mã!";
-        alertDiv.style.display = "block";
-      }
-    }
-    document
-      .getElementById("install-library")
-      .addEventListener("click", async function () {
-        const libraryName = prompt("Nhập tên thư viện bạn muốn cài đặt:");
+          const code = editor.getValue();
+          const inputRequired =
+            document.getElementById("inputRequired").checked;
+          const inputValue = document.getElementById("inputValue").value;
 
-        if (!libraryName) {
-          alert("Vui lòng nhập tên thư viện.");
-          return;
-        }
+          try {
+            const response = await fetch("/run-python", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                code: code,
+                input_values: inputRequired ? inputValue.split("\n") : []
+              })
+            });
 
-        // Chặn người dùng gửi yêu cầu trong khi đang xử lý
-        this.disabled = true;
+            const result = await response.json();
+            document.getElementById("output").style.display = "block";
+            document.getElementById("outputContent").textContent =
+              result.output;
 
-        // Tạo overlay và spinner loading
-        const loadingOverlay = document.createElement("div");
-        loadingOverlay.id = "loading-overlay";
-
-        const loadingSpinner = document.createElement("div");
-        loadingSpinner.id = "loading-spinner";
-
-        loadingOverlay.appendChild(loadingSpinner);
-        document.body.appendChild(loadingOverlay);
-
-        try {
-          const response = await fetch("/install-library", {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({ library: libraryName })
-          });
-
-          const data = await response.json();
-
-          if (data.error) {
-            showModal("Lỗi", data.error, false); // Hiện modal thông báo lỗi
-          } else {
-            showModal(
-              "Thành công",
-              `Thư viện "${libraryName}" đã được cài đặt thành công.`,
-              true
-            ); // Hiện modal thông báo thành công
+            if (result.error) {
+              document
+                .getElementById("outputContent")
+                .classList.add("text-red-500");
+            } else {
+              document
+                .getElementById("outputContent")
+                .classList.remove("text-red-500");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("output").style.display = "block";
+            document.getElementById("outputContent").textContent =
+              "Đã xảy ra lỗi khi chạy mã Python.";
+            document
+              .getElementById("outputContent")
+              .classList.add("text-red-500");
+          } finally {
+            runButton.disabled = false;
+            runButton.innerHTML = originalText;
           }
-        } catch (error) {
-          showModal("Lỗi", "Có lỗi xảy ra: " + error, false); // Hiện modal thông báo lỗi
-        } finally {
-          // Bỏ disabled cho nút và xóa overlay loading
-          this.disabled = false;
-          const loadingOverlay = document.getElementById("loading-overlay");
-          if (loadingOverlay) {
-            loadingOverlay.remove();
+        });
+
+      document.getElementById("clear").addEventListener("click", function () {
+        editor.setValue("");
+        document.getElementById("inputValue").value = "";
+        document.getElementById("output").style.display = "none";
+      });
+
+      document.getElementById("save").addEventListener("click", function () {
+        const code = editor.getValue();
+        const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "python_code.py";
+        link.click();
+      });
+
+      document
+        .getElementById("share")
+        .addEventListener("click", async function () {
+          const code = editor.getValue();
+          try {
+            const response = await fetch("/share-code", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ code: code })
+            });
+            const result = await response.json();
+            if (result.share_url) {
+              alert(`Mã của bạn đã được chia sẻ. URL: ${result.share_url}`);
+            } else {
+              alert("Có lỗi xảy ra khi chia sẻ mã.");
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Có lỗi xảy ra khi chia sẻ mã.");
           }
-        }
-      });
+        });
 
-    // Hàm hiển thị modal với thông báo
-    function showModal(title, message, isSuccess) {
-      const modalOverlay = document.createElement("div");
-      modalOverlay.style.position = "fixed";
-      modalOverlay.style.top = "0";
-      modalOverlay.style.left = "0";
-      modalOverlay.style.width = "100%";
-      modalOverlay.style.height = "100%";
-      modalOverlay.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-      modalOverlay.style.zIndex = "1000";
-      modalOverlay.style.display = "flex";
-      modalOverlay.style.alignItems = "center";
-      modalOverlay.style.justifyContent = "center";
+      document
+        .getElementById("installLib")
+        .addEventListener("click", async function () {
+          const libName = document.getElementById("libInstall").value.trim();
+          if (!libName) {
+            alert("Vui lòng nhập tên thư viện.");
+            return;
+          }
 
-      const modal = document.createElement("div");
-      modal.style.padding = "30px";
-      modal.style.backgroundColor = "#fff";
-      modal.style.borderRadius = "8px";
-      modal.style.boxShadow = "0 5px 15px rgba(0, 0, 0, 0.5)";
-      modal.style.maxWidth = "500px";
-      modal.style.width = "100%";
-      modal.style.position = "relative";
-      modal.style.transition = "transform 0.3s ease";
-      modal.style.transform = "translateY(-50px)";
-      modal.style.opacity = "0";
-
-      const titleElement = document.createElement("h3");
-      titleElement.textContent = title;
-      titleElement.style.marginBottom = "15px";
-      titleElement.style.color = "#007bff"; // Màu cho tiêu đề
-      titleElement.style.textAlign = "center";
-
-      const messageElement = document.createElement("p");
-      messageElement.textContent = message;
-      messageElement.style.textAlign = "center";
-      messageElement.style.color = isSuccess ? "#28a745" : "#dc3545"; // Màu chữ xanh cho thành công, đỏ cho lỗi
-
-      const closeButton = document.createElement("button");
-      closeButton.textContent = "Đóng";
-      closeButton.style.marginTop = "15px";
-      closeButton.style.padding = "10px 20px";
-      closeButton.style.backgroundColor = "#007bff";
-      closeButton.style.color = "#fff";
-      closeButton.style.border = "none";
-      closeButton.style.borderRadius = "5px";
-      closeButton.style.cursor = "pointer";
-      closeButton.style.transition = "background-color 0.3s ease";
-      closeButton.onclick = () => {
-        modalOverlay.remove();
-      };
-
-      closeButton.onmouseover = () => {
-        closeButton.style.backgroundColor = "#0056b3";
-      };
-      closeButton.onmouseout = () => {
-        closeButton.style.backgroundColor = "#007bff";
-      };
-
-      modal.appendChild(titleElement);
-      modal.appendChild(messageElement);
-      modal.appendChild(closeButton);
-      modalOverlay.appendChild(modal);
-      document.body.appendChild(modalOverlay);
-
-      // Hiệu ứng hiện modal
-      setTimeout(() => {
-        modal.style.transform = "translateY(0)";
-        modal.style.opacity = "1";
-      }, 10);
-    }
-
-    document
-      .getElementById("inputRequired")
-      .addEventListener("change", function () {
-        const inputValueContainer = document.getElementById(
-          "inputValueContainer"
-        );
-        // Kiểm tra trạng thái của checkbox và hiển thị/ẩn ô nhập liệu tương ứng
-        if (this.checked) {
-          inputValueContainer.style.display = "block"; // Hiển thị ô nhập liệu
-        } else {
-          inputValueContainer.style.display = "none"; // Ẩn ô nhập liệu
-          document.getElementById("inputValue").value = ""; // Xóa giá trị nhập trước đó
-        }
-      });
-
-    // Xử lý nút "Lưu mã"
-    document.getElementById("save").addEventListener("click", function () {
-      const code = editor.getValue();
-      const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
-      const link = document.createElement("a");
-      link.href = URL.createObjectURL(blob);
-      link.download = "code.py";
-      link.click();
-    });
-
-    // Xử lý nút xóa
-    document.getElementById("clear").addEventListener("click", function () {
-      editor.setValue(""); // Xóa nội dung của CodeMirror
-      document.getElementById("inputValue").value = ""; // Xóa giá trị đầu vào
-      document.getElementById("response").style.display = "none"; // Ẩn phần phản hồi
-      document.getElementById("inputValueContainer").style.display = "none"; // Ẩn phần đầu vào
-      document.getElementById("alert").style.display = "none"; // Ẩn thông báo lỗi
-    });
-
-    document
-      .getElementById("run-python")
-      .addEventListener("click", function () {
-        runCode("/run-python"); // Gọi hàm chạy mã
-      });
-
-    // Hiện nội dung khi nhấn vào Tài liệu
-    document
-      .getElementById("docs-link")
-      .addEventListener("click", function () {
-        document.getElementById("run-code-content").classList.add("hidden");
-        document.getElementById("docs-content").classList.remove("hidden");
-      });
-
-    // Hiện nội dung khi nhấn vào Chạy mã
-    document
-      .getElementById("run-code-link")
-      .addEventListener("click", function () {
-        document.getElementById("docs-content").classList.add("hidden");
-        document
-          .getElementById("run-code-content")
-          .classList.remove("hidden");
-      });
-    function showPopup() {
-      const popupOverlay = document.createElement("div");
-      popupOverlay.className = "popup-overlay";
-
-      const popup = document.createElement("div");
-      popup.className = "popup";
-      popup.innerHTML = `
-              <h4>Thông báo</h4>
-              <p>Web không có sẵn để sử dụng do tính năng còn bị hạn chế.</p>
-              <a href="{{ url_for('homepage') }}">Quay trở lại</a>
-          `;
-
-      popupOverlay.appendChild(popup);
-      document.body.appendChild(popupOverlay);
-    }
-
-    // Gọi hàm showPopup khi trang được tải
-    window.onload = function () {
-      showPopup(); // Hiển thị popup khi tải trang
-    };
-  </script>
-</body>
-
+          try {
+            const response = await fetch("/install-library", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({ library: libName })
+            });
+            const result = await response.json();
+            if (result.success) {
+              alert(`Thư viện ${libName} đã được cài đặt thành công.`);
+            } else {
+              alert(`Lỗi khi cài đặt thư viện ${libName}: ${result.error}`);
+            }
+          } catch (error) {
+            console.error("Error:", error);
+            alert("Có lỗi xảy ra khi cài đặt thư viện.");
+          }
+        });
+    </script>
+  </body>
 </html>

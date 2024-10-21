@@ -351,60 +351,83 @@ def clipython_page():
 
 
 @app.route("/run-python", methods=["POST"])
-def run_python_code_temp():
+def run_python_code():
     data = request.json
-
-    if "code" not in data:
-        return jsonify({"error": "Không có mã Python nào được gửi."}), 400
-
     code = data.get("code", "")
-    input_values = data.get("input_values", [])  # Nhận danh sách giá trị đầu vào
+    input_values = data.get("input_values", [])
 
-    # Lưu mã Python vào tệp tạm thời
-    with open("temp_script.py", "w", encoding="utf-8") as f:
+    # Tạo một tệp tạm thời để lưu mã Python
+    temp_file = f"temp_{uuid.uuid4().hex}.py"
+    with open(temp_file, "w") as f:
         f.write(code)
 
-    # Tạo một iterator để gửi lần lượt các giá trị vào input()
-    input_values_iter = iter(input_values)
     try:
-        # Tạo một hàm để thay thế input() trong mã Python
-        def mock_input(prompt):
-            return next(input_values_iter)
-
-        # Ghi đè hàm input trong mã Python
-        result = subprocess.run(
-            ["python", "temp_script.py"],
-            capture_output=True,
-            text=True,
-            check=True,
-            env={**os.environ, "PYTHONIOENCODING": "utf-8"},
-            input="\n".join(input_values),  # Gửi tất cả các giá trị đầu vào
+        # Chạy mã Python với đầu vào được cung cấp
+        process = subprocess.Popen(
+            [sys.executable, temp_file],
+            stdin=subprocess.PIPE,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True
         )
-        output = result.stdout
-    except subprocess.CalledProcessError as e:
-        output = e.stderr
+        stdout, stderr = process.communicate(input="\n".join(input_values))
 
-    os.remove("temp_script.py")
+        if stderr:
+            return jsonify({"output": stderr, "error": True})
+        else:
+            return jsonify({"output": stdout, "error": False})
+    except Exception as e:
+        return jsonify({"output": str(e), "error": True})
+    finally:
+        # Xóa tệp tạm thời
+        if os.path.exists(temp_file):
+            os.remove(temp_file)
 
-    return jsonify({"output": output})
+@app.route("/share-code", methods=["POST"])
+def share_code():
+    data = request.json
+    code = data.get("code", "")
+    
+    # Tạo một ID duy nhất cho mã được chia sẻ
+    share_id = uuid.uuid4().hex
+    
+    # Lưu mã vào cơ sở dữ liệu hoặc tệp (ví dụ này sử dụng tệp)
+    with open(f"shared_code_{share_id}.py", "w") as f:
+        f.write(code)
+    
+    # Tạo URL chia sẻ
+    share_url = f"/view/{share_id}"
+    
+    return jsonify({"share_url": share_url})
 
+@app.route("/view/<share_id>")
+def view_shared_code(share_id):
+    # Đọc mã từ cơ sở dữ liệu hoặc tệp
+    try:
+        with open(f"shared_code_{share_id}.py", "r") as f:
+            code = f.read()
+        return render_template("view_shared_code.html", code=code)
+    except FileNotFoundError:
+        return "Mã không tồn tại hoặc đã hết hạn", 404
 
 @app.route("/install-library", methods=["POST"])
 def install_library():
     data = request.json
-    library_name = data.get("library")
-
-    if not library_name:
-        return jsonify({"error": "Vui lòng cung cấp tên thư viện."}), 400
-
+    library = data.get("library", "")
+    
+    if not library:
+        return jsonify({"success": False, "error": "Tên thư viện không được để trống"})
+    
     try:
-        # Cài đặt thư viện bằng pip
-        subprocess.check_call([sys.executable, "-m", "pip", "install", library_name])
-        return jsonify(
-            {"message": f"Thư viện {library_name} đã được cài đặt thành công."}
-        )
-    except subprocess.CalledProcessError as e:
-        return jsonify({"error": f"Lỗi khi cài đặt thư viện: {str(e)}"}), 500
+        # Cài đặt thư viện sử dụng pip
+        result = subprocess.run([sys.executable, "-m", "pip", "install", library], capture_output=True, text=True)
+        
+        if result.returncode == 0:
+            return jsonify({"success": True})
+        else:
+            return jsonify({"success": False, "error": result.stderr})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
 
 
 # Route để hiển thị trang facts.html
@@ -522,7 +545,9 @@ def ipconfig():
         return jsonify({"error": str(e)}), 500
 
 
-API_KEY = "714c27439667f61cbf15f7ab466525a0"
+
+
+API_KEY_WEATHER = "714c27439667f61cbf15f7ab466525a0"
 
 
 @app.route("/weather", methods=["GET", "POST"])
@@ -532,11 +557,11 @@ def weather():
         longitude = request.form.get("longitude")
 
         if latitude and longitude:
-            weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API_KEY}&units=metric"
+            weather_url = f"http://api.openweathermap.org/data/2.5/weather?lat={latitude}&lon={longitude}&appid={API_KEY_WEATHER}&units=metric"
             weather_response = requests.get(weather_url)
             weather_data = weather_response.json()
 
-            forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&appid={API_KEY}&units=metric"
+            forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&appid={API_KEY_WEATHER}&units=metric"
             forecast_response = requests.get(forecast_url)
             forecast_data = forecast_response.json()
 
@@ -581,7 +606,7 @@ def load_more_forecasts():
     last_forecast_index = int(request.args.get("last_forecast_index", 0))
 
     # Gọi API để lấy dữ liệu dự báo
-    forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&appid={API_KEY}&units=metric"
+    forecast_url = f"http://api.openweathermap.org/data/2.5/forecast?lat={latitude}&lon={longitude}&appid={API_KEY_WEATHER}&units=metric"
     forecast_response = requests.get(forecast_url)
     forecast_data = forecast_response.json()
 
@@ -621,7 +646,7 @@ def weather_by_location():
 
     params = {
         "q": location,
-        "appid": API_KEY,
+        "appid": API_KEY_WEATHER,
         "units": "metric",
         "lang": "vi",  
     }
