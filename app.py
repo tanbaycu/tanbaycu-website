@@ -906,6 +906,9 @@ def get_exchange_rates(base_currency):
 def format_code():
     return render_template('format.html')  
 
+@app.route('/password')
+def password():
+    return render_template('password.html')
     
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
