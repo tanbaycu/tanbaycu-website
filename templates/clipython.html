@@ -3,36 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python Web IDE Tiên Tiến</title>
+    <title>Python Web IDE - test02</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
         .CodeMirror {
-            height: 400px;
+            height: 250px;
             border-radius: 0.375rem;
             font-size: 14px;
         }
         @media (min-width: 768px) {
             .CodeMirror {
-                height: 500px;
+                height: 400px;
                 font-size: 16px;
+            }
+        }
+        @media (min-width: 1024px) {
+            .CodeMirror {
+                height: 500px;
             }
         }
         .cm-s-monokai .CodeMirror-activeline-background {
             background: rgba(255,255,255,0.1);
         }
         .custom-scrollbar::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
+            width: 4px;
+            height: 4px;
         }
         .custom-scrollbar::-webkit-scrollbar-track {
             background: #2d3748;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb {
             background: #4a5568;
-            border-radius: 4px;
+            border-radius: 2px;
         }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
             background: #718096;
@@ -45,43 +50,52 @@
     </style>
 </head>
 <body class="bg-gradient-to-br from-gray-900 to-blue-900 min-h-screen text-white">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"></h1>
+    <div class="container mx-auto px-4 py-6 md:py-8 lg:py-12">
+        <h1 class="text-2xl sm:text-3xl md:text-4xl font-bold text-center mb-6 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500">Python Web IDE Tiên Tiến</h1>
         <div class="glass-effect rounded-lg overflow-hidden shadow-2xl">
-            <div class="p-6 relative">
+            <div class="p-4 md:p-6 relative">
                 <div id="editor" class="border border-gray-700 rounded-lg mb-4 overflow-hidden"></div>
-                <button id="fullscreenBtn" class="absolute top-2 right-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded text-xs transition duration-300 ease-in-out transform hover:scale-105">
-                    <i class="fas fa-expand-arrows-alt mr-1"></i> Toàn màn hình
-                </button>
+                <div class="absolute top-2 right-2 flex space-x-2">
+                    <button id="fullscreenBtn" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded text-xs transition duration-300 ease-in-out transform hover:scale-105">
+                        <i class="fas fa-expand-arrows-alt"></i>
+                        <span class="sr-only">Toàn màn hình</span>
+                    </button>
+                    <button id="settingsBtn" class="bg-gray-800 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded text-xs transition duration-300 ease-in-out transform hover:scale-105">
+                        <i class="fas fa-cog"></i>
+                        <span class="sr-only">Cài đặt</span>
+                    </button>
+                </div>
                 <div class="space-y-4">
-                    <div class="flex items-center space-x-2">
-                        <input type="checkbox" id="inputRequired" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
-                        <label for="inputRequired" class="text-sm text-gray-300">Yêu cầu nhập dữ liệu từ bàn phím</label>
-                    </div>
-                    <div id="inputValueContainer" class="hidden">
-                        <textarea id="inputValue" class="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg resize-y custom-scrollbar text-white" rows="3" placeholder="Nhập các giá trị, mỗi giá trị trên một dòng..."></textarea>
-                    </div>
-                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-                        <button id="runBtn" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                    <div class="flex flex-wrap items-center gap-2">
+                        <button id="runBtn" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg text-sm flex-grow sm:flex-grow-0">
                             <i class="fas fa-play mr-2"></i> Chạy
                         </button>
-                        <button id="clearBtn" class="btn bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                        <button id="clearBtn" class="btn bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg text-sm flex-grow sm:flex-grow-0">
                             <i class="fas fa-trash-alt mr-2"></i> Xóa
                         </button>
-                        <button id="saveBtn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                        <button id="saveBtn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg text-sm flex-grow sm:flex-grow-0">
                             <i class="fas fa-save mr-2"></i> Lưu
                         </button>
-                        <button id="shareBtn" class="btn bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                        <button id="shareBtn" class="btn bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg text-sm flex-grow sm:flex-grow-0">
                             <i class="fas fa-share-alt mr-2"></i> Chia sẻ
                         </button>
                     </div>
-                    <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
-                        <label for="libInstall" class="text-sm text-gray-300 w-full md:w-auto">Cài đặt thư viện:</label>
-                        <div class="flex w-full">
-                            <input type="text" id="libInstall" class="flex-grow p-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:ring-2 focus:ring-blue-500 text-white" placeholder="Nhập tên thư viện...">
-                            <button id="installBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-r-lg transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
-                                <i class="fas fa-download mr-2"></i> Cài đặt
-                            </button>
+                    <div id="advancedOptions" class="hidden space-y-4">
+                        <div class="flex items-center space-x-2">
+                            <input type="checkbox" id="inputRequired" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                            <label for="inputRequired" class="text-xs sm:text-sm text-gray-300">Yêu cầu nhập dữ liệu từ bàn phím</label>
+                        </div>
+                        <div id="inputValueContainer" class="hidden">
+                            <textarea id="inputValue" class="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg resize-y custom-scrollbar text-white text-sm" rows="3" placeholder="Nhập các giá trị, mỗi giá trị trên một dòng..."></textarea>
+                        </div>
+                        <div class="flex flex-col sm:flex-row items-center space-y-2 sm:space-y-0 sm:space-x-2">
+                            <label for="libInstall" class="text-xs sm:text-sm text-gray-300 w-full sm:w-auto">Cài đặt thư viện:</label>
+                            <div class="flex w-full">
+                                <input type="text" id="libInstall" class="flex-grow p-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:ring-2 focus:ring-blue-500 text-white text-sm" placeholder="Nhập tên thư viện...">
+                                <button id="installBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-r-lg transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg text-sm">
+                                    <i class="fas fa-download mr-2"></i> Cài đặt
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -89,27 +103,29 @@
             <div id="output" class="hidden">
                 <div class="bg-gray-800 p-4 border-t border-gray-700">
                     <h2 class="text-lg font-semibold mb-2 text-blue-400">Kết quả:</h2>
-                    <pre id="outputContent" class="bg-gray-900 p-3 rounded-lg shadow-inner text-sm overflow-x-auto custom-scrollbar text-green-400"></pre>
+                    <pre id="outputContent" class="bg-gray-900 p-3 rounded-lg shadow-inner text-xs sm:text-sm overflow-x-auto custom-scrollbar text-green-400"></pre>
                 </div>
             </div>
         </div>
-        <div class="mt-8 flex justify-center space-x-4">
-            <button id="startTutorialBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+        <div class="mt-6 flex justify-center">
+            <button id="startTutorialBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg text-sm">
                 <i class="fas fa-book mr-2"></i> Bắt đầu hướng dẫn
-            </button>
-            <button id="nextTutorialBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hidden">
-                <i class="fas fa-arrow-right mr-2"></i> Bước tiếp theo
             </button>
         </div>
     </div>
 
     <div id="tutorialOverlay" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
-        <div class="bg-gray-800 p-6 rounded-lg max-w-md">
-            <h3 id="tutorialTitle" class="text-2xl font-bold mb-4 text-blue-400"></h3>
-            <p id="tutorialContent" class="mb-4 text-gray-300"></p>
-            <button id="closeTutorialBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
-                <i class="fas fa-times mr-2"></i> Đóng
-            </button>
+        <div class="bg-gray-800 p-4 sm:p-6 rounded-lg max-w-xs sm:max-w-sm md:max-w-md w-full mx-4">
+            <h3 id="tutorialTitle" class="text-xl sm:text-2xl font-bold mb-4 text-blue-400"></h3>
+            <p id="tutorialContent" class="mb-4 text-gray-300 text-sm sm:text-base"></p>
+            <div class="flex justify-between">
+                <button id="closeTutorialBtn" class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105 text-sm">
+                    <i class="fas fa-times mr-2"></i> Đóng
+                </button>
+                <button id="nextTutorialBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105 text-sm">
+                    <i class="fas fa-arrow-right mr-2"></i> Tiếp theo
+                </button>
+            </div>
         </div>
     </div>
 
@@ -145,6 +161,8 @@
         const shareBtn = document.getElementById("shareBtn");
         const installBtn = document.getElementById("installBtn");
         const fullscreenBtn = document.getElementById("fullscreenBtn");
+        const settingsBtn = document.getElementById("settingsBtn");
+        const advancedOptions = document.getElementById("advancedOptions");
         const output = document.getElementById("output");
         const outputContent = document.getElementById("outputContent");
         const startTutorialBtn = document.getElementById("startTutorialBtn");
@@ -156,6 +174,10 @@
 
         inputRequired.addEventListener("change", function() {
             inputValueContainer.style.display = this.checked ? "block" : "none";
+        });
+
+        settingsBtn.addEventListener("click", function() {
+            advancedOptions.classList.toggle("hidden");
         });
 
         runBtn.addEventListener("click", async function() {
@@ -204,6 +226,8 @@
             document.getElementById("inputValue").value = "";
             output.style.display = "none";
         });
+
+        
 
         saveBtn.addEventListener("click", function() {
             const code = editor.getValue();
@@ -282,11 +306,11 @@
         fullscreenBtn.addEventListener("click", function() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
-                fullscreenBtn.innerHTML = '<i class="fas fa-compress-arrows-alt mr-1"></i> Thoát toàn màn hình';
+                fullscreenBtn.innerHTML = '<i class="fas fa-compress-arrows-alt"></i>';
             } else {
                 if (document.exitFullscreen) {
                     document.exitFullscreen();
-                    fullscreenBtn.innerHTML = '<i class="fas fa-expand-arrows-alt mr-1"></i> Toàn màn hình';
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand-arrows-alt"></i>';
                 }
             }
         });
@@ -297,6 +321,7 @@
             { element: "#clearBtn", title: "Nút Xóa", content: "Sử dụng nút này để xóa toàn bộ mã trong trình soạn thảo và kết quả đầu ra." },
             { element: "#saveBtn", title: "Nút Lưu", content: "Nhấn để tải mã Python của bạn về máy tính dưới dạng tệp .py." },
             { element: "#shareBtn", title: "Nút Chia sẻ", content: "Chia sẻ mã của bạn với người khác thông qua một liên kết duy nhất." },
+            { element: "#settingsBtn", title: "Cài đặt nâng cao", content: "Nhấn nút này để hiển thị các tùy chọn nâng cao như nhập dữ liệu và cài đặt thư viện." },
             { element: "#libInstall", title: "Cài đặt thư viện", content: "Nhập tên thư viện Python bạn muốn cài đặt và nhấn nút 'Cài đặt'. Thư viện sẽ được cài đặt trên máy chủ và sẵn sàng để sử dụng trong mã của bạn." }
         ];
 
@@ -314,7 +339,6 @@
         startTutorialBtn.addEventListener("click", function() {
             currentStep = 0;
             showTutorialStep();
-            nextTutorialBtn.classList.remove("hidden");
         });
 
         nextTutorialBtn.addEventListener("click", function() {
@@ -323,13 +347,13 @@
                 showTutorialStep();
             } else {
                 tutorialOverlay.classList.add("hidden");
-                nextTutorialBtn.classList.add("hidden");
                 currentStep = -1;
             }
         });
 
         closeTutorialBtn.addEventListener("click", function() {
             tutorialOverlay.classList.add("hidden");
+            currentStep = -1;
         });
 
         // Keyboard shortcuts
@@ -340,7 +364,7 @@
         });
 
         // Add some sample code to the editor
-        editor.setValue(`# Chào mừng đến với Python Web IDE Tiên Tiến!
+        editor.setValue(`# Tanbaycu 
 # Hãy thử chạy đoạn mã mẫu này:
 
 def fibonacci(n):
