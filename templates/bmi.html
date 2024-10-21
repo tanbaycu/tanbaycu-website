@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Insight - Tanbaycu</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.37);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.18);
+        }
+        .bmi-meter {
+            width: 200px;
+            height: 100px;
+            border-radius: 100px 100px 0 0;
+            background: conic-gradient(
+                from 180deg,
+                #4ade80 0deg,
+                #4ade80 90deg,
+                #facc15 90deg,
+                #facc15 180deg,
+                #f87171 180deg,
+                #f87171 270deg,
+                #60a5fa 270deg
+            );
+            position: relative;
+            overflow: hidden;
+        }
+        .bmi-meter::before {
+            content: '';
+            position: absolute;
+            width: 180px;
+            height: 90px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 90px 90px 0 0;
+            top: 5px;
+            left: 10px;
+        }
+        .bmi-needle {
+            position: absolute;
+            width: 4px;
+            height: 100px;
+            background: #1e293b;
+            bottom: 0;
+            left: 50%;
+            transform-origin: bottom;
+            transform: rotate(0deg);
+            transition: transform 1.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        .input-range {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 10px;
+            border-radius: 5px;
+            background: #ddd;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
+        }
+        .input-range:hover {
+            opacity: 1;
+        }
+        .input-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4338ca;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        .input-range::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+        .input-range::-moz-range-thumb {
+            width: 25px;
+            height: 25px;
+            border-radius: 50%;
+            background: #4338ca;
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+        .input-range::-moz-range-thumb:hover {
+            transform: scale(1.2);
+        }
+        .animate-pulse {
+            animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+        }
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: .5;
+            }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="glassmorphism w-full max-w-4xl p-8">
+        <h1 class="text-4xl font-bold mb-6 text-center text-white">
+            <a href="{{ url_for('homepage') }}" class="text-white hover:underline">BMI Insight</a>
+        </h1>
+        
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-6">
+                <div>
+                    <label for="height" class="block text-sm font-medium text-white mb-1">Chiều cao (cm)</label>
+                    <input type="range" id="height" min="100" max="220" value="170" class="input-range w-full">
+                    <div class="flex justify-between text-white mt-1">
+                        <span>100 cm</span>
+                        <span id="heightValue">170 cm</span>
+                        <span>220 cm</span>
+                    </div>
+                </div>
+                
+                <div>
+                    <label for="weight" class="block text-sm font-medium text-white mb-1">Cân nặng (kg)</label>
+                    <input type="range" id="weight" min="30" max="150" value="70" class="input-range w-full">
+                    <div class="flex justify-between text-white mt-1">
+                        <span>30 kg</span>
+                        <span id="weightValue">70 kg</span>
+                        <span>150 kg</span>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <div class="w-1/2">
+                        <label for="gender" class="block text-sm font-medium text-white mb-1">Giới tính</label>
+                        <select id="gender" class="w-full p-2 rounded-md bg-white bg-opacity-20 text-white border border-white border-opacity-30 focus:border-white focus:ring focus:ring-white focus:ring-opacity-50">
+                            <option value="male">Nam</option>
+                            <option value="female">Nữ</option>
+                        </select>
+                    </div>
+                    <div class="w-1/2">
+                        <label for="age" class="block text-sm font-medium text-white mb-1">Tuổi</label>
+                        <input type="number" id="age" min="2" max="120" value="30" class="w-full p-2 rounded-md bg-white bg-opacity-20 text-white border border-white border-opacity-30 focus:border-white focus:ring focus:ring-white focus:ring-opacity-50">
+                    </div>
+                </div>
+                
+                <button id="calculateBMI" class="w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors duration-200 font-semibold text-lg">Phân tích BMI</button>
+            </div>
+            
+            <div id="results" class="hidden space-y-6">
+                <div class="text-center">
+                    <div class="bmi-meter mx-auto">
+                        <div class="bmi-needle" id="bmiNeedle"></div>
+                    </div>
+                    <p class="text-4xl font-bold mt-4 text-white" id="bmiValue"></p>
+                    <p class="text-xl font-semibold text-white" id="bmiCategory"></p>
+                </div>
+                
+                <div class="bg-white bg-opacity-20 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold mb-2 text-white">Lời khuyên cho bạn:</h3>
+                    <p id="bmiAdvice" class="text-white"></p>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-semibold mb-2 text-white">Phân bố BMI:</h3>
+                    <canvas id="bmiChart"></canvas>
+                </div>
+            </div>
+        </div>
+        
+        <div id="detailedAnalysis" class="mt-8 hidden">
+            <h2 class="text-2xl font-bold mb-4 text-white">Phân tích chi tiết</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="bg-white bg-opacity-20 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold mb-2 text-white">Cân nặng lý tưởng</h3>
+                    <p id="idealWeight" class="text-white"></p>
+                </div>
+                <div class="bg-white bg-opacity-20 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold mb-2 text-white">Tỷ lệ mỡ cơ thể ước tính</h3>
+                    <p id="bodyFat" class="text-white"></p>
+                </div>
+                <div class="bg-white bg-opacity-20 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold mb-2 text-white">Nhu cầu calo hàng ngày</h3>
+                    <p id="dailyCalories" class="text-white"></p>
+                </div>
+                <div class="bg-white bg-opacity-20 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold mb-2 text-white">Nguy cơ sức khỏe</h3>
+                    <p id="healthRisks" class="text-white"></p>
+                </div>
+            </div>
+        </div>
+        
+        <div id="recommendations" class="mt-8 hidden">
+            <h2 class="text-2xl font-bold mb-4 text-white">Khuyến nghị cá nhân hóa</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-white bg-opacity-20 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold mb-2 text-white">Chế độ ăn</h3>
+                    <ul id="dietRecommendations" class="list-disc list-inside text-white"></ul>
+                </div>
+                <div class="bg-white bg-opacity-20 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold mb-2 text-white">Hoạt động thể chất</h3>
+                    <ul id="exerciseRecommendations" class="list-disc list-inside text-white"></ul>
+                </div>
+                <div class="bg-white bg-opacity-20 p-4 rounded-md">
+                    <h3 class="text-lg font-semibold mb-2 text-white">Lối sống</h3>
+                    <ul id="lifestyleRecommendations" class="list-disc list-inside text-white"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const heightInput = document.getElementById('height');
+        const weightInput = document.getElementById('weight');
+        const heightValue = document.getElementById('heightValue');
+        const weightValue = document.getElementById('weightValue');
+        const calculateButton = document.getElementById('calculateBMI');
+        const resultsDiv = document.getElementById('results');
+        const detailedAnalysisDiv = document.getElementById('detailedAnalysis');
+        const recommendationsDiv = document.getElementById('recommendations');
+        let bmiChart = null;
+
+        heightInput.addEventListener('input', () => {
+            heightValue.textContent = `${heightInput.value} cm`;
+        });
+
+        weightInput.addEventListener('input', () => {
+            weightValue.textContent = `${weightInput.value} kg`;
+        });
+
+        calculateButton.addEventListener('click', calculateBMI);
+
+        function calculateBMI() {
+            const height = parseFloat(heightInput.value) / 100;
+            const weight = parseFloat(weightInput.value);
+            const gender = document.getElementById('gender').value;
+            const age = parseInt(document.getElementById('age').value);
+
+            const bmi = weight / (height * height);
+            const category = getBMICategory(bmi);
+            const advice = getBMIAdvice(category);
+
+            document.getElementById('bmiValue').textContent = bmi.toFixed(1);
+            document.getElementById('bmiCategory').textContent = category;
+            document.getElementById('bmiAdvice').textContent = advice;
+
+            updateBMIChart(bmi);
+            updateBMINeedle(bmi);
+            updateDetailedAnalysis(bmi, weight, height, age, gender);
+            updateRecommendations(category, gender, age);
+
+            resultsDiv.classList.remove('hidden');
+            detailedAnalysisDiv.classList.remove('hidden');
+            recommendationsDiv.classList.remove('hidden');
+
+            gsap.from([resultsDiv, detailedAnalysisDiv, recommendationsDiv], {
+                opacity: 0,
+                y: 20,
+                duration: 0.5,
+                stagger: 0.2,
+                ease: "power2.out"
+            });
+        }
+
+        function getBMICategory(bmi) {
+            if (bmi < 18.5) return "Thiếu cân";
+            if (bmi < 24.9) return "Bình thường";
+            if (bmi < 29.9) return "Thừa cân";
+            return "Béo phì";
+        }
+
+        function getBMIAdvice(category) {
+            switch(category) {
+                case "Thiếu cân":
+                    return "Bạn nên tăng cường dinh dưỡng và tập thể dục để tăng cân một cách khỏe mạnh.";
+                case "Bình thường":
+                    return "Chúc mừng! Hãy duy trì chế độ ăn uống và luyện tập hiện tại của bạn.";
+                case "Thừa cân":
+                    return "Bạn nên cân nhắc giảm cân nhẹ nhàng bằng cách điều chỉnh chế độ ăn và tăng cường vận động.";
+                case "Béo phì":
+                    return "Bạn nên tham khảo ý kiến bác sĩ để có kế hoạch giảm cân phù hợp và an toàn.";
+            }
+        }
+
+        function updateBMIChart(bmi) {
+            const ctx = document.getElementById('bmiChart').getContext('2d');
+            
+            if (bmiChart) {
+                bmiChart.destroy();
+            }
+
+            
+
+            bmiChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Thiếu cân', 'Bình thường', 'Thừa cân', 'Béo phì'],
+                    datasets: [{
+                        label: 'Phạm vi BMI',
+                        data: [18.5, 24.9, 29.9, 40],
+                        backgroundColor: [
+                            'rgba(96, 165, 250, 0.7)',
+                            'rgba(74, 222, 128, 0.7)',
+                            'rgba(250, 204, 21, 0.7)',
+                            'rgba(248, 113, 113, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgb(96, 165, 250)',
+                            'rgb(74, 222, 128)',
+                            'rgb(250, 204, 21)',
+                            'rgb(248, 113, 113)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 40,
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        },
+                        x: {
+                            ticks: {
+                                color: 'white'
+                            },
+                            grid: {
+                                color: 'rgba(255, 255, 255, 0.1)'
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            display: false
+                        },
+                        annotation: {
+                            annotations: {
+                                line1: {
+                                    type: 'line',
+                                    yMin: bmi,
+                                    yMax: bmi,
+                                    borderColor: 'white',
+                                    borderWidth: 2,
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateBMINeedle(bmi) {
+            const needle = document.getElementById('bmiNeedle');
+            let rotation = 0;
+            if (bmi < 18.5) {
+                rotation = (bmi / 18.5) * 90;
+            } else if (bmi < 25) {
+                rotation = 90 + ((bmi - 18.5) / 6.5) * 90;
+            } else if (bmi < 30) {
+                rotation = 180 + ((bmi - 25) / 5) * 90;
+            } else {
+                rotation = 270 + Math.min(((bmi - 30) / 10) * 90, 90);
+            }
+            gsap.to(needle, {rotation: rotation, duration: 1.5, ease: "elastic.out(1, 0.3)"});
+        }
+
+        function updateDetailedAnalysis(bmi, weight, height, age, gender) {
+            const idealWeightLow = 18.5 * (height * height);
+            const idealWeightHigh = 24.9 * (height * height);
+            document.getElementById('idealWeight').textContent = `${idealWeightLow.toFixed(1)} - ${idealWeightHigh.toFixed(1)} kg`;
+
+            let bodyFat;
+            if (gender === 'male') {
+                bodyFat = (1.20 * bmi) + (0.23 * age) - 16.2;
+            } else {
+                bodyFat = (1.20 * bmi) + (0.23 * age) - 5.4;
+            }
+            document.getElementById('bodyFat').textContent = `${bodyFat.toFixed(1)}%`;
+
+            const bmr = (gender === 'male') 
+                ? 88.362 + (13.397 * weight) + (4.799 * height * 100) - (5.677 * age)
+                : 447.593 + (9.247 * weight) + (3.098 * height * 100) - (4.330 * age);
+            const dailyCalories = bmr * 1.2;
+            document.getElementById('dailyCalories').textContent = `${dailyCalories.toFixed(0)} kcal`;
+
+            let healthRisks = [];
+            if (bmi < 18.5) {
+                healthRisks.push("Suy dinh dưỡng", "Hệ miễn dịch yếu");
+            } else if (bmi >= 25) {
+                healthRisks.push("Bệnh tim mạch", "Tiểu đường type 2", "Cao huyết áp");
+            }
+            document.getElementById('healthRisks').textContent = healthRisks.join(", ") || "Không có rủi ro đáng kể";
+        }
+
+        function updateRecommendations(category, gender, age) {
+            const dietRecommendations = document.getElementById('dietRecommendations');
+            const exerciseRecommendations = document.getElementById('exerciseRecommendations');
+            const lifestyleRecommendations = document.getElementById('lifestyleRecommendations');
+
+            dietRecommendations.innerHTML = '';
+            exerciseRecommendations.innerHTML = '';
+            lifestyleRecommendations.innerHTML = '';
+
+            if (category === "Thiếu cân") {
+                addRecommendation(dietRecommendations, "Tăng cường protein và carbohydrate phức hợp");
+                addRecommendation(dietRecommendations, "Bổ sung các loại hạt và dầu thực vật");
+                addRecommendation(exerciseRecommendations, "Tập luyện với trọng lượng để tăng cơ bắp");
+                addRecommendation(exerciseRecommendations, "Tập cardio vừa phải để cải thiện sức khỏe tim mạch");
+                addRecommendation(lifestyleRecommendations, "Đảm bảo ngủ đủ 7-9 tiếng mỗi đêm");
+                addRecommendation(lifestyleRecommendations, "Quản lý stress thông qua thiền hoặc yoga");
+            } else if (category === "Bình thường") {
+                addRecommendation(dietRecommendations, "Duy trì chế độ ăn cân bằng với nhiều rau và trái cây");
+                addRecommendation(dietRecommendations, "Hạn chế thực phẩm chế biến sẵn và đồ ngọt");
+                addRecommendation(exerciseRecommendations, "Tập thể dục đều đặn, ít nhất 150 phút/tuần");
+                addRecommendation(exerciseRecommendations, "Kết hợp cardio và tập luyện sức mạnh");
+                addRecommendation(lifestyleRecommendations, "Duy trì lịch kiểm tra sức khỏe định kỳ");
+                addRecommendation(lifestyleRecommendations, "Thực hành các kỹ thuật giảm stress");
+            } else {
+                addRecommendation(dietRecommendations, "Giảm lượng calo nạp vào, tăng cường rau xanh");
+                addRecommendation(dietRecommendations, "Hạn chế thực phẩm giàu chất béo bão hòa và đường");
+                addRecommendation(exerciseRecommendations, "Tăng cường hoạt động thể chất, ít nhất 30 phút mỗi ngày");
+                addRecommendation(exerciseRecommendations, "Tập cardio cường độ cao để đốt cháy calo");
+                addRecommendation(lifestyleRecommendations, "Theo dõi lượng calo nạp vào và tiêu thụ hàng ngày");
+                addRecommendation(lifestyleRecommendations, "Tìm kiếm hỗ trợ từ chuyên gia dinh dưỡng hoặc huấn luyện viên cá nhân");
+            }
+
+            if (age >= 40) {
+                addRecommendation(lifestyleRecommendations, "Tăng cường kiểm tra sức khỏe định kỳ");
+                addRecommendation(dietRecommendations, "Bổ sung canxi và vitamin D để bảo vệ xương");
+            }
+
+            if (gender === 'female') {
+                addRecommendation(dietRecommendations, "Đảm bảo đủ sắt trong chế độ ăn");
+                addRecommendation(lifestyleRecommendations, "Thực hiện kiểm tra sức khỏe phụ khoa định kỳ");
+            }
+        }
+
+        function addRecommendation(element, text) {
+            const li = document.createElement('li');
+            li.textContent = text;
+            element.appendChild(li);
+        }
+    </script>
+</body>
+</html>

@@ -949,7 +949,14 @@ def country():
             return jsonify({'error': f'Error processing country data: {str(e)}'}), 500
 
     return render_template('country.html')
+
+
+@app.route("/bmi")
+def bmi():
+    return render_template("bmi.html")
+
     
+       
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
