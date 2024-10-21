@@ -1,348 +1,358 @@
 <!DOCTYPE html>
 <html lang="vi">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Python IDE - test01</title>
-    <link
-      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/dracula.min.css"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.css"
-    />
-    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Python Web IDE Tiên Tiến</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/theme/monokai.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
     <style>
-      .CodeMirror {
-        height: 300px;
-        border-radius: 0.375rem;
-      }
-      @media (min-width: 768px) {
         .CodeMirror {
-          height: 400px;
+            height: 400px;
+            border-radius: 0.375rem;
+            font-size: 14px;
         }
-      }
-      .cm-s-dracula .CodeMirror-activeline-background {
-        background: rgba(255, 255, 255, 0.1);
-      }
+        @media (min-width: 768px) {
+            .CodeMirror {
+                height: 500px;
+                font-size: 16px;
+            }
+        }
+        .cm-s-monokai .CodeMirror-activeline-background {
+            background: rgba(255,255,255,0.1);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #2d3748;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #718096;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
     </style>
-  </head>
-  <body class="bg-gray-100 min-h-screen">
+</head>
+<body class="bg-gradient-to-br from-gray-900 to-blue-900 min-h-screen text-white">
     <div class="container mx-auto px-4 py-8">
-      <h1 class="text-2xl md:text-3xl font-bold text-center mb-6">
-      </h1>
-      <div class="bg-white shadow-md rounded-lg p-4 md:p-6">
-        <div id="editor" class="mb-4"></div>
-        <div class="flex flex-col space-y-4">
-          <div class="flex items-center">
-            <input type="checkbox" id="inputRequired" class="mr-2" />
-            <label for="inputRequired" class="text-sm text-gray-600"
-              >Yêu cầu nhập dữ liệu từ bàn phím</label
-            >
-          </div>
-          <div id="inputValueContainer" class="hidden">
-            <textarea
-              id="inputValue"
-              class="w-full p-2 border rounded"
-              rows="3"
-              placeholder="Nhập các giá trị, mỗi giá trị trên một dòng..."
-            ></textarea>
-          </div>
-          <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
-            <button
-              id="runPython"
-              class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-            >
-              <svg
-                class="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
-                ></path>
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
-                ></path>
-              </svg>
-              Chạy
-            </button>
-            <button
-              id="clear"
-              class="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-            >
-              <svg
-                class="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                ></path>
-              </svg>
-              Xóa
-            </button>
-            <button
-              id="save"
-              class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-            >
-              <svg
-                class="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8 7H5a2 2 0 00-2 2v9a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2h-3m-1 4l-3 3m0 0l-3-3m3 3V4"
-                ></path>
-              </svg>
-              Lưu
-            </button>
-            <button
-              id="share"
-              class="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded flex items-center justify-center"
-            >
-              <svg
-                class="w-4 h-4 mr-2"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"
-                ></path>
-              </svg>
-              Chia sẻ
-            </button>
-          </div>
-          <div
-            class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2"
-          >
-            <label
-              for="libInstall"
-              class="text-sm text-gray-600 w-full md:w-auto"
-              >Cài đặt thư viện:</label
-            >
-            <div class="flex w-full">
-              <input
-                type="text"
-                id="libInstall"
-                class="p-2 border rounded flex-grow"
-                placeholder="Nhập tên thư viện..."
-              />
-              <button
-                id="installLib"
-                class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded ml-2"
-              >
-                Cài đặt
-              </button>
+        <h1 class="text-4xl font-bold text-center mb-8 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-500"></h1>
+        <div class="glass-effect rounded-lg overflow-hidden shadow-2xl">
+            <div class="p-6 relative">
+                <div id="editor" class="border border-gray-700 rounded-lg mb-4 overflow-hidden"></div>
+                <button id="fullscreenBtn" class="absolute top-2 right-2 bg-gray-800 hover:bg-gray-700 text-white font-bold py-1 px-2 rounded text-xs transition duration-300 ease-in-out transform hover:scale-105">
+                    <i class="fas fa-expand-arrows-alt mr-1"></i> Toàn màn hình
+                </button>
+                <div class="space-y-4">
+                    <div class="flex items-center space-x-2">
+                        <input type="checkbox" id="inputRequired" class="w-4 h-4 text-blue-600 bg-gray-700 border-gray-600 rounded focus:ring-blue-500">
+                        <label for="inputRequired" class="text-sm text-gray-300">Yêu cầu nhập dữ liệu từ bàn phím</label>
+                    </div>
+                    <div id="inputValueContainer" class="hidden">
+                        <textarea id="inputValue" class="w-full p-2 bg-gray-800 border border-gray-700 rounded-lg resize-y custom-scrollbar text-white" rows="3" placeholder="Nhập các giá trị, mỗi giá trị trên một dòng..."></textarea>
+                    </div>
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-2">
+                        <button id="runBtn" class="btn bg-green-500 hover:bg-green-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                            <i class="fas fa-play mr-2"></i> Chạy
+                        </button>
+                        <button id="clearBtn" class="btn bg-red-500 hover:bg-red-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                            <i class="fas fa-trash-alt mr-2"></i> Xóa
+                        </button>
+                        <button id="saveBtn" class="btn bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                            <i class="fas fa-save mr-2"></i> Lưu
+                        </button>
+                        <button id="shareBtn" class="btn bg-purple-500 hover:bg-purple-600 text-white font-semibold py-2 px-4 rounded flex items-center justify-center transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                            <i class="fas fa-share-alt mr-2"></i> Chia sẻ
+                        </button>
+                    </div>
+                    <div class="flex flex-col md:flex-row items-center space-y-2 md:space-y-0 md:space-x-2">
+                        <label for="libInstall" class="text-sm text-gray-300 w-full md:w-auto">Cài đặt thư viện:</label>
+                        <div class="flex w-full">
+                            <input type="text" id="libInstall" class="flex-grow p-2 bg-gray-800 border border-gray-700 rounded-l-lg focus:ring-2 focus:ring-blue-500 text-white" placeholder="Nhập tên thư viện...">
+                            <button id="installBtn" class="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded-r-lg transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                                <i class="fas fa-download mr-2"></i> Cài đặt
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
-          </div>
+            <div id="output" class="hidden">
+                <div class="bg-gray-800 p-4 border-t border-gray-700">
+                    <h2 class="text-lg font-semibold mb-2 text-blue-400">Kết quả:</h2>
+                    <pre id="outputContent" class="bg-gray-900 p-3 rounded-lg shadow-inner text-sm overflow-x-auto custom-scrollbar text-green-400"></pre>
+                </div>
+            </div>
         </div>
-      </div>
-      <div
-        id="output"
-        class="mt-6 bg-white shadow-md rounded-lg p-4 md:p-6 hidden"
-      >
-        <h2 class="text-lg md:text-xl font-semibold mb-4">Kết quả:</h2>
-        <pre
-          id="outputContent"
-          class="bg-gray-100 p-4 rounded whitespace-pre-wrap text-sm md:text-base overflow-x-auto"
-        ></pre>
-      </div>
+        <div class="mt-8 flex justify-center space-x-4">
+            <button id="startTutorialBtn" class="bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg">
+                <i class="fas fa-book mr-2"></i> Bắt đầu hướng dẫn
+            </button>
+            <button id="nextTutorialBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105 hover:shadow-lg hidden">
+                <i class="fas fa-arrow-right mr-2"></i> Bước tiếp theo
+            </button>
+        </div>
+    </div>
+
+    <div id="tutorialOverlay" class="fixed inset-0 bg-black bg-opacity-75 hidden flex items-center justify-center z-50">
+        <div class="bg-gray-800 p-6 rounded-lg max-w-md">
+            <h3 id="tutorialTitle" class="text-2xl font-bold mb-4 text-blue-400"></h3>
+            <p id="tutorialContent" class="mb-4 text-gray-300"></p>
+            <button id="closeTutorialBtn" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out transform hover:scale-105">
+                <i class="fas fa-times mr-2"></i> Đóng
+            </button>
+        </div>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/codemirror.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/mode/python/python.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/matchbrackets.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/show-hint.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/hint/python-hint.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/edit/closebrackets.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/comment/comment.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.2/addon/selection/active-line.min.js"></script>
     <script>
-      const editor = CodeMirror(document.getElementById("editor"), {
-        mode: "python",
-        theme: "dracula",
-        lineNumbers: true,
-        autofocus: true,
-        matchBrackets: true,
-        indentUnit: 4,
-        tabSize: 4,
-        indentWithTabs: false,
-        extraKeys: { "Ctrl-Space": "autocomplete" },
-        hintOptions: {
-          completeSingle: false
+        const editor = CodeMirror(document.getElementById("editor"), {
+            mode: "python",
+            theme: "monokai",
+            lineNumbers: true,
+            autofocus: true,
+            indentUnit: 4,
+            tabSize: 4,
+            indentWithTabs: false,
+            matchBrackets: true,
+            autoCloseBrackets: true,
+            styleActiveLine: true,
+            extraKeys: {
+                "Ctrl-/": "toggleComment",
+                "Cmd-/": "toggleComment"
+            }
+        });
+
+        const inputRequired = document.getElementById("inputRequired");
+        const inputValueContainer = document.getElementById("inputValueContainer");
+        const runBtn = document.getElementById("runBtn");
+        const clearBtn = document.getElementById("clearBtn");
+        const saveBtn = document.getElementById("saveBtn");
+        const shareBtn = document.getElementById("shareBtn");
+        const installBtn = document.getElementById("installBtn");
+        const fullscreenBtn = document.getElementById("fullscreenBtn");
+        const output = document.getElementById("output");
+        const outputContent = document.getElementById("outputContent");
+        const startTutorialBtn = document.getElementById("startTutorialBtn");
+        const nextTutorialBtn = document.getElementById("nextTutorialBtn");
+        const tutorialOverlay = document.getElementById("tutorialOverlay");
+        const tutorialTitle = document.getElementById("tutorialTitle");
+        const tutorialContent = document.getElementById("tutorialContent");
+        const closeTutorialBtn = document.getElementById("closeTutorialBtn");
+
+        inputRequired.addEventListener("change", function() {
+            inputValueContainer.style.display = this.checked ? "block" : "none";
+        });
+
+        runBtn.addEventListener("click", async function() {
+            const code = editor.getValue();
+            const inputValue = document.getElementById("inputValue").value;
+
+            try {
+                runBtn.disabled = true;
+                runBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang chạy...';
+                const response = await fetch("/run-python", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        input_values: inputRequired.checked ? inputValue.split("\n") : []
+                    }),
+                });
+
+                const result = await response.json();
+                output.style.display = "block";
+                outputContent.textContent = result.output;
+
+                if (result.error) {
+                    outputContent.classList.add("text-red-500");
+                    outputContent.classList.remove("text-green-400");
+                } else {
+                    outputContent.classList.remove("text-red-500");
+                    outputContent.classList.add("text-green-400");
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                output.style.display = "block";
+                outputContent.textContent = "Đã xảy ra lỗi khi chạy mã Python.";
+                outputContent.classList.add("text-red-500");
+                outputContent.classList.remove("text-green-400");
+            } finally {
+                runBtn.disabled = false;
+                runBtn.innerHTML = '<i class="fas fa-play mr-2"></i> Chạy';
+            }
+        });
+
+        clearBtn.addEventListener("click", function() {
+            editor.setValue("");
+            document.getElementById("inputValue").value = "";
+            output.style.display = "none";
+        });
+
+        saveBtn.addEventListener("click", function() {
+            const code = editor.getValue();
+            const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
+            const link = document.createElement("a");
+            link.href = URL.createObjectURL(blob);
+            link.download = "python_code.py";
+            link.click();
+        });
+
+        shareBtn.addEventListener("click", async function() {
+            const code = editor.getValue();
+            try {
+                shareBtn.disabled = true;
+                shareBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang chia sẻ...';
+                const response = await fetch("/share-code", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ code: code }),
+                });
+                const result = await response.json();
+                if (result.share_url) {
+                    const shareUrl = result.share_url;
+                    navigator.clipboard.writeText(shareUrl).then(() => {
+                        alert(`Mã của bạn đã được chia sẻ. URL đã được sao chép vào clipboard: ${shareUrl}`);
+                    }, (err) => {
+                        alert(`Mã của bạn đã được chia sẻ. URL: ${shareUrl}`);
+                    });
+                } else {
+                    alert("Có lỗi xảy ra khi chia sẻ mã.");
+                }
+            
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Có lỗi xảy ra khi chia sẻ mã.");
+            } finally {
+                shareBtn.disabled = false;
+                shareBtn.innerHTML = '<i class="fas fa-share-alt mr-2"></i> Chia sẻ';
+            }
+        });
+
+        installBtn.addEventListener("click", async function() {
+            const libName = document.getElementById("libInstall").value.trim();
+            if (!libName) {
+                alert("Vui lòng nhập tên thư viện.");
+                return;
+            }
+
+            try {
+                installBtn.disabled = true;
+                installBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Đang cài đặt...';
+                const response = await fetch("/install-library", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({ library: libName }),
+                });
+                const result = await response.json();
+                if (result.success) {
+                    alert(`Thư viện ${libName} đã được cài đặt thành công.`);
+                } else {
+                    alert(`Lỗi khi cài đặt thư viện ${libName}: ${result.error}`);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+                alert("Có lỗi xảy ra khi cài đặt thư viện.");
+            } finally {
+                installBtn.disabled = false;
+                installBtn.innerHTML = '<i class="fas fa-download mr-2"></i> Cài đặt';
+            }
+        });
+
+        fullscreenBtn.addEventListener("click", function() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+                fullscreenBtn.innerHTML = '<i class="fas fa-compress-arrows-alt mr-1"></i> Thoát toàn màn hình';
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                    fullscreenBtn.innerHTML = '<i class="fas fa-expand-arrows-alt mr-1"></i> Toàn màn hình';
+                }
+            }
+        });
+
+        const tutorialSteps = [
+            { element: "#editor", title: "Trình soạn thảo", content: "Đây là nơi bạn viết mã Python. Trình soạn thảo hỗ trợ tô màu cú pháp, tự động hoàn thành và nhiều tính năng khác để giúp bạn viết mã dễ dàng hơn." },
+            { element: "#runBtn", title: "Nút Chạy", content: "Nhấn nút này để thực thi mã Python của bạn. Kết quả sẽ được hiển thị bên dưới." },
+            { element: "#clearBtn", title: "Nút Xóa", content: "Sử dụng nút này để xóa toàn bộ mã trong trình soạn thảo và kết quả đầu ra." },
+            { element: "#saveBtn", title: "Nút Lưu", content: "Nhấn để tải mã Python của bạn về máy tính dưới dạng tệp .py." },
+            { element: "#shareBtn", title: "Nút Chia sẻ", content: "Chia sẻ mã của bạn với người khác thông qua một liên kết duy nhất." },
+            { element: "#libInstall", title: "Cài đặt thư viện", content: "Nhập tên thư viện Python bạn muốn cài đặt và nhấn nút 'Cài đặt'. Thư viện sẽ được cài đặt trên máy chủ và sẵn sàng để sử dụng trong mã của bạn." }
+        ];
+
+        let currentStep = -1;
+
+        function showTutorialStep() {
+            const step = tutorialSteps[currentStep];
+            tutorialTitle.textContent = step.title;
+            tutorialContent.textContent = step.content;
+            tutorialOverlay.classList.remove("hidden");
+            const element = document.querySelector(step.element);
+            element.scrollIntoView({ behavior: "smooth", block: "center" });
         }
-      });
 
-      editor.on("inputRead", function (editor, change) {
-        if (
-          change.text[0] === "." ||
-          (change.text[0] === " " &&
-            editor.getLine(change.from.line).trim() !== "")
-        ) {
-          editor.showHint({ completeSingle: false });
-        }
-      });
-
-      document
-        .getElementById("inputRequired")
-        .addEventListener("change", function () {
-          document.getElementById("inputValueContainer").style.display = this
-            .checked
-            ? "block"
-            : "none";
+        startTutorialBtn.addEventListener("click", function() {
+            currentStep = 0;
+            showTutorialStep();
+            nextTutorialBtn.classList.remove("hidden");
         });
 
-      document
-        .getElementById("runPython")
-        .addEventListener("click", async function () {
-          const runButton = this;
-          const originalText = runButton.innerHTML;
-          runButton.disabled = true;
-          runButton.innerHTML =
-            '<svg class="animate-spin h-5 w-5 mr-3" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Đang chạy...';
-
-          const code = editor.getValue();
-          const inputRequired =
-            document.getElementById("inputRequired").checked;
-          const inputValue = document.getElementById("inputValue").value;
-
-          try {
-            const response = await fetch("/run-python", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({
-                code: code,
-                input_values: inputRequired ? inputValue.split("\n") : []
-              })
-            });
-
-            const result = await response.json();
-            document.getElementById("output").style.display = "block";
-            document.getElementById("outputContent").textContent =
-              result.output;
-
-            if (result.error) {
-              document
-                .getElementById("outputContent")
-                .classList.add("text-red-500");
+        nextTutorialBtn.addEventListener("click", function() {
+            currentStep++;
+            if (currentStep < tutorialSteps.length) {
+                showTutorialStep();
             } else {
-              document
-                .getElementById("outputContent")
-                .classList.remove("text-red-500");
+                tutorialOverlay.classList.add("hidden");
+                nextTutorialBtn.classList.add("hidden");
+                currentStep = -1;
             }
-          } catch (error) {
-            console.error("Error:", error);
-            document.getElementById("output").style.display = "block";
-            document.getElementById("outputContent").textContent =
-              "Đã xảy ra lỗi khi chạy mã Python.";
-            document
-              .getElementById("outputContent")
-              .classList.add("text-red-500");
-          } finally {
-            runButton.disabled = false;
-            runButton.innerHTML = originalText;
-          }
         });
 
-      document.getElementById("clear").addEventListener("click", function () {
-        editor.setValue("");
-        document.getElementById("inputValue").value = "";
-        document.getElementById("output").style.display = "none";
-      });
-
-      document.getElementById("save").addEventListener("click", function () {
-        const code = editor.getValue();
-        const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
-        const link = document.createElement("a");
-        link.href = URL.createObjectURL(blob);
-        link.download = "python_code.py";
-        link.click();
-      });
-
-      document
-        .getElementById("share")
-        .addEventListener("click", async function () {
-          const code = editor.getValue();
-          try {
-            const response = await fetch("/share-code", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({ code: code })
-            });
-            const result = await response.json();
-            if (result.share_url) {
-              alert(`Mã của bạn đã được chia sẻ. URL: ${result.share_url}`);
-            } else {
-              alert("Có lỗi xảy ra khi chia sẻ mã.");
-            }
-          } catch (error) {
-            console.error("Error:", error);
-            alert("Có lỗi xảy ra khi chia sẻ mã.");
-          }
+        closeTutorialBtn.addEventListener("click", function() {
+            tutorialOverlay.classList.add("hidden");
         });
 
-      document
-        .getElementById("installLib")
-        .addEventListener("click", async function () {
-          const libName = document.getElementById("libInstall").value.trim();
-          if (!libName) {
-            alert("Vui lòng nhập tên thư viện.");
-            return;
-          }
-
-          try {
-            const response = await fetch("/install-library", {
-              method: "POST",
-              headers: {
-                "Content-Type": "application/json"
-              },
-              body: JSON.stringify({ library: libName })
-            });
-            const result = await response.json();
-            if (result.success) {
-              alert(`Thư viện ${libName} đã được cài đặt thành công.`);
-            } else {
-              alert(`Lỗi khi cài đặt thư viện ${libName}: ${result.error}`);
+        // Keyboard shortcuts
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'Enter') {
+                runBtn.click();
             }
-          } catch (error) {
-            console.error("Error:", error);
-            alert("Có lỗi xảy ra khi cài đặt thư viện.");
-          }
         });
+
+        // Add some sample code to the editor
+        editor.setValue(`# Chào mừng đến với Python Web IDE Tiên Tiến!
+# Hãy thử chạy đoạn mã mẫu này:
+
+def fibonacci(n):
+    if n <= 1:
+        return n
+    else:
+        return fibonacci(n-1) + fibonacci(n-2)
+
+print("Dãy số Fibonacci:")
+for i in range(10):
+    print(fibonacci(i), end=" ")
+`);
     </script>
-  </body>
+</body>
 </html>

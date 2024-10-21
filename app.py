@@ -6,6 +6,7 @@ import json
 import requests
 import yt_dlp
 import sys
+import uuid
 import re
 import subprocess
 from deep_translator import GoogleTranslator
@@ -345,10 +346,9 @@ def request_entity_too_large(error):
     return redirect(request.url), 413
 
 
-@app.route("/clipython", methods=["GET"])
-def clipython_page():
+@app.route("/clipython")
+def clipython():
     return render_template("clipython.html")
-
 
 @app.route("/run-python", methods=["POST"])
 def run_python_code():
@@ -356,13 +356,13 @@ def run_python_code():
     code = data.get("code", "")
     input_values = data.get("input_values", [])
 
-    # Tạo một tệp tạm thời để lưu mã Python
-    temp_file = f"temp_{uuid.uuid4().hex}.py"
+    # Create a temporary file to store the Python code
+    temp_file = f"/tmp/temp_{uuid.uuid4().hex}.py"
     with open(temp_file, "w") as f:
         f.write(code)
 
     try:
-        # Chạy mã Python với đầu vào được cung cấp
+        # Run the Python code with the provided input
         process = subprocess.Popen(
             [sys.executable, temp_file],
             stdin=subprocess.PIPE,
@@ -379,7 +379,7 @@ def run_python_code():
     except Exception as e:
         return jsonify({"output": str(e), "error": True})
     finally:
-        # Xóa tệp tạm thời
+        # Remove the temporary file
         if os.path.exists(temp_file):
             os.remove(temp_file)
 
@@ -388,38 +388,40 @@ def share_code():
     data = request.json
     code = data.get("code", "")
     
-    # Tạo một ID duy nhất cho mã được chia sẻ
+    # Create a unique ID for the shared code
     share_id = uuid.uuid4().hex
     
-    # Lưu mã vào cơ sở dữ liệu hoặc tệp (ví dụ này sử dụng tệp)
-    with open(f"shared_code_{share_id}.py", "w") as f:
+    # Save the code to a file (in a real application, you'd use a database)
+    with open(f"/tmp/shared_code_{share_id}.py", "w") as f:
         f.write(code)
     
-    # Tạo URL chia sẻ
+    # Create the share URL
     share_url = f"/view/{share_id}"
     
     return jsonify({"share_url": share_url})
 
 @app.route("/view/<share_id>")
 def view_shared_code(share_id):
-    # Đọc mã từ cơ sở dữ liệu hoặc tệp
+    # Read the code from the file (in a real application, you'd use a database)
     try:
-        with open(f"shared_code_{share_id}.py", "r") as f:
+        with open(f"/tmp/shared_code_{share_id}.py", "r") as f:
             code = f.read()
         return render_template("view_shared_code.html", code=code)
     except FileNotFoundError:
-        return "Mã không tồn tại hoặc đã hết hạn", 404
+        return "Code does not exist or has expired", 404
 
 @app.route("/install-library", methods=["POST"])
 def install_library():
+    # Note: Installing libraries on-the-fly is not recommended in a production environment
+    # This is just for demonstration purposes
     data = request.json
     library = data.get("library", "")
     
     if not library:
-        return jsonify({"success": False, "error": "Tên thư viện không được để trống"})
+        return jsonify({"success": False, "error": "Library name cannot be empty"})
     
     try:
-        # Cài đặt thư viện sử dụng pip
+        # Install the library using pip
         result = subprocess.run([sys.executable, "-m", "pip", "install", library], capture_output=True, text=True)
         
         if result.returncode == 0:
