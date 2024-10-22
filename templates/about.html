@@ -1,335 +1,529 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" class="scroll-smooth">
+
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HDSD - Console</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanbaycu Team - Đỉnh Cao Sáng Tạo Web</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet" />
-    <link rel="icon" type="image/x-icon" sizes="48x48" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Roboto:wght@300;400;500;700;900&display=swap"
+        rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/lottie-web@5.7.14/build/player/lottie.min.js"></script>
     <style>
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        @keyframes neon-pulse {
+
+            0%,
+            100% {
+                text-shadow: 0 0 10px #ff00de, 0 0 20px #ff00de, 0 0 30px #ff00de, 0 0 40px #ff00de;
+            }
+
+            50% {
+                text-shadow: 0 0 20px #00ffff, 0 0 30px #00ffff, 0 0 40px #00ffff, 0 0 50px #00ffff;
+            }
         }
-        .fade-in {
-            animation: fadeIn 0.3s ease-out;
+
+        .neon-text {
+            animation: neon-pulse 2s infinite;
         }
-        .scrollbar-hide::-webkit-scrollbar {
-            display: none;
+
+        .cyber-gradient {
+            background: linear-gradient(45deg, #ff00de, #00ffff, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
-        .scrollbar-hide {
-            -ms-overflow-style: none;
-            scrollbar-width: none;
+
+        .cyber-border {
+            border: 2px solid transparent;
+            border-image: linear-gradient(45deg, #ff00de, #00ffff, #00ff00);
+            border-image-slice: 1;
         }
-        @keyframes blink {
-            0% { opacity: 0; }
-            50% { opacity: 1; }
-            100% { opacity: 0; }
+
+        .glassmorphism {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .cursor::after {
-            content: "|";
-            animation: blink 1s infinite;
+
+        .parallax {
+            transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
-        .typing::after {
-            content: "...";
-            animation: blink 1s infinite;
-        }
-        .command-suggestion {
-            position: absolute;
-            background-color: rgba(0, 0, 0, 0.8);
-            color: #888;
-            padding: 5px;
-            border-radius: 5px;
-            display: none;
+
+        .text-shadow {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
         }
     </style>
 </head>
-<body class="bg-gray-100 font-sans">
-    <div class="container mx-auto p-4 max-w-4xl">
-        <h1 class="text-4xl font-bold mb-6 text-center text-gray-800 fade-in"></h1>
-        <div id="console" class="bg-gray-900 text-green-400 p-6 rounded-lg shadow-lg transition-all duration-300 ease-in-out">
-            <div id="output" class="h-96 overflow-y-auto mb-4 scrollbar-hide space-y-2 pb-2"></div>
-            <div class="flex items-center bg-gray-800 rounded-md p-2 relative">
-                <span class="text-yellow-400 mr-2">$</span>
-                <input type="text" id="input" class="flex-grow bg-transparent outline-none cursor text-white" autofocus />
-                <div id="commandSuggestion" class="command-suggestion"></div>
-            </div>
-        </div>
-        <div class="mt-6 flex justify-between items-center">
-            <button id="darkModeToggle" class="px-4 py-2 bg-gray-800 text-white rounded-md shadow-md hover:bg-gray-700 transition-colors duration-300">
-                <i class="fas fa-moon mr-2"></i>Chế độ tối
-            </button>
-            <button id="copyButton" class="px-4 py-2 bg-blue-500 text-white rounded-md shadow-md hover:bg-blue-600 transition-colors duration-300">
-                <i class="fas fa-copy mr-2"></i>Sao chép output
-            </button>
-        </div>
+
+<body class="bg-black text-white font-['Roboto'] transition-colors duration-300 overflow-x-hidden">
+    <div id="cursor"
+        class="fixed w-8 h-8 border-2 border-[#00ffff] rounded-full pointer-events-none mix-blend-difference z-50 transition-transform duration-300 ease-out">
+    </div>
+    <div id="cursor-dot"
+        class="fixed w-2 h-2 bg-[#ff00de] rounded-full pointer-events-none mix-blend-difference z-50 transition-transform duration-200 ease-out">
     </div>
 
+    <nav class="fixed top-0 left-0 w-full z-50 glassmorphism">
+        <div class="container mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <a href="#"
+                    class="text-2xl font-['Orbitron'] font-bold cyber-gradient hover:scale-110 transition-transform duration-300">Tanbaycu</a>
+                <div class="hidden md:flex space-x-8">
+                    <a href="#about"
+                        class="hover:text-[#00ffff] transition-colors duration-300 relative overflow-hidden group">
+                        <span class="relative z-10">Về chúng tôi</span>
+                        <span
+                            class="absolute left-0 bottom-0 w-full h-0.5 bg-[#00ffff] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                    <a href="#team"
+                        class="hover:text-[#00ffff] transition-colors duration-300 relative overflow-hidden group">
+                        <span class="relative z-10">Đội ngũ</span>
+                        <span
+                            class="absolute left-0 bottom-0 w-full h-0.5 bg-[#00ffff] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                    <a href="#projects"
+                        class="hover:text-[#00ffff] transition-colors duration-300 relative overflow-hidden group">
+                        <span class="relative z-10">Dự án</span>
+                        <span
+                            class="absolute left-0 bottom-0 w-full h-0.5 bg-[#00ffff] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                    <a href="#features"
+                        class="hover:text-[#00ffff] transition-colors duration-300 relative overflow-hidden group">
+                        <span class="relative z-10">Tính năng</span>
+                        <span
+                            class="absolute left-0 bottom-0 w-full h-0.5 bg-[#00ffff] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                    <a href="#contact"
+                        class="hover:text-[#00ffff] transition-colors duration-300 relative overflow-hidden group">
+                        <span class="relative z-10">Liên hệ</span>
+                        <span
+                            class="absolute left-0 bottom-0 w-full h-0.5 bg-[#00ffff] transform scale-x-0 group-hover:scale-x-100 transition-transform duration-300"></span>
+                    </a>
+                </div>
+                <button id="theme-toggle"
+                    class="p-2 rounded-full bg-white text-black hover:bg-[#00ffff] hover:text-white transition-colors duration-300"
+                    aria-label="Toggle theme">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="h-screen flex items-center justify-center relative overflow-hidden">
+        <div id="hero-canvas" class="absolute inset-0"></div>
+        <div id="particles-js" class="absolute inset-0"></div>
+        <div class="text-center z-10 parallax" data-speed="0.5">
+            <h1 class="text-6xl md:text-8xl font-['Orbitron'] font-bold mb-4 cyber-gradient neon-text">Tanbaycu Team
+            </h1>
+            <p class="text-xl md:text-2xl mb-8 opacity-0 transform translate-y-10 transition-all duration-1000 delay-300 text-shadow"
+                id="hero-subtitle">Đột Phá Giới Hạn Sáng Tạo Web</p>
+            <a href="#about"
+                class="bg-transparent cyber-border text-[#00ffff] px-8 py-3 rounded-full font-bold hover:bg-[#00ffff] hover:text-black transition-all duration-300 transform hover:scale-110 opacity-0 translate-y-10"
+                id="hero-cta">Khám Phá Ngay</a>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-6">
+        <section id="about" class="my-32 relative">
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-[#ff00de] to-[#00ffff] transform -skew-y-6 z-0 opacity-20">
+            </div>
+            <div class="relative z-10 glassmorphism p-8 md:p-16 shadow-2xl">
+                <h2 class="text-4xl md:text-5xl font-['Orbitron'] font-bold mb-8 cyber-gradient text-shadow">Về Chúng
+                    Tôi</h2>
+                <div class="space-y-6 text-lg">
+                    <p class="about-text opacity-0 transform translate-y-10 transition-all duration-1000">Chào mừng bạn
+                        đến với Tanbaycu Team - nơi hội tụ những tài năng đỉnh cao trong lĩnh vực phát triển web. Chúng
+                        tôi không chỉ là một đội ngũ, mà là một gia đình sáng tạo, luôn khao khát đột phá và định hình
+                        lại tương lai của web.</p>
+                    <p class="about-text opacity-0 transform translate-y-10 transition-all duration-1000 delay-300">Được
+                        thành lập vào ngày <span class="font-bold text-[#00ffff]">01/01/2023</span>, Tanbaycu Team đã
+                        nhanh chóng trở thành một cái tên uy tín trong ngành công nghiệp web. Chúng tôi tự hào về hành
+                        trình không ngừng học hỏi, sáng tạo và vượt qua giới hạn của bản thân.</p>
+                    <p class="about-text opacity-0 transform translate-y-10 transition-all duration-1000 delay-600">Với
+                        sứ mệnh "Kiến tạo trải nghiệm web đỉnh cao", chúng tôi cam kết mang đến những sản phẩm không chỉ
+                        đẹp mắt, mà còn thông minh, hiệu quả và đột phá. Mỗi dự án của Tanbaycu Team đều là một tác phẩm
+                        nghệ thuật số, được chăm chút tỉ mỉ đến từng chi tiết.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="team" class="my-32">
+            <h2 class="text-4xl md:text-5xl font-['Orbitron'] font-bold mb-16 cyber-gradient text-center text-shadow">
+                Đội Ngũ Tinh Nhuệ</h2>
+            <div class="grid md:grid-cols-3 gap-12">
+                <div
+                    class="group glassmorphism p-8 rounded-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-1">
+                    <div class="relative w-48 h-48 mx-auto mb-4 overflow-hidden rounded-full">
+                        <img src="/placeholder.svg?height=200&width=200" alt="Tanbaycu"
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-center cyber-gradient">Tanbaycu</h3>
+                    <p class="text-center mb-4 text-[#00ffff]">Founder & Lead Developer</p>
+                    <p class="text-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300">Với hơn 19 năm
+                        kinh nghiệm, Tanbaycu là linh hồn của đội ngũ. Anh không chỉ là một lập trình viên tài năng mà
+                        còn là một nhà lãnh đạo đầy tầm nhìn, luôn truyền cảm hứng cho cả team vươn tới những đỉnh cao
+                        mới.</p>
+                </div>
+                <div
+                    class="group glassmorphism p-8 rounded-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-1">
+                    <div class="relative w-48 h-48 mx-auto mb-4 overflow-hidden rounded-full">
+                        <img src="/placeholder.svg?height=200&width=200" alt="Mai Linh"
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-center cyber-gradient">Mai Linh</h3>
+                    <p class="text-center mb-4 text-[#00ffff]">UX/UI Design Virtuoso</p>
+                    <p class="text-sm opacity-75 group-hover:opacity-100 transition-opacity duration-300">Mai Linh là
+                        bậc thầy trong việc tạo ra những giao diện người dùng đẹp mắt và trực quan. Với con mắt thẩm mỹ
+                        tinh tế và sự am hiểu sâu sắc về tâm lý người dùng, cô biến mọi ý tưởng thành những thiết kế
+                        tuyệt vời.</p>
+                </div>
+                <div
+                    class="group glassmorphism p-8 rounded-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-1">
+                    <div class="relative w-48 h-48 mx-auto mb-4 overflow-hidden rounded-full">
+                        <img src="/placeholder.svg?height=200&width=200" alt="Quang Minh"
+                            class="absolute inset-0 w-full h-full object-cover transition-transform duration-500 group-hover:scale-110">
+                    </div>
+                    <h3 class="text-2xl font-bold mb-2 text-center cyber-gradient">Quang Minh</h3>
+                    <p class="text-center mb-4 text-[#00ffff]">Backend Wizard</p>
+                    <p class="text-sm opacity-75 group-hover:opacity-100 transition-opacity  duration-300">Quang Minh là
+                        bộ não công nghệ của team. Với khả năng tư duy logic xuất sắc và kiến thức sâu rộng về các công
+                        nghệ backend, anh xây dựng nên những hệ thống mạnh mẽ, an toàn và có khả năng mở rộng cao.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="projects" class="my-32">
+            <h2 class="text-4xl md:text-5xl font-['Orbitron'] font-bold mb-16 cyber-gradient text-center text-shadow">Dự
+                Án</h2>
+            <div class="grid md:grid-cols-2 gap-12">
+                <div
+                    class="group glassmorphism p-8 rounded-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-1">
+                    <div class="h-48 mb-4 overflow-hidden rounded-lg">
+                        <div id="neuro-console-animation" class="w-full h-full"></div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 cyber-gradient">Neuro Console</h3>
+                    <p class="mb-4 opacity-75 group-hover:opacity-100 transition-opacity duration-300">Một bước đột phá
+                        trong giao diện console, Neuro Console tích hợp AI để mang lại trải nghiệm tương tác thông minh
+                        và trực quan chưa từng có. Dự án này đã được ứng dụng rộng rãi trong các hệ thống quản trị phức
+                        tạp.</p>
+                    <a href="#"
+                        class="inline-block bg-transparent cyber-border text-[#00ffff] px-4 py-2 rounded-full font-bold hover:bg-[#00ffff] hover:text-black transition-all duration-300 transform hover:scale-110">Khám
+                        Phá</a>
+                </div>
+                <div
+                    class="group glassmorphism p-8 rounded-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-1">
+                    <div class="h-48 mb-4 overflow-hidden rounded-lg">
+                        <div id="quantum-url-animation" class="w-full h-full"></div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 cyber-gradient">Quantum URL</h3>
+                    <p class="mb-4 opacity-75 group-hover:opacity-100 transition-opacity duration-300">Quantum URL không
+                        chỉ là một dịch vụ rút gọn link thông thường. Sử dụng thuật toán lượng tử, nó cung cấp khả năng
+                        bảo mật cực cao và tốc độ xử lý siêu nhanh, mở ra một kỷ nguyên mới cho việc chia sẻ liên kết an
+                        toàn.</p>
+                    <a href="/shorten-link"
+                        class="inline-block bg-transparent cyber-border text-[#00ffff] px-4 py-2 rounded-full font-bold hover:bg-[#00ffff] hover:text-black transition-all duration-300 transform hover:scale-110">Trải
+                        Nghiệm</a>
+                </div>
+                <div
+                    class="group glassmorphism p-8 rounded-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-1">
+                    <div class="h-48 mb-4 overflow-hidden rounded-lg">
+                        <div id="holoqr-animation" class="w-full h-full"></div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 cyber-gradient">API URL</h3>
+                    <p class="mb-4 opacity-75 group-hover:opacity-100 transition-opacity duration-300">API URL là API
+                        mạnh mẽ cung cấp dưới dạng URL dễ dàng gọi và xử lý dữ liệu.</p>
+                    <a href="/aichat"
+                        class="inline-block bg-transparent cyber-border text-[#00ffff] px-4 py-2 rounded-full font-bold hover:bg-[#00ffff] hover:text-black transition-all duration-300 transform hover:scale-110">Tạo
+                        Ngay</a>
+                </div>
+                <div
+                    class="group glassmorphism p-8 rounded-2xl transform transition-all duration-500 hover:scale-105 hover:rotate-1">
+                    <div class="h-48 mb-4 overflow-hidden rounded-lg">
+                        <div id="neuralapi-animation" class="w-full h-full"></div>
+                    </div>
+                    <h3 class="text-2xl font-bold mb-4 cyber-gradient">APIs Free</h3>
+                    <p class="mb-4 opacity-75 group-hover:opacity-100 transition-opacity duration-300">Public APIs là
+                        một nền tảng kiểm tra API tiên tiến, tích hợp machine learning để tự động phân tích, tối ưu hóa
+                        và đề xuất cải thiện. Nó không chỉ giúp phát hiện lỗi mà còn nâng cao hiệu suất API một cách
+                        thông minh.</p>
+                    <a href="/facts"
+                        class="inline-block bg-transparent cyber-border text-[#00ffff] px-4 py-2 rounded-full font-bold hover:bg-[#00ffff] hover:text-black transition-all duration-300 transform hover:scale-110">Dùng
+                        Thử</a>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="my-32 relative">
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-[#ff00de] to-[#00ffff] transform skew-y-6 z-0 opacity-20">
+            </div>
+            <div class="relative z-10 glassmorphism p-8 md:p-16 shadow-2xl">
+                <h2 class="text-4xl md:text-5xl font-['Orbitron'] font-bold mb-8 cyber-gradient text-shadow">Tính Năng
+                    Đột Phá</h2>
+                <div class="grid md:grid-cols-2 gap-8">
+                    <div class="feature-item">
+                        <h3 class="text-2xl font-bold mb-2 text-[#00ffff]">Thiết Kế Responsive Tối Ưu</h3>
+                        <p>Mọi dự án của chúng tôi đều được tối ưu hóa cho mọi thiết bị, từ desktop đến mobile, mang lại
+                            trải nghiệm mượt mà và nhất quán trên mọi màn hình.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3 class="text-2xl font-bold mb-2 text-[#00ffff]">Tích Hợp AI Thông Minh</h3>
+                        <p>Chúng tôi ứng dụng trí tuệ nhân tạo tiên tiến để nâng cao trải nghiệm người dùng, từ chatbot
+                            hỗ trợ đến các thuật toán dự đoán hành vi.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3 class="text-2xl font-bold mb-2 text-[#00ffff]">Bảo Mật Đa Lớp</h3>
+                        <p>An toàn dữ liệu là ưu tiên hàng đầu. Chúng tôi áp dụng các biện pháp bảo mật tiên tiến nhất,
+                            bao gồm mã hóa end-to-end và xác thực đa yếu tố.</p>
+                    </div>
+                    <div class="feature-item">
+                        <h3 class="text-2xl font-bold mb-2 text-[#00ffff]">Tùy Biến Không Giới Hạn</h3>
+                        <p>Mỗi dự án đều được thiết kế với khả năng tùy chỉnh cao, cho phép khách hàng tạo ra trải
+                            nghiệm web độc đáo và phù hợp với thương hiệu của họ.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="contact" class="my-32 relative">
+            <div
+                class="absolute inset-0 bg-gradient-to-r from-[#ff00de] to-[#00ffff] transform -skew-y-6 z-0 opacity-20">
+            </div>
+            <div class="relative z-10 glassmorphism p-8 md:p-16 shadow-2xl">
+                <h2 class="text-4xl md:text-5xl font-['Orbitron'] font-bold mb-8 cyber-gradient text-shadow">Kết Nối
+                </h2>
+                <p class="text-xl mb-8 opacity-75">Hãy cùng nhau tạo ra những điều phi thường! Liên hệ với chúng tôi
+                    ngay:</p>
+                <div class="space-y-4">
+                    <a href="mailto:info@tanbaycu.com"
+                        class="block group transition-all duration-300 transform hover:translate-x-2">
+                        <span
+                            class="inline-block w-8 mr-4 text-[#00ffff] group-hover:text-[#ff00de] transition-colors duration-300">
+                            <svg fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path>
+                                <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path>
+                            </svg>
+                        </span>
+                        <span
+                            class="group-hover:text-[#00ffff] transition-colors duration-300">tanbaycu@gmail.com</span>
+                    </a>
+                    <a href="https://github.com/tanbaycu" target="_blank" rel="noopener noreferrer"
+                        class="block group transition-all duration-300 transform hover:translate-x-2">
+                        <span
+                            class="inline-block w-8 mr-4 text-[#00ffff] group-hover:text-[#ff00de] transition-colors duration-300">
+                            <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M12 .297c-6.63 0-12 5.373-12 12 0 5.303 3.438 9.8 8.205 11.385.6.113.82-.258.82-.577 0-.285-.01-1.04-.015-2.04-3.338.724-4.042-1.61-4.042-1.61C4.422 18.07 3.633 17.7 3.633 17.7c-1.087-.744.084-.729.084-.729 1.205.084 1.838 1.236 1.838 1.236 1.07 1.835 2.809 1.305 3.495.998.108-.776.417-1.305.76-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.465-2.38 1.235-3.22-.135-.303-.54-1.523.105-3.176 0 0 1.005-.322 3.3 1.23.96-.267 1.98-.399 3-.405 1.02.006 2.04.138 3 .405 2.28-1.552 3.285-1.23 3.285-1.23.645 1.653.24 2.873.12 3.176.765.84 1.23 1.91 1.23 3.22 0 4.61-2.805 5.625-5.475 5.92.42.36.81 1.096.81 2.22 0 1.606-.015 2.896-.015 3.286 0 .315.21.69.825.57C20.565 22.092 24 17.592 24 12.297c0-6.627-5.373-12-12-12" />
+                            </svg>
+                        </span>
+                        <span
+                            class="group-hover:text-[#00ffff] transition-colors duration-300">github.com/tanbaycu</span>
+                    </a>
+                    <a href="https://linkedin.com/company/tanbaycu" target="_blank" rel="noopener noreferrer"
+                        class="block group transition-all duration-300 transform hover:translate-x-2">
+                        <span
+                            class="inline-block w-8 mr-4 text-[#00ffff] group-hover:text-[#ff00de] transition-colors duration-300">
+                            <svg fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
+                            </svg>
+                        </span>
+                        <span
+                            class="group-hover:text-[#00ffff] transition-colors duration-300">linkedin.com/company/tanbaycu</span>
+                    </a>
+                    <p class="mt-8 text-sm opacity-75">Địa chỉ: TienGiang | Viet Nam</p>
+                    <p class="text-sm opacity-75">Điện thoại: +84 835117727</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="glassmorphism py-8 mt-32">
+        <div class="container mx-auto px-6 text-center">
+            <p>&copy; 2024 |Tanbaycu Team. Do AI tạo</p>
+            <p class="mt-2 text-sm text-[#00ffff]">Được thành lập ngày 12/10/2024</p>
+            <p class="mt-2 text-sm text-[#ff00de]">Được tạo với 💜 và rất nhiều ☕</p>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/particles.js/2.0.0/particles.min.js"></script>
     <script>
-        const output = document.getElementById("output");
-        const input = document.getElementById("input");
-        const console = document.getElementById("console");
-        const darkModeToggle = document.getElementById("darkModeToggle");
-        const copyButton = document.getElementById("copyButton");
-        const commandSuggestion = document.getElementById("commandSuggestion");
-        let isDarkMode = true;
-        let commandHistory = [];
-        let historyIndex = -1;
+        // Custom cursor
+        const cursor = document.getElementById('cursor');
+        const cursorDot = document.getElementById('cursor-dot');
+        document.addEventListener('mousemove', (e) => {
+            gsap.to(cursor, { duration: 0.5, left: e.clientX, top: e.clientY });
+            gsap.to(cursorDot, { duration: 0.1, left: e.clientX, top: e.clientY });
+        });
 
-        const commands = {
-            help: "Các lệnh có sẵn: <span class='text-yellow-300'>help</span>, <span class='text-yellow-300'>clear</span>, <span class='text-yellow-300'>upload</span>, <span class='text-yellow-300'>shorten</span>, <span class='text-yellow-300'>api</span>, <span class='text-yellow-300'>qr</span>, <span class='text-yellow-300'>python</span>, <span class='text-yellow-300'>facts</span>, <span class='text-yellow-300'>ip</span>, <span class='text-yellow-300'>weather</span>, <span class='text-yellow-300'>video</span>, <pan class='text-yellow-300'>pdf</span>, <span class='text-yellow-300'>echo</span>, <span class='text-yellow-300'>date</span>, <span class='text-yellow-300'>whoami</span>, <span class='text-yellow-300'>version</span>",
-            clear: () => {
-                output.innerHTML = "";
-                return "";
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                gsap.to(cursor, { duration: 0.3, scale: 1.5 });
+            });
+            el.addEventListener('mouseleave', () => {
+                gsap.to(cursor, { duration: 0.3, scale: 1 });
+            });
+        });
+
+        // Theme toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+        themeToggle.addEventListener('click', () => {
+            body.classList.toggle('bg-white');
+            body.classList.toggle('text-black');
+            if (body.classList.contains('bg-white')) {
+                themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" /></svg>';
+            } else {
+                themeToggle.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" /></svg>';
+            }
+        });
+
+        // Scroll animations
+        gsap.registerPlugin(ScrollTrigger);
+
+        gsap.utils.toArray('.parallax').forEach(section => {
+            gsap.to(section, {
+                y: (i, el) => -(el.getAttribute('data-speed') * 100),
+                ease: "none",
+                scrollTrigger: {
+                    trigger: section,
+                    scrub: true
+                }
+            });
+        });
+
+        gsap.utils.toArray('.about-text, .feature-item').forEach((el, index) => {
+            gsap.from(el, {
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: el,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+
+        gsap.utils.toArray('#projects .group, #team .group').forEach((project, index) => {
+            gsap.from(project, {
+                y: 50,
+                opacity: 0,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: project,
+                    start: 'top 80%',
+                    end: 'bottom 20%',
+                    toggleActions: 'play none none reverse'
+                }
+            });
+        });
+
+        // Hero animations
+        gsap.to('#hero-subtitle', { opacity: 1, y: 0, duration: 1, delay: 0.5 });
+        gsap.to('#hero-cta', { opacity: 1, y: 0, duration: 1, delay: 0.7 });
+
+        // 3D Hero Animation
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ alpha: true, antialias: true });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.getElementById('hero-canvas').appendChild(renderer.domElement);
+
+        const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
+        const torusKnot = new THREE.Mesh(geometry, material);
+        scene.add(torusKnot);
+
+        camera.position.z = 30;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            torusKnot.rotation.x += 0.01;
+            torusKnot.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', () => {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        });
+
+        // Particle system
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 80, density: { enable: true, value_area: 800 } },
+                color: { value: "#ffffff" },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: false },
+                size: { value: 3, random: true },
+                line_linked: { enable: true, distance: 150, color: "#ffffff", opacity: 0.4, width: 1 },
+                move: { enable: true, speed: 6, direction: "none", random: false, straight: false, out_mode: "out", bounce: false }
             },
-            upload: `
-<span class="text-blue-300 font-bold">Hướng dẫn Upload Tệp:</span>
-<ol class="list-decimal list-inside space-y-1 ml-4">
-    <li>Truy cập trang upload tệp</li>
-    <li>Chọn nút "Chọn tệp" hoặc kéo và thả tệp vào khu vực được chỉ định</li>
-    <li>Chọn dịch vụ lưu trữ (<span class="text-yellow-300">GoFile</span> hoặc <span class="text-yellow-300">Pixeldrain</span>)</li>
-    <li>Nhấn nút "Upload" và đợi quá trình hoàn tất</li>
-    <li>Sao chép đường link chia sẻ được cung cấp sau khi upload xong</li>
-</ol>
-            `,
-            shorten: `
-<span class="text-blue-300 font-bold">Hướng dẫn Rút Gọn Liên Kết:</span>
-<ol class="list-decimal list-inside space-y-1 ml-4">
-    <li>Nhập URL dài vào ô văn bản</li>
-    <li>Chọn dịch vụ rút gọn(thông thường sẽ được random) (<span class="text-yellow-300">TinyURL</span> hoặc <span class="text-yellow-300">v.gd</span>)</li>
-    <li>Nhấn nút "Rút gọn"</li>
-    <li>Sao chép liên kết ngắn được tạo ra</li>
-</ol>
-            `,
-            api: `
-<span class="text-blue-300 font-bold">Hướng dẫn Kiểm Tra API:</span>
-<ol class="list-decimal list-inside space-y-1 ml-4">
-    <li>Nhập URL của API cần kiểm tra</li>
-    <li>Chọn phương thức HTTP (<span class="text-yellow-300">GET</span>, <span class="text-yellow-300">POST</span>, <span class="text-yellow-300">PUT</span>, <span class="text-yellow-300">DELETE</span>, etc.)</li>
-    <li>Thêm các headers nếu cần thiết</li>
-    <li>Nhập body request (đối với <span class="text-yellow-300">POST</span> hoặc <span class="text-yellow-300">PUT</span>)</li>
-    <li>Nhấn "Gửi yêu cầu" và xem kết quả</li>
-</ol>
-            `,
-            qr: `
-<span class="text-blue-300 font-bold">Hướng dẫn Tạo Mã QRCODE:</span>
-<ol class="list-decimal list-inside space-y-1 ml-4">
-    <li>Nhập văn bản hoặc URL vào ô văn bản</li>
-    <li>Chọn kích thước mã QR</li>
-    <li>Tùy chọn: Chọn định dạng cho QR</li>
-    <li>Nhấn "Tạo mã QR"</li>
-    <li>Tải xuống hoặc chia sẻ mã QR đã tạo</li>
-</ol>
-            `,
-            python: "<span class='text-blue-300 font-bold'>Hướng dẫn Chạy Python Trực Tuyến:</span> Chức năng này tạm thời đang được triển khai lại.",
-            facts: "<span class='text-blue-300 font-bold'>Hướng dẫn Facts Ngẫu Nhiên:</span> Nhấn nút 'Hiển thị fact' để xem một sự thật ngẫu nhiên.",
-            ip: "<span class='text-blue-300 font-bold'>Hướng dẫn Kiểm Tra Địa Chỉ IP:</span> Nhập địa chỉ IP cần kiểm tra hoặc để trống để kiểm tra IP của bạn, sau đó nhấn 'Kiểm tra'.",
-            weather: "<span class='text-blue-300 font-bold'>Hướng dẫn Dự Báo Thời Tiết:</span> Nhập tên thành phố và chọn đơn vị nhiệt độ, sau đó nhấn 'Xem dự báo'.",
-            video: "<span class='text-blue-300 font-bold'>Hướng dẫn Tải Video:</span> Chức năng này tạm thời đang bị cấm do 'yt-dlp' cần xác nhận yêu cầu gửi đi, đang triển khai lại.",
-            pdf: "<span class='text-blue-300 font bold'>Hướng dẫn sử dụng PDF:</span> Tải lên file PDF của bạn để sử dụng các chức năng trên web."
-        };
-
-        function printToConsole(text, type = 'normal') {
-            const p = document.createElement("p");
-            let className = "mb-2 fade-in ";
-            
-            switch(type) {
-                case 'command':
-                    p.innerHTML = `<span class="text-yellow-400">$ </span>${text}`;
-                    break;
-                case 'error':
-                    className += "text-red-500";
-                    p.innerHTML = `<i class="fas fa-exclamation-triangle mr-2"></i>${text}`;
-                    break;
-                case 'success':
-                    className += "text-green-500";
-                    p.innerHTML = `<i class="fas fa-check-circle mr-2"></i>${text}`;
-                    break;
-                case 'info':
-                    className += "text-blue-400";
-                    p.innerHTML = `<i class="fas fa-info-circle mr-2"></i>${text}`;
-                    break;
-                case 'warning':
-                    className += "text-yellow-500";
-                    p.innerHTML = `<i class="fas fa-exclamation-circle mr-2"></i>${text}`;
-                    break;
-                default:
-                    p.innerHTML = text;
-            }
-            
-            p.className = className;
-            output.appendChild(p);
-            scrollToBottom();
-        }
-
-        function scrollToBottom() {
-            output.scrollTop = output.scrollHeight;
-        }
-
-        function typeWriter(text, element, index = 0) {
-            if (index === 0) {
-                element.classList.add('typing');
-            }
-            if (index < text.length) {
-                if (text.charAt(index) === '<') {
-                    let endIndex = text.indexOf('>', index);
-                    if (endIndex !== -1) {
-                        element.innerHTML += text.substring(index, endIndex + 1);
-                        index = endIndex;
-                    }
-                } else {
-                    element.innerHTML += text.charAt(index);
-                }
-                setTimeout(() => {
-                    typeWriter(text, element, index + 1);
-                    scrollToBottom();
-                }, 20);
-            } else {
-                element.classList.remove('typing');
-                scrollToBottom();
-            }
-        }
-
-        function processCommand(command) {
-            if (commands.hasOwnProperty(command)) {
-                const response = typeof commands[command] === "function" ? commands[command]() : commands[command];
-                const p = document.createElement("p");
-                p.className = "mb-4 fade-in";
-                output.appendChild(p);
-                typeWriter(response, p);
-            } else if (command.startsWith("echo ")) {
-                printToConsole(command.slice(5), 'info');
-            } else if (command === "date") {
-                printToConsole(new Date().toLocaleString(), 'info');
-            } else if (command === "whoami") {
-                printToConsole("Bạn là người dùng của Tanbaycu Console", 'info');
-            } else if (command === "version") {
-                printToConsole("Tanbaycu Console v1.0.0", 'info');
-            } else {
-                printToConsole('Lệnh không hợp lệ. Gõ "help" để xem danh sách lệnh.', 'error');
-            }
-        }
-
-        input.addEventListener("keydown", function (event) {
-            if (event.key === "Enter") {
-                const command = this.value.trim().toLowerCase();
-                printToConsole(command, 'command');
-                commandHistory.push(command);
-                historyIndex = commandHistory.length;
-
-                if (command === "clear") {
-                    commands.clear();
-                } else {
-                    processCommand(command);
-                }
-
-                this.value = "";
-                commandSuggestion.style.display = 'none';
-            } else if (event.key === "ArrowUp") {
-                event.preventDefault();
-                if (historyIndex > 0) {
-                    historyIndex--;
-                    this.value = commandHistory[historyIndex];
-                }
-            } else if (event.key === "ArrowDown") {
-                event.preventDefault();
-                if (historyIndex < commandHistory.length - 1) {
-                    historyIndex++;
-                    this.value = commandHistory[historyIndex];
-                } else {
-                    historyIndex = commandHistory.length;
-                    this.value = "";
-                }
-            } else if (event.key === "Tab") {
-                event.preventDefault();
-                if (commandSuggestion.style.display === 'block') {
-                    this.value = commandSuggestion.textContent;
-                    commandSuggestion.style.display = 'none';
-                }
-            } else if (event.ctrlKey && event.key === "c") {
-                printToConsole("^C", 'command');
-                this.value = "";
-                commandSuggestion.style.display = 'none';
-            }
+            interactivity: {
+                detect_on: "canvas",
+                events: { onhover: { enable: true, mode: "repulse" }, onclick: { enable: true, mode: "push" }, resize: true },
+                modes: { repulse: { distance: 100, duration: 0.4 }, push: { particles_nb: 4 } }
+            },
+            retina_detect: true
         });
 
-        darkModeToggle.addEventListener("click", function () {
-            isDarkMode = !isDarkMode;
-            if (isDarkMode) {
-                console.classList.remove("bg-white", "text-gray-800");
-                console.classList.add("bg-gray-900", "text-green-400");
-                this.innerHTML = '<i class="fas fa-sun mr-2"></i>Chế độ sáng';
-                this.classList.remove("bg-gray-200");
-                this.classList.add("bg-gray-800", "text-white");
-                
-                document.body.classList.remove("bg-white");
-                document.body.classList.add("bg-gray-100");
-            } else {
-                console.classList.remove("bg-gray-900", "text-green-400");
-                console.classList.add("bg-white", "text-gray-800");
-                this.innerHTML = '<i class="fas fa-moon mr-2"></i>Chế độ tối';
-                this.classList.remove("bg-gray-800", "text-white");
-                this.classList.add("bg-gray-200");
-                document.body.classList.remove("bg-gray-100");
-                document.body.classList.add("bg-white");
-            }
-            printToConsole(`Đã chuyển sang ${isDarkMode ? 'chế độ tối' : 'chế độ sáng'}`, 'success');
-        });
-
-        copyButton.addEventListener("click", function () {
-            const outputText = Array.from(output.children).map(p => p.innerText).join("\n");
-            navigator.clipboard.writeText(outputText)
-                .then(() => {
-                    this.innerHTML = '<i class="fas fa-check mr-2"></i>Đã sao chép!';
-                    printToConsole("Đã sao chép nội dung console vào clipboard", 'success');
-                    setTimeout(() => this.innerHTML = '<i class="fas fa-copy mr-2"></i>Sao chép output', 2000);
-                })
-                .catch(err => {
-                    console.error("Không thể sao chép: ", err);
-                    printToConsole("Không thể sao chép nội dung console", 'error');
-                });
-        });
-
-        // Cải tiến chức năng tự động hoàn thành
-        const autoCompleteCommands = Object.keys(commands);
-        input.addEventListener("input", function() {
-            const inputValue = this.value.toLowerCase();
-            const matchingCommands = autoCompleteCommands.filter(cmd => cmd.startsWith(inputValue));
-            if (matchingCommands.length > 0 && inputValue !== matchingCommands[0]) {
-                commandSuggestion.textContent = matchingCommands[0];
-                commandSuggestion.style.display = 'block';
-            } else {
-                commandSuggestion.style.display = 'none';
-            }
-        });
-
-        // Thêm chức năng drag and drop cho tệp
-        console.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-        });
-
-        console.addEventListener('drop', (e) => {
-            e.preventDefault();
-            e.stopPropagation();
-            const files = e.dataTransfer.files;
-            if (files.length > 0) {
-                printToConsole(`Đã nhận tệp: ${files[0].name}`, 'info');
-                // Xử lý tệp ở đây (ví dụ: tải lên)
-            }
-        });
-
-        // Thêm chức năng phím tắt
-        document.addEventListener('keydown', (e) => {
-            if (e.ctrlKey && e.key === 'l') {
+        // Smooth scrolling
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
                 e.preventDefault();
-                commands.clear();
-            }
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
         });
 
-        printToConsole('<span class="text-blue-300 font-bold">Console Hướng dẫn sử dụng các chức năng của Web</span>', 'info');
-        printToConsole('Gõ "<span class="text-yellow-300">help</span>" để xem danh sách lệnh có sẵn.', 'info');
+        // Lottie animations for project previews
+        const neuroConsoleAnimation = lottie.loadAnimation({
+            container: document.getElementById('neuro-console-animation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://assets5.lottiefiles.com/packages/lf20_UJNc2t.json' // Replace with actual animation JSON
+        });
+
+        const quantumUrlAnimation = lottie.loadAnimation({
+            container: document.getElementById('quantum-url-animation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://assets3.lottiefiles.com/packages/lf20_AMBEWz.json' // Replace with actual animation JSON
+        });
+
+        const holoQrAnimation = lottie.loadAnimation({
+            container: document.getElementById('holoqr-animation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://assets2.lottiefiles.com/packages/lf20_kyu7xb9v.json' // Replace with actual animation JSON
+        });
+
+        const neuralApiAnimation = lottie.loadAnimation({
+            container: document.getElementById('neuralapi-animation'),
+            renderer: 'svg',
+            loop: true,
+            autoplay: true,
+            path: 'https://assets4.lottiefiles.com/packages/lf20_aao5ezov.json' // Replace with actual animation JSON
+        });
     </script>
 </body>
+
 </html>
