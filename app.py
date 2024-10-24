@@ -7,6 +7,7 @@ import requests
 import yt_dlp
 import sys
 import uuid
+import time
 import re
 import subprocess
 from deep_translator import GoogleTranslator
@@ -21,6 +22,7 @@ from flask import (
     get_flashed_messages,
     jsonify,
     send_file,
+    abort,
     Response
 )
 # kv = VercelKV()
@@ -986,7 +988,60 @@ def bmi():
 def documents():
     return render_template("documents.html")
 
-      
+ 
+ 
+ 
+MORSE_CODE_DICT = {
+    'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
+    'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
+    'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
+    'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
+    'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---',
+    '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...',
+    '8': '---..', '9': '----.', ' ': ' '
+}
+
+SHARED_CONVERSIONS = {}
+
+@app.route('/mamorse', methods=['GET'])
+def morse_maestro():
+    return render_template('morse.html')
+
+@app.route('/convert', methods=['POST'])
+def convert():
+    data = request.json
+    text = data['text']
+    mode = data['mode']
+    
+    try:
+        if mode == 'to_morse':
+            result = ' '.join(MORSE_CODE_DICT.get(char.upper(), char) for char in text)
+        else:
+            morse_to_char = {v: k for k, v in MORSE_CODE_DICT.items()}
+            result = ''.join(morse_to_char.get(code, code) for code in text.split())
+        
+        return jsonify({'result': result})
+    except Exception as e:
+        return jsonify({'error': str(e)}), 400
+
+@app.route('/share', methods=['POST'])
+def share_conversion():
+    data = request.json
+    share_id = str(uuid.uuid4())
+    SHARED_CONVERSIONS[share_id] = data
+    return jsonify({'share_id': share_id})
+
+@app.route('/shared/<share_id>', methods=['GET'])
+def get_shared_conversion(share_id):
+    if share_id in SHARED_CONVERSIONS:
+        return jsonify(SHARED_CONVERSIONS[share_id])
+    else:
+        abort(404)
+
+@app.route('/morse_code_dict', methods=['GET'])
+def get_morse_code_dict():
+    return jsonify(MORSE_CODE_DICT)  
+
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
