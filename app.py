@@ -982,11 +982,9 @@ def country():
 def bmi():
     return render_template("bmi.html")
 
-    
-
 @app.route('/documents')
 def documents():
-    return render_template('documents.html')
+    return render_template("documents.html")
 
       
 if __name__ == "__main__":
