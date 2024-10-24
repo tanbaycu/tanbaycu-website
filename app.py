@@ -983,7 +983,12 @@ def bmi():
     return render_template("bmi.html")
 
     
-       
+
+@app.route('/documents')
+def documents():
+    return render_template('documents.html')
+
+      
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
