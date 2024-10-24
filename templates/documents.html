@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>tanbaycu API Documentation for Developers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#3b82f6",
+              secondary: "#10b981",
+              tertiary: "#8b5cf6"
+            },
+            fontFamily: {
+              sans: ["Inter", "sans-serif"],
+              mono: ["Fira Code", "monospace"]
+            },
+            animation: {
+              "gradient-x": "gradient-x 15s ease infinite",
+              "gradient-y": "gradient-y 15s ease infinite",
+              "gradient-xy": "gradient-xy 15s ease infinite"
+            },
+            keyframes: {
+              "gradient-y": {
+                "0%, 100%": {
+                  "background-size": "400% 400%",
+                  "background-position": "center top"
+                },
+                "50%": {
+                  "background-size": "200% 200%",
+                  "background-position": "center center"
+                }
+              },
+              "gradient-x": {
+                "0%, 100%": {
+                  "background-size": "200% 200%",
+                  "background-position": "left center"
+                },
+                "50%": {
+                  "background-size": "200% 200%",
+                  "background-position": "right center"
+                }
+              },
+              "gradient-xy": {
+                "0%, 100%": {
+                  "background-size": "400% 400%",
+                  "background-position": "left center"
+                },
+                "50%": {
+                  "background-size": "200% 200%",
+                  "background-position": "right center"
+                }
+              }
+            }
+          }
+        },
+        plugins: [
+          function ({ addUtilities }) {
+            const newUtilities = {
+              ".bg-gradient-primary": {
+                background:
+                  "linear-gradient(-45deg, #3b82f6, #10b981, #8b5cf6, #3b82f6)",
+                backgroundSize: "400% 400%",
+                animation: "gradient-xy 15s ease infinite"
+              }
+            };
+            addUtilities(newUtilities);
+          }
+        ]
+      };
+    </script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Fira+Code&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      /* Custom scrollbar styles */
+      ::-webkit-scrollbar {
+        width: 8px;
+        height: 8px;
+      }
+      ::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+      ::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 4px;
+      }
+      ::-webkit-scrollbar-thumb:hover {
+        background: #555;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gray-50 text-gray-800 dark:bg-gray-900 dark:text-gray-100 font-sans leading-normal tracking-normal transition-colors duration-200"
+  >
+    <nav
+      class="bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 fixed w-full z-30 transition-all duration-300 ease-in-out"
+      id="navbar"
+    >
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex justify-between h-16">
+          <div class="flex">
+            <div class="flex-shrink-0 flex items-center">
+              <span
+                class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-tertiary"
+                >tanbaycu API</span
+              >
+            </div>
+          </div>
+          <div class="hidden sm:ml-6 sm:flex sm:items-center">
+            <div class="hidden sm:block sm:ml-6">
+              <div class="flex space-x-4">
+                <a
+                  href="#url-shortening"
+                  class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                  >URL Shortening</a
+                >
+                <a
+                  href="#file-upload"
+                  class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                  >File Upload</a
+                >
+                <a
+                  href="#weather"
+                  class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                  >Weather</a
+                >
+                <a
+                  href="#utilities"
+                  class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200"
+                  >Utilities</a
+                >
+              </div>
+            </div>
+            <button
+              id="darkModeToggle"
+              class="ml-3 bg-gray-200 dark:bg-gray-600 relative inline-flex items-center h-6 rounded-full w-11 transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary"
+            >
+              <span class="sr-only">Toggle dark mode</span>
+              <span
+                class="translate-x-0 dark:translate-x-6 inline-block w-4 h-4 transform bg-white rounded-full transition-transform duration-200 ease-in-out"
+              ></span>
+            </button>
+          </div>
+          <div class="-mr-2 flex items-center sm:hidden">
+            <button
+              type="button"
+              class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-primary"
+              aria-controls="mobile-menu"
+              aria-expanded="false"
+              id="mobile-menu-button"
+            >
+              <span class="sr-only">Open main menu</span>
+              <svg
+                class="block h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M4 6h16M4 12h16M4 18h16"
+                />
+              </svg>
+              <svg
+                class="hidden h-6 w-6"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+                aria-hidden="true"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="sm:hidden hidden" id="mobile-menu">
+        <div class="px-2 pt-2 pb-3 space-y-1">
+          <a
+            href="#url-shortening"
+            class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >URL Shortening</a
+          >
+          <a
+            href="#file-upload"
+            class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >File Upload</a
+          >
+          <a
+            href="#weather"
+            class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Weather</a
+          >
+          <a
+            href="#utilities"
+            class="text-gray-500 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white block px-3 py-2 rounded-md text-base font-medium"
+            >Utilities</a
+          >
+        </div>
+      </div>
+    </nav>
+
+    <main class="pt-16 pb-12">
+      <div
+        class="bg-gradient-primary text-white dark:text-gray-900 py-24 sm:py-32"
+      >
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h1
+            class="text-4xl font-extrabold tracking-tight text-center sm:text-5xl lg:text-6xl"
+          >
+            tanbaycu API Documentation
+          </h1>
+          <p class="mt-6 max-w-2xl mx-auto text-center text-xl">
+            Powerful tools for developers, beautifully documented.
+          </p>
+          <div class="mt-8 flex justify-center">
+            <div class="mt-3 sm:mt-0 sm:ml-3">
+              <input
+                type="text"
+                id="search"
+                placeholder="Search documentation..."
+                class="w-full px-4 py-2 rounded-md border border-transparent bg-white text-gray-900 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-primary focus:ring-white focus:border-white sm:text-sm"
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <section id="url-shortening" class="mt-16 lg:mt-24">
+          <h2
+            class="text-3xl font-extrabold text-gray-900 dark:text-white mb-8"
+          >
+            URL Shortening
+          </h2>
+          <div
+            class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg"
+          >
+            <div class="px-4 py-5 sm:p-6">
+              <h3
+                class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+              >
+                Endpoint: /shorten-link
+              </h3>
+              <p class="text-gray-500 dark:text-gray-400 mb-4">
+                Shorten long URLs using various services (TinyURL, is.gd, v.gd).
+              </p>
+              <div
+                class="mt-5 border-t border-gray-200 dark:border-gray-700 pt-5"
+              >
+                <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Method
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      POST
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      URL
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      https://tanbaycu.vercel.app/shorten-link
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Request Body
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      <div class="relative">
+                        <pre
+                          class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                        ><code class="language-json">{
+  "long_url": "https://example.com/very/long/url/that/needs/shortening"
+}</code></pre>
+                        <button
+                          class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                            />
+                            <path
+                              d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Response
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      <div class="relative">
+                        <pre
+                          class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                        ><code class="language-json">{
+  "short_url": "https://tinyurl.com/abc123"
+}</code></pre>
+                        <button
+                          class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                            />
+                            <path
+                              d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+              <div class="mt-8">
+                <h4
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Sample Code (Python)
+                </h4>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/shorten-link"
+data = {"long_url": "https://example.com/very/long/url/that/needs/shortening"}
+
+response = requests.post(url, json=data)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="file-upload" class="mt-16 lg:mt-24">
+          <h2
+            class="text-3xl font-extrabold text-gray-900 dark:text-white mb-8"
+          >
+            File Upload
+          </h2>
+          <div
+            class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg"
+          >
+            <div class="px-4 py-5 sm:p-6">
+              <h3
+                class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+              >
+                Endpoint: /upload_file
+              </h3>
+              <p class="text-gray-500 dark:text-gray-400 mb-4">
+                Upload files to Gofile or Pixeldrain.
+              </p>
+              <div
+                class="mt-5 border-t border-gray-200 dark:border-gray-700 pt-5"
+              >
+                <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Method
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      POST
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      URL
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      https://tanbaycu.vercel.app/upload_file
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Request
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      Send a multipart/form-data request with the file in the
+                      'file' field.
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Response
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      <div class="relative">
+                        <pre
+                          class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                        ><code class="language-json">{
+  "message": "Upload successful!",
+  "link": "https://example.com/file"
+}</code></pre>
+                        <button
+                          class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                            />
+                            <path
+                              d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+              <div class="mt-8">
+                <h4
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Sample Code (Python)
+                </h4>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/upload_file"
+files = {"file": open("example.txt", "rb")}
+
+response = requests.post(url, files=files)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="weather" class="mt-16 lg:mt-24">
+          <h2
+            class="text-3xl font-extrabold text-gray-900 dark:text-white mb-8"
+          >
+            Weather Information
+          </h2>
+          <div
+            class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg"
+          >
+            <div class="px-4 py-5 sm:p-6">
+              <h3
+                class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+              >
+                Endpoint: /weather
+              </h3>
+              <p class="text-gray-500 dark:text-gray-400 mb-4">
+                Get current weather and forecast data.
+              </p>
+              <div
+                class="mt-5 border-t border-gray-200 dark:border-gray-700 pt-5"
+              >
+                <dl class="divide-y divide-gray-200 dark:divide-gray-700">
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Method
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      POST
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      URL
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      https://tanbaycu.vercel.app/weather
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Request Body
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      <div class="relative">
+                        <pre
+                          class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                        ><code class="language-json">{
+  "latitude": 40.7128,
+  "longitude": -74.0060
+}</code></pre>
+                        <button
+                          class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                            />
+                            <path
+                              d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </dd>
+                  </div>
+                  <div class="py-4 sm:py-5 sm:grid sm:grid-cols-3 sm:gap-4">
+                    <dt
+                      class="text-sm font-medium text-gray-500 dark:text-gray-400"
+                    >
+                      Response
+                    </dt>
+                    <dd
+                      class="mt-1 text-sm text-gray-900 dark:text-gray-100 sm:mt-0 sm:col-span-2"
+                    >
+                      <div class="relative">
+                        <pre
+                          class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                        ><code class="language-json">{
+  "current_weather": {
+    "city": "New York",
+    "temperature": 22.5,
+    "description": "Partly cloudy",
+    "humidity": 65,
+    "wind_speed": 5.2
+  },
+  "forecast_info": [
+    {
+      "time": "2023-05-20 12:00:00",
+      "temperature": 23.1,
+      "description": "Sunny",
+      "humidity": 60,
+      "wind_speed": 4.8
+    },
+    // More forecast entries...
+  ]
+}</code></pre>
+                        <button
+                          class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                          >
+                            <path
+                              d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                            />
+                            <path
+                              d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                            />
+                          </svg>
+                        </button>
+                      </div>
+                    </dd>
+                  </div>
+                </dl>
+              </div>
+              <div class="mt-8">
+                <h4
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Sample Code (Python)
+                </h4>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/weather"
+data = {"latitude": 40.7128, "longitude": -74.0060}
+
+response = requests.post(url, json=data)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="utilities" class="mt-16 lg:mt-24">
+          <h2
+            class="text-3xl font-extrabold text-gray-900 dark:text-white mb-8"
+          >
+            Utilities
+          </h2>
+          <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+            <div
+              class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div class="px-4 py-5 sm:p-6">
+                <h3
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  News API
+                </h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-4">
+                  Fetch top headlines.
+                </p>
+                <p class="font-mono text-sm mb-4">
+                  GET https://tanbaycu.vercel.app/news
+                </p>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/news"
+response = requests.get(url)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div class="px-4 py-5 sm:p-6">
+                <h3
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Math Operations
+                </h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-4">
+                  Perform mathematical operations.
+                </p>
+                <p class="font-mono text-sm mb-4">
+                  POST https://tanbaycu.vercel.app/math
+                </p>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/math"
+data = {
+  "operation": "simplify",
+  "expression": "2x + 3x"
+}
+response = requests.post(url, json=data)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div class="px-4 py-5 sm:p-6">
+                <h3
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Currency Exchange
+                </h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-4">
+                  Get latest exchange rates.
+                </p>
+                <p class="font-mono text-sm mb-4">
+                  GET https://tanbaycu.vercel.app/crypto
+                </p>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/crypto"
+response = requests.get(url)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div class="px-4 py-5 sm:p-6">
+                <h3
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Image Recognition
+                </h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-4">
+                  Analyze images and detect objects.
+                </p>
+                <p class="font-mono text-sm mb-4">
+                  POST https://tanbaycu.vercel.app/image-recognition
+                </p>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/image-recognition"
+files = {"image": open("image.jpg", "rb")}
+response = requests.post(url, files=files)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div class="px-4 py-5 sm:p-6">
+                <h3
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Text Translation
+                </h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-4">
+                  Translate text between languages.
+                </p>
+                <p class="font-mono text-sm mb-4">
+                  POST https://tanbaycu.vercel.app/translate
+                </p>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/translate"
+data = {
+  "text": "Hello, world!",
+  "target_language": "es"
+}
+response = requests.post(url, json=data)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+            <div
+              class="bg-white dark:bg-gray-800 overflow-hidden shadow-xl rounded-lg hover:shadow-2xl transition-shadow duration-300"
+            >
+              <div class="px-4 py-5 sm:p-6">
+                <h3
+                  class="text-lg font-medium text-gray-900 dark:text-white mb-2"
+                >
+                  Sentiment Analysis
+                </h3>
+                <p class="text-gray-500 dark:text-gray-400 mb-4">
+                  Analyze sentiment of text.
+                </p>
+                <p class="font-mono text-sm mb-4">
+                  POST https://tanbaycu.vercel.app/sentiment
+                </p>
+                <div class="relative">
+                  <pre
+                    class="bg-gray-50 dark:bg-gray-900 rounded p-4 overflow-x-auto"
+                  ><code class="language-python">import requests
+
+url = "https://tanbaycu.vercel.app/sentiment"
+data = {
+  "text": "I love this product! It's amazing!"
+}
+response = requests.post(url, json=data)
+print(response.json())</code></pre>
+                  <button
+                    class="copy-button absolute top-2 right-2 bg-gray-200 dark:bg-gray-700 p-1 rounded"
+                  >
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      class="h-5 w-5 text-gray-600 dark:text-gray-300"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z"
+                      />
+                      <path
+                        d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z"
+                      />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </main>
+
+    <footer class="bg-gray-800 dark:bg-gray-900 mt-24">
+      <div class="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+        <div class="xl:grid xl:grid-cols-3 xl:gap-8">
+          <div class="space-y-8 xl:col-span-1">
+            <span class="text-2xl font-bold text-white">tanbaycu API</span>
+            <p class="text-gray-300 text-base">
+              Powerful tools for developers, beautifully documented.
+            </p>
+          </div>
+          <div class="mt-12 grid grid-cols-2 gap-8 xl:mt-0 xl:col-span-2">
+            <div class="md:grid md:grid-cols-2 md:gap-8">
+              <div>
+                <h3
+                  class="text-sm font-semibold text-gray-300 tracking-wider uppercase"
+                >
+                  Resources
+                </h3>
+                <ul class="mt-4 space-y-4">
+                  <li>
+                    <a
+                      href="#"
+                      class="text-base text-gray-400 hover:text-white"
+                    >
+                      Documentation
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="text-base text-gray-400 hover:text-white"
+                    >
+                      API Reference
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="text-base text-gray-400 hover:text-white"
+                    >
+                      Guides
+                    </a>
+                  </li>
+                </ul>
+              </div>
+              <div class="mt-12 md:mt-0">
+                <h3
+                  class="text-sm font-semibold text-gray-300 tracking-wider uppercase"
+                >
+                  Support
+                </h3>
+                <ul class="mt-4 space-y-4">
+                  <li>
+                    <a
+                      href="#"
+                      class="text-base text-gray-400 hover:text-white"
+                    >
+                      Help Center
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="text-base text-gray-400 hover:text-white"
+                    >
+                      Contact Us
+                    </a>
+                  </li>
+                  <li>
+                    <a
+                      href="#"
+                      class="text-base text-gray-400 hover:text-white"
+                    >
+                      Status
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="mt-12 border-t border-gray-700 pt-8">
+          <p class="text-base text-gray-400 xl:text-center">
+            &copy; 2023 tanbaycu. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+
+    <script>
+      // Dark mode toggle
+      const darkModeToggle = document.getElementById("darkModeToggle");
+      const html = document.documentElement;
+
+      darkModeToggle.addEventListener("click", () => {
+        html.classList.toggle("dark");
+      });
+
+      // Mobile menu toggle
+      const mobileMenuButton = document.getElementById("mobile-menu-button");
+      const mobileMenu = document.getElementById("mobile-menu");
+
+      mobileMenuButton.addEventListener("click", () => {
+        mobileMenu.classList.toggle("hidden");
+      });
+
+      // Smooth scrolling for anchor links
+      document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+        anchor.addEventListener("click", function (e) {
+          e.preventDefault();
+          document.querySelector(this.getAttribute("href")).scrollIntoView({
+            behavior: "smooth"
+          });
+        });
+      });
+
+      // Navbar scroll effect
+      window.addEventListener("scroll", function () {
+        var navbar = document.getElementById("navbar");
+        if (window.scrollY > 10) {
+          navbar.classList.add("shadow-md");
+          navbar.classList.remove(
+            "border-b",
+            "border-gray-200",
+            "dark:border-gray-700"
+          );
+        } else {
+          navbar.classList.remove("shadow-md");
+          navbar.classList.add(
+            "border-b",
+            "border-gray-200",
+            "dark:border-gray-700"
+          );
+        }
+      });
+
+      // Copy to clipboard functionality
+      document.querySelectorAll(".copy-button").forEach((button) => {
+        button.addEventListener("click", () => {
+          const pre = button.closest("div").querySelector("pre");
+          const code = pre.textContent;
+          navigator.clipboard.writeText(code).then(() => {
+            button.innerHTML =
+              '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-green-500" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd" /></svg>';
+            setTimeout(() => {
+              button.innerHTML =
+                '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-600 dark:text-gray-300" viewBox="0 0 20 20" fill="currentColor"><path d="M8 3a1 1 0 011-1h2a1 1 0 110 2H9a1 1 0 01-1-1z" /><path d="M6 3a2 2 0 00-2 2v11a2 2 0 002 2h8a2 2 0 002-2V5a2 2 0 00-2-2 3 3 0 01-3 3H9a3 3 0 01-3-3z" /></svg>';
+            }, 2000);
+          });
+        });
+      });
+
+      // Search functionality
+      const searchInput = document.getElementById("search");
+      const sections = document.querySelectorAll("section");
+
+      searchInput.addEventListener("input", () => {
+        const searchTerm = searchInput.value.toLowerCase();
+        sections.forEach((section) => {
+          const sectionText = section.textContent.toLowerCase();
+          if (sectionText.includes(searchTerm)) {
+            section.style.display = "block";
+          } else {
+            section.style.display = "none";
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
