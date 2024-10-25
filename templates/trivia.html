@@ -6,6 +6,7 @@
     <title>Trivia Test</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png" />
     <style>
         @keyframes fadeIn {
             from { opacity: 0; }
@@ -38,7 +39,9 @@
 <body class="bg-gradient-to-br from-purple-600 via-blue-500 to-teal-400 min-h-screen flex items-center justify-center p-4">
     <div id="game-container" class="glassmorphism max-w-4xl w-full mx-auto overflow-hidden">
         <header class="bg-black bg-opacity-50 text-white p-6 text-center relative">
-            <h1 class="text-4xl font-bold neon-text">Futuristic Trivia</h1>
+            <h1 class="text-4xl font-bold neon-text">
+                <a href="{{ url_for('homepage') }}" style="text-decoration: none; color: inherit;">Trivia</a>
+              </h1>              
             <p id="category" class="text-lg mt-2 text-gray-300"></p>
             <button id="settings-btn" class="absolute top-4 right-4 text-white hover:text-gray-300 transition-colors">
                 <i class="fas fa-cog fa-lg"></i>

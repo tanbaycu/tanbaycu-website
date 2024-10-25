@@ -1042,6 +1042,12 @@ def get_shared_conversion(share_id):
 def get_morse_code_dict():
     return jsonify(MORSE_CODE_DICT)  
 
+
+
+@app.route('/trivia', methods=['GET'])
+def trivia():
+    return render_template('trivia.html')
+
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
