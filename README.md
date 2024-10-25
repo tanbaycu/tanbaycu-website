@@ -41,7 +41,7 @@
 
 ## 🎥 Demo Video
 
-Xem video giới thiệu dự án tại [đây]
+Xem video giới thiệu dự án tại [đây](https://vimeo.com/1023300687?share=copy).
 
 
 
