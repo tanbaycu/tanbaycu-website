@@ -4,7 +4,11 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>tanbaycu API Documentation for Developers</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -107,10 +111,12 @@
         <div class="flex justify-between h-16">
           <div class="flex">
             <div class="flex-shrink-0 flex items-center">
-              <span
+              <a
+                href="{{ url_for('homepage') }}"
                 class="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-primary via-secondary to-tertiary"
-                >tanbaycu API</span
               >
+                tanbaycu API
+              </a>
             </div>
           </div>
           <div class="hidden sm:ml-6 sm:flex sm:items-center">
