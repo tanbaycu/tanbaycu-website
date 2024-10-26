@@ -15,7 +15,7 @@
 </p>
 
 ---
-- **Project Type**: Multi-tasking Website  
+- **Project Type**: Multi-tasking Website  (version 25_07_2024)
 - **Status**: 🟢 Ongoing (Started on: 12/10/2024)  
 - **Author**: Me & Flask
 - **Support**: `Github` `VSCode` `Github Copilot` `ChatGPT` `Gemini` `Thonny`
