@@ -710,10 +710,13 @@
         });
       });
     </script>
-    <script type="module">
-      import { trackPageview } from "@vercel/analytics";
-
-      trackPageview();
+    <script>
+      window.va =
+        window.va ||
+        function () {
+          (window.vaq = window.vaq || []).push(arguments);
+        };
     </script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>
