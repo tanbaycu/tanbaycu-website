@@ -1,6 +1,7 @@
 import os
 import random
 import base64
+
 # import google.generativeai as genai
 import json
 import requests
@@ -8,9 +9,11 @@ import yt_dlp
 import sys
 import uuid
 import time
+from datetime import datetime
 import re
 import subprocess
 from deep_translator import GoogleTranslator
+
 # from vercel_kv import VercelKV
 from flask import (
     Flask,
@@ -23,11 +26,12 @@ from flask import (
     jsonify,
     send_file,
     abort,
-    Response
+    Response,
 )
+
 # kv = VercelKV()
 app = Flask(__name__)
-UPLOAD_FOLDER = '/tmp/uploads'
+UPLOAD_FOLDER = "/tmp/uploads"
 if not os.path.exists(UPLOAD_FOLDER):
     os.makedirs(UPLOAD_FOLDER)
 
@@ -40,9 +44,6 @@ RETRY_LIMIT = 3
 
 upload_history = []
 download_history = []
-
-
-
 
 
 # Hàm xác thực URL
@@ -285,7 +286,6 @@ def download_history_page():
     )
 
 
-
 @app.route("/about")
 def about():
     return render_template("about.html")  # Tạo trang about.html
@@ -352,6 +352,7 @@ def request_entity_too_large(error):
 def clipython():
     return render_template("clipython.html")
 
+
 @app.route("/run-python", methods=["POST"])
 def run_python_code():
     data = request.json
@@ -370,7 +371,7 @@ def run_python_code():
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
-            text=True
+            text=True,
         )
         stdout, stderr = process.communicate(input="\n".join(input_values))
 
@@ -385,22 +386,24 @@ def run_python_code():
         if os.path.exists(temp_file):
             os.remove(temp_file)
 
+
 @app.route("/share-code", methods=["POST"])
 def share_code():
     data = request.json
     code = data.get("code", "")
-    
+
     # Create a unique ID for the shared code
     share_id = uuid.uuid4().hex
-    
+
     # Save the code to a file (in a real application, you'd use a database)
     with open(f"/tmp/shared_code_{share_id}.py", "w") as f:
         f.write(code)
-    
+
     # Create the share URL
     share_url = f"/view/{share_id}"
-    
+
     return jsonify({"share_url": share_url})
+
 
 @app.route("/view/<share_id>")
 def view_shared_code(share_id):
@@ -412,20 +415,25 @@ def view_shared_code(share_id):
     except FileNotFoundError:
         return "Code does not exist or has expired", 404
 
+
 @app.route("/install-library", methods=["POST"])
 def install_library():
     # Note: Installing libraries on-the-fly is not recommended in a production environment
     # This is just for demonstration purposes
     data = request.json
     library = data.get("library", "")
-    
+
     if not library:
         return jsonify({"success": False, "error": "Library name cannot be empty"})
-    
+
     try:
         # Install the library using pip
-        result = subprocess.run([sys.executable, "-m", "pip", "install", library], capture_output=True, text=True)
-        
+        result = subprocess.run(
+            [sys.executable, "-m", "pip", "install", library],
+            capture_output=True,
+            text=True,
+        )
+
         if result.returncode == 0:
             return jsonify({"success": True})
         else:
@@ -549,8 +557,6 @@ def ipconfig():
         return jsonify({"error": str(e)}), 500
 
 
-
-
 API_KEY_WEATHER = "714c27439667f61cbf15f7ab466525a0"
 
 
@@ -652,7 +658,7 @@ def weather_by_location():
         "q": location,
         "appid": API_KEY_WEATHER,
         "units": "metric",
-        "lang": "vi",  
+        "lang": "vi",
     }
 
     try:
@@ -793,7 +799,6 @@ def convert_to_mp3():
         return str(e), 500
 
 
-
 PEXELS_API_KEY = "1RLKfe657NlpkTa6gv60FnAJDlncnMYy1g1zcvaM5OXXhpiAIZftxtbA"
 
 
@@ -874,179 +879,356 @@ def math_operation():
     # Render the form for GET request
     return render_template("math.html")
 
-@app.route('/projects')
+
+@app.route("/projects")
 def projects():
     # Lấy dữ liệu từ GitHub API
-    response = requests.get('https://api.github.com/users/tanbaycu/repos')
+    response = requests.get("https://api.github.com/users/tanbaycu/repos")
     repos = response.json()
-    return render_template('projects.html', repos=repos)
+    return render_template("projects.html", repos=repos)
+
 
 @app.route("/aichat", methods=["GET"])
 def aichat():
     return render_template("aichat.html")
 
-@app.route('/pdf')
+
+@app.route("/pdf")
 def pdf_page():
-    return render_template('pdf.html')
+    return render_template("pdf.html")
 
-@app.route('/tools')
+
+@app.route("/tools")
 def tools():
-    return render_template('tools.html')
+    return render_template("tools.html")
 
-@app.route('/spotify')
+
+@app.route("/spotify")
 def spotify_page():
-    return render_template('spotify.html')
+    return render_template("spotify.html")
+
 
 API_KEY = "1373341a3e6d7cb9a723fff1"
 BASE_URL = "https://v6.exchangerate-api.com/v6/{API_KEY}/latest/{base_currency}"
 
-@app.route('/crypto')
+
+@app.route("/crypto")
 def crypto():
     response = requests.get(BASE_URL.format(API_KEY=API_KEY, base_currency="USD"))
     if response.status_code == 200:
         data = response.json()
-        currencies = list(data['conversion_rates'].keys())
+        currencies = list(data["conversion_rates"].keys())
     else:
         currencies = []
-    
-    currency_symbols = {
-        'USD': '🇺🇸', 'EUR': '🇪🇺', 'GBP': '🇬🇧', 'JPY': '🇯🇵', 'AUD': '🇦🇺',
-        'CAD': '🇨🇦', 'CHF': '🇨🇭', 'CNY': '🇨🇳', 'HKD': '🇭🇰', 'NZD': '🇳🇿',
-        'SEK': '🇸🇪', 'KRW': '🇰🇷', 'SGD': '🇸🇬', 'NOK': '🇳🇴', 'MXN': '🇲🇽',
-        'INR': '🇮🇳', 'RUB': '🇷🇺', 'ZAR': '🇿🇦', 'TRY': '🇹🇷', 'BRL': '🇧🇷',
-        'TWD': '🇹🇼', 'DKK': '🇩🇰', 'PLN': '🇵🇱', 'THB': '🇹🇭', 'IDR': '🇮🇩',
-        'HUF': '🇭🇺', 'CZK': '🇨🇿', 'ILS': '🇮🇱', 'CLP': '🇨🇱', 'PHP': '🇵🇭',
-        'AED': '🇦🇪', 'COP': '🇨🇴', 'SAR': '🇸🇦', 'MYR': '🇲🇾', 'RON': '🇷🇴'
-    }
-    
-    return render_template('crypto.html', currencies=currencies, currency_symbols=currency_symbols)
 
-@app.route('/get_exchange_rates/<base_currency>')
+    currency_symbols = {
+        "USD": "🇺🇸",
+        "EUR": "🇪🇺",
+        "GBP": "🇬🇧",
+        "JPY": "🇯🇵",
+        "AUD": "🇦🇺",
+        "CAD": "🇨🇦",
+        "CHF": "🇨🇭",
+        "CNY": "🇨🇳",
+        "HKD": "🇭🇰",
+        "NZD": "🇳🇿",
+        "SEK": "🇸🇪",
+        "KRW": "🇰🇷",
+        "SGD": "🇸🇬",
+        "NOK": "🇳🇴",
+        "MXN": "🇲🇽",
+        "INR": "🇮🇳",
+        "RUB": "🇷🇺",
+        "ZAR": "🇿🇦",
+        "TRY": "🇹🇷",
+        "BRL": "🇧🇷",
+        "TWD": "🇹🇼",
+        "DKK": "🇩🇰",
+        "PLN": "🇵🇱",
+        "THB": "🇹🇭",
+        "IDR": "🇮🇩",
+        "HUF": "🇭🇺",
+        "CZK": "🇨🇿",
+        "ILS": "🇮🇱",
+        "CLP": "🇨🇱",
+        "PHP": "🇵🇭",
+        "AED": "🇦🇪",
+        "COP": "🇨🇴",
+        "SAR": "🇸🇦",
+        "MYR": "🇲🇾",
+        "RON": "🇷🇴",
+    }
+
+    return render_template(
+        "crypto.html", currencies=currencies, currency_symbols=currency_symbols
+    )
+
+
+@app.route("/get_exchange_rates/<base_currency>")
 def get_exchange_rates(base_currency):
-    response = requests.get(BASE_URL.format(API_KEY=API_KEY, base_currency=base_currency))
+    response = requests.get(
+        BASE_URL.format(API_KEY=API_KEY, base_currency=base_currency)
+    )
     if response.status_code == 200:
         return jsonify(response.json())
     else:
         return jsonify({"error": "Failed to fetch exchange rates"}), 400
 
 
-
-@app.route('/formatcode')
+@app.route("/formatcode")
 def format_code():
-    return render_template('format.html')  
+    return render_template("format.html")
 
-@app.route('/password')
+
+@app.route("/password")
 def password():
-    return render_template('password.html')
+    return render_template("password.html")
 
 
-
-@app.route('/country', methods=['GET', 'POST'])
+@app.route("/country", methods=["GET", "POST"])
 def country():
-    if request.method == 'POST':
-        country_name = request.form.get('country')
+    if request.method == "POST":
+        country_name = request.form.get("country")
         try:
             country_url = f"https://restcountries.com/v3.1/name/{country_name}"
             response = requests.get(country_url)
             response.raise_for_status()
             country_data = response.json()[0]
-            
-            return jsonify({
-                'name': country_data['name']['common'],
-                'official_name': country_data['name']['official'],
-                'capital': country_data['capital'][0] if 'capital' in country_data else 'N/A',
-                'population': country_data['population'],
-                'area': country_data['area'],
-                'region': country_data['region'],
-                'subregion': country_data.get('subregion', 'N/A'),
-                'languages': list(country_data['languages'].values()) if 'languages' in country_data else [],
-                'currencies': [f"{code} ({data['name']})" for code, data in country_data.get('currencies', {}).items()],
-                'flag': country_data['flags']['svg'],
-                'coat_of_arms': country_data.get('coatOfArms', {}).get('svg', ''),
-                'map': country_data['maps']['googleMaps'],
-                'timezones': country_data['timezones'],
-                'continents': country_data['continents'],
-                'borders': country_data.get('borders', []),
-                'independent': country_data['independent'],
-                'un_member': country_data['unMember'],
-                'gini': country_data.get('gini', {}),
-                'car': country_data['car']['side'],
-            })
-        except requests.RequestException as e:
-            return jsonify({'error': f'Error fetching country data: {str(e)}'}), 500
-        except (KeyError, IndexError) as e:
-            return jsonify({'error': f'Error processing country data: {str(e)}'}), 500
 
-    return render_template('country.html')
+            return jsonify(
+                {
+                    "name": country_data["name"]["common"],
+                    "official_name": country_data["name"]["official"],
+                    "capital": (
+                        country_data["capital"][0]
+                        if "capital" in country_data
+                        else "N/A"
+                    ),
+                    "population": country_data["population"],
+                    "area": country_data["area"],
+                    "region": country_data["region"],
+                    "subregion": country_data.get("subregion", "N/A"),
+                    "languages": (
+                        list(country_data["languages"].values())
+                        if "languages" in country_data
+                        else []
+                    ),
+                    "currencies": [
+                        f"{code} ({data['name']})"
+                        for code, data in country_data.get("currencies", {}).items()
+                    ],
+                    "flag": country_data["flags"]["svg"],
+                    "coat_of_arms": country_data.get("coatOfArms", {}).get("svg", ""),
+                    "map": country_data["maps"]["googleMaps"],
+                    "timezones": country_data["timezones"],
+                    "continents": country_data["continents"],
+                    "borders": country_data.get("borders", []),
+                    "independent": country_data["independent"],
+                    "un_member": country_data["unMember"],
+                    "gini": country_data.get("gini", {}),
+                    "car": country_data["car"]["side"],
+                }
+            )
+        except requests.RequestException as e:
+            return jsonify({"error": f"Error fetching country data: {str(e)}"}), 500
+        except (KeyError, IndexError) as e:
+            return jsonify({"error": f"Error processing country data: {str(e)}"}), 500
+
+    return render_template("country.html")
 
 
 @app.route("/bmi")
 def bmi():
     return render_template("bmi.html")
 
-@app.route('/documents')
+
+@app.route("/documents")
 def documents():
     return render_template("documents.html")
 
- 
- 
- 
+
 MORSE_CODE_DICT = {
-    'A': '.-', 'B': '-...', 'C': '-.-.', 'D': '-..', 'E': '.', 'F': '..-.',
-    'G': '--.', 'H': '....', 'I': '..', 'J': '.---', 'K': '-.-', 'L': '.-..',
-    'M': '--', 'N': '-.', 'O': '---', 'P': '.--.', 'Q': '--.-', 'R': '.-.',
-    'S': '...', 'T': '-', 'U': '..-', 'V': '...-', 'W': '.--', 'X': '-..-',
-    'Y': '-.--', 'Z': '--..', '0': '-----', '1': '.----', '2': '..---',
-    '3': '...--', '4': '....-', '5': '.....', '6': '-....', '7': '--...',
-    '8': '---..', '9': '----.', ' ': ' '
+    "A": ".-",
+    "B": "-...",
+    "C": "-.-.",
+    "D": "-..",
+    "E": ".",
+    "F": "..-.",
+    "G": "--.",
+    "H": "....",
+    "I": "..",
+    "J": ".---",
+    "K": "-.-",
+    "L": ".-..",
+    "M": "--",
+    "N": "-.",
+    "O": "---",
+    "P": ".--.",
+    "Q": "--.-",
+    "R": ".-.",
+    "S": "...",
+    "T": "-",
+    "U": "..-",
+    "V": "...-",
+    "W": ".--",
+    "X": "-..-",
+    "Y": "-.--",
+    "Z": "--..",
+    "0": "-----",
+    "1": ".----",
+    "2": "..---",
+    "3": "...--",
+    "4": "....-",
+    "5": ".....",
+    "6": "-....",
+    "7": "--...",
+    "8": "---..",
+    "9": "----.",
+    " ": " ",
 }
 
 SHARED_CONVERSIONS = {}
 
-@app.route('/mamorse', methods=['GET'])
-def morse_maestro():
-    return render_template('morse.html')
 
-@app.route('/convert', methods=['POST'])
+@app.route("/mamorse", methods=["GET"])
+def morse_maestro():
+    return render_template("morse.html")
+
+
+@app.route("/convert", methods=["POST"])
 def convert():
     data = request.json
-    text = data['text']
-    mode = data['mode']
-    
+    text = data["text"]
+    mode = data["mode"]
+
     try:
-        if mode == 'to_morse':
-            result = ' '.join(MORSE_CODE_DICT.get(char.upper(), char) for char in text)
+        if mode == "to_morse":
+            result = " ".join(MORSE_CODE_DICT.get(char.upper(), char) for char in text)
         else:
             morse_to_char = {v: k for k, v in MORSE_CODE_DICT.items()}
-            result = ''.join(morse_to_char.get(code, code) for code in text.split())
-        
-        return jsonify({'result': result})
-    except Exception as e:
-        return jsonify({'error': str(e)}), 400
+            result = "".join(morse_to_char.get(code, code) for code in text.split())
 
-@app.route('/share', methods=['POST'])
+        return jsonify({"result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/share", methods=["POST"])
 def share_conversion():
     data = request.json
     share_id = str(uuid.uuid4())
     SHARED_CONVERSIONS[share_id] = data
-    return jsonify({'share_id': share_id})
+    return jsonify({"share_id": share_id})
 
-@app.route('/shared/<share_id>', methods=['GET'])
+
+@app.route("/shared/<share_id>", methods=["GET"])
 def get_shared_conversion(share_id):
     if share_id in SHARED_CONVERSIONS:
         return jsonify(SHARED_CONVERSIONS[share_id])
     else:
         abort(404)
 
-@app.route('/morse_code_dict', methods=['GET'])
+
+@app.route("/morse_code_dict", methods=["GET"])
 def get_morse_code_dict():
-    return jsonify(MORSE_CODE_DICT)  
+    return jsonify(MORSE_CODE_DICT)
 
 
-
-@app.route('/trivia', methods=['GET'])
+@app.route("/trivia", methods=["GET"])
 def trivia():
-    return render_template('trivia.html')
+    return render_template("trivia.html")
+
+
+routes = [
+    {'path': '/', 'name': 'Home'},
+    {'path': '/about-me', 'name': 'About Me'},
+    {'path': '/dev', 'name': 'Dev'},
+    {'path': '/shorten-link', 'name': 'URL Shortener'},
+    {'path': '/upload_file', 'name': 'File Upload'},
+    {'path': '/upload-history', 'name': 'Upload History'},
+    {'path': '/download-history', 'name': 'Download History'},
+    {'path': '/about', 'name': 'About'},
+    {'path': '/api-check', 'name': 'API Check'},
+    {'path': '/qrcode', 'name': 'QR Code'},
+    {'path': '/clipython', 'name': 'CLI Python'},
+    {'path': '/facts', 'name': 'Facts'},
+    {'path': '/ipconfig', 'name': 'IP Config'},
+    {'path': '/weather', 'name': 'Weather'},
+    {'path': '/urldownload', 'name': 'URL Download'},
+    {'path': '/random-image', 'name': 'Random Image'},
+    {'path': '/news', 'name': 'News'},
+    {'path': '/math', 'name': 'Math Operations'},
+    {'path': '/projects', 'name': 'Projects'},
+    {'path': '/aichat', 'name': 'AI Chat'},
+    {'path': '/pdf', 'name': 'PDF'},
+    {'path': '/tools', 'name': 'Tools'},
+    {'path': '/spotify', 'name': 'Spotify'},
+    {'path': '/crypto', 'name': 'Crypto'},
+    {'path': '/formatcode', 'name': 'Format Code'},
+    {'path': '/password', 'name': 'Password'},
+    {'path': '/country', 'name': 'Country'},
+    {'path': '/bmi', 'name': 'BMI Calculator'},
+    {'path': '/documents', 'name': 'Documents'},
+    {'path': '/mamorse', 'name': 'Morse Code'},
+    {'path': '/trivia', 'name': 'Trivia'},
+]
+
+@app.route('/status')
+def status_page():
+    return render_template('status.html', routes=routes)
+
+@app.route('/check-route-status')
+def check_route_status():
+    path = request.args.get('path')
+    route_name = next((route['name'] for route in routes if route['path'] == path), path)
+    start_time = time.time()
+    try:
+        # Simulating API call with random response time and status
+        time.sleep(random.uniform(0.1, 2.0))
+        response_time = round((time.time() - start_time) * 1000)
+        
+        if random.random() < 0.9:  # 90% chance of success
+            if response_time < 200:
+                status = 'up'
+            elif response_time < 1000:
+                status = 'degraded'
+            else:
+                status = 'down'
+        else:
+            status = 'down'
+            response_time = None
+    except Exception:
+        status = 'down'
+        response_time = None
+
+    return render_template('status_card.html', status=status, response_time=response_time, route_name=route_name)
+
+@app.route('/check-all-routes')
+def check_all_routes():
+    return render_template('status.html', routes=routes)
+
+@app.route('/api/incidents')
+def get_incidents():
+    # Simulated incident data
+    incidents = [
+        {
+            "id": 1,
+            "service": "API Check",
+            "description": "Intermittent outages due to server overload",
+            "status": "Resolved",
+            "created_at": "2023-05-15T14:30:00Z",
+            "updated_at": "2023-05-15T16:45:00Z"
+        },
+        {
+            "id": 2,
+            "service": "URL Shortener",
+            "description": "Database connection issues causing slow response times",
+            "status": "Investigating",
+            "created_at": "2023-05-18T09:15:00Z",
+            "updated_at": "2023-05-18T10:30:00Z"
+        }
+    ]
+    return jsonify(incidents)
 
 if __name__ == "__main__":
     if not os.path.exists("uploads"):

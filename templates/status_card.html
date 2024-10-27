@@ -1,0 +1,84 @@
+<td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-300">{{ route_name }}</td>
+<td class="px-6 py-4 whitespace-nowrap">
+    <span class="px-2 inline-flex items-center text-xs leading-5 font-semibold rounded-full 
+    {% if status == 'up' %}bg-green-100 text-green-800{% elif status == 'down' %}bg-red-100 text-red-800{% elif status == 'degraded' %}bg-yellow-100 text-yellow-800{% else %}bg-gray-100 text-gray-800{% endif %}">
+        <span class="status-indicator {% if status == 'up' %}status-up{% elif status == 'down' %}status-down{% elif status == 'degraded' %}status-degraded{% endif %}"></span>
+        {% if status == 'up' %}Operational{% elif status == 'down' %}Down{% elif status == 'degraded' %}Degraded{% else %}Checking...{% endif %}
+    </span>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+    {% if response_time %}{{ response_time }}ms{% else %}-{% endif %}
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+    {% if status == 'up' %}99.9%{% elif status == 'degraded' %}98.5%{% elif status == 'down' %}95.0%{% else %}-{% endif %}
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+    <div class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700">
+        <div class="bg-blue-600 h-2.5 rounded-full" style="width: {{ '%.0f'|format(response_time / 10) if response_time else 0 }}%"></div>
+    </div>
+</td>
+<td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+    <div id="sparkline-{{ route_name | replace(' ', '-') | lower }}"></div>
+</td>
+<script>
+    if (!responseTimeData['{{ route_name }}']) {
+        responseTimeData['{{ route_name }}'] = [];
+    }
+    responseTimeData['{{ route_name }}'].push({
+        x: new Date().getTime(),
+        y: {{ response_time if response_time else 0 }}
+    });
+    if (responseTimeData['{{ route_name }}'].length > 30) {
+        responseTimeData['{{ route_name }}'].shift();
+    }
+
+    if (!trendData['{{ route_name }}']) {
+        trendData['{{ route_name }}'] = [];
+    }
+    trendData['{{ route_name }}'].push({
+        x: new Date().getTime(),
+        y: {{ response_time if response_time else 0 }}
+    });
+    if (trendData['{{ route_name }}'].length > 100) {
+        trendData['{{ route_name }}'].shift();
+    }
+
+    // Update sparkline
+    new ApexCharts(document.querySelector("#sparkline-{{ route_name | replace(' ', '-') | lower }}"), {
+        series: [{
+            data: responseTimeData['{{ route_name }}'].slice(-10).map(d => d.y)
+        }],
+        chart: {
+            type: 'line',
+            width: 100,
+            height: 35,
+            sparkline: {
+                enabled: true
+            },
+            background: 'transparent'
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2,
+        },
+        tooltip: {
+            fixed: {
+                enabled: false
+            },
+            x: {
+                show: false
+            },
+            y: {
+                title: {
+                    formatter: function (seriesName) {
+                        return 'Response Time:'
+                    }
+                }
+            },
+            marker: {
+                show: false
+            }
+        },
+        colors: ['#3498db']
+    }).render();
+</script>
