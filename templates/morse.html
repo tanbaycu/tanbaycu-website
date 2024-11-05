@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Morse Code Maestro</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/alpinejs" defer></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      rel="stylesheet"
+    />
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <style>
+      [x-cloak] {
+        display: none !important;
+      }
+      @keyframes morse-blink {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0;
+        }
+      }
+      .morse-dot {
+        animation: morse-blink 0.3s;
+      }
+      .morse-dash {
+        animation: morse-blink 0.9s;
+      }
+    </style>
+  </head>
+  <body
+    class="h-full bg-gray-100 dark:bg-gray-900 transition-colors duration-300"
+    x-data="morseMaestro()"
+    x-init="initializeFromURL"
+  >
+    <div class="min-h-full flex flex-col">
+      <!-- Header -->
+      <header class="bg-white dark:bg-gray-800 shadow-md">
+        <div
+          class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 flex justify-between items-center"
+        >
+          <h1
+            class="text-2xl sm:text-3xl font-bold text-indigo-600 dark:text-indigo-400"
+          >
+            <a href="{{ url_for('homepage') }}">Morse Code Release</a>
+          </h1>
+
+          <div class="flex items-center space-x-4">
+            <button
+              @click="toggleTheme"
+              class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300"
+              aria-label="Toggle theme"
+            >
+              <i
+                :class="darkMode ? 'fas fa-sun' : 'fas fa-moon'"
+                class="text-xl"
+              ></i>
+            </button>
+            <button
+              @click="toggleHelpModal"
+              class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-300"
+              aria-label="Help"
+            >
+              <i class="fas fa-question-circle text-xl"></i>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Main Content -->
+      <main class="flex-grow container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          <!-- Left Column: Input and Output -->
+          <div class="lg:col-span-2 space-y-6">
+            <!-- Input Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <label
+                for="input"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >Input Text</label
+              >
+              <textarea
+                id="input"
+                x-model="input"
+                @input="handleInput"
+                rows="4"
+                class="w-full px-3 py-2 text-gray-700 dark:text-gray-300 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white dark:bg-gray-700 transition-colors duration-300"
+                placeholder="Enter text or Morse code here..."
+              ></textarea>
+            </div>
+
+            <!-- Output Section -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <label
+                for="output"
+                class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                >Output</label
+              >
+              <div class="relative">
+                <textarea
+                  id="output"
+                  x-text="output"
+                  rows="4"
+                  class="w-full px-3 py-2 text-gray-700 dark:text-gray-300 border rounded-md bg-gray-100 dark:bg-gray-600 transition-colors duration-300"
+                  readonly
+                ></textarea>
+                <div
+                  x-show="output"
+                  class="absolute top-2 right-2 flex space-x-2"
+                >
+                  <button
+                    @click="copyToClipboard"
+                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    title="Copy to clipboard"
+                  >
+                    <i class="fas fa-copy"></i>
+                  </button>
+                  <button
+                    @click="speakOutput"
+                    class="text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+                    title="Speak output"
+                  >
+                    <i class="fas fa-volume-up"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Controls -->
+            <div
+              class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6 space-y-4"
+            >
+              <div class="flex flex-wrap justify-between items-center gap-4">
+                <div class="space-x-2">
+                  <button
+                    @click="setMode('to_morse')"
+                    :class="{'bg-indigo-600 dark:bg-indigo-500': mode === 'to_morse', 'bg-gray-400 dark:bg-gray-600': mode !== 'to_morse'}"
+                    class="px-4 py-2 rounded text-white font-semibold transition duration-300 ease-in-out"
+                  >
+                    Text to Morse
+                  </button>
+                  <button
+                    @click="setMode('from_morse')"
+                    :class="{'bg-indigo-600 dark:bg-indigo-500': mode === 'from_morse', 'bg-gray-400 dark:bg-gray-600': mode !== 'from_morse'}"
+                    class="px-4 py-2 rounded text-white font-semibold transition duration-300 ease-in-out"
+                  >
+                    Morse to Text
+                  </button>
+                </div>
+                <button
+                  @click="shareConversion"
+                  class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+                >
+                  <i class="fas fa-share-alt mr-2"></i> Share
+                </button>
+              </div>
+
+              <div>
+                <label
+                  for="speed"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Morse Code Speed</label
+                >
+                <input
+                  type="range"
+                  id="speed"
+                  x-model="speed"
+                  min="1"
+                  max="10"
+                  class="w-full"
+                />
+                <div
+                  class="text-center mt-2 text-gray-700 dark:text-gray-300"
+                  x-text="`Speed: ${speed}`"
+                ></div>
+              </div>
+
+              <div>
+                <label
+                  for="frequency"
+                  class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2"
+                  >Tone Frequency (Hz)</label
+                >
+                <input
+                  type="range"
+                  id="frequency"
+                  x-model="frequency"
+                  min="200"
+                  max="1000"
+                  step="50"
+                  class="w-full"
+                />
+                <div
+                  class="text-center mt-2 text-gray-700 dark:text-gray-300"
+                  x-text="`Frequency: ${frequency} Hz`"
+                ></div>
+              </div>
+
+              <button
+                @click="playMorse"
+                class="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+              >
+                <i class="fas fa-play mr-2"></i> Play Morse Code
+              </button>
+            </div>
+
+            <!-- Visual Morse Code -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <h3
+                class="text-lg font-semibold mb-4 text-gray-700 dark:text-gray-300"
+              >
+                Visual Morse Code
+              </h3>
+              <div class="flex flex-wrap gap-2" id="visualMorse"></div>
+            </div>
+          </div>
+
+          <!-- Right Column: Morse Code Chart and History -->
+          <div class="space-y-6">
+            <!-- Morse Code Chart -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <h2
+                class="text-xl font-bold mb-4 text-indigo-800 dark:text-indigo-200"
+              >
+                Morse Code Chart
+              </h2>
+              <div class="grid grid-cols-2 sm:grid-cols-3 gap-2 text-sm">
+                <template
+                  x-for="(code, letter) in MORSE_CODE_DICT"
+                  :key="letter"
+                >
+                  <div
+                    class="flex justify-between bg-gray-100 dark:bg-gray-700 rounded p-2 transition-colors duration-300"
+                  >
+                    <span
+                      class="font-bold text-gray-700 dark:text-gray-300"
+                      x-text="letter"
+                    ></span>
+                    <span
+                      class="text-gray-600 dark:text-gray-400"
+                      x-text="code"
+                    ></span>
+                  </div>
+                </template>
+              </div>
+            </div>
+
+            <!-- Conversion History -->
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
+              <h2
+                class="text-xl font-bold mb-4 text-indigo-800 dark:text-indigo-200"
+              >
+                Conversion History
+              </h2>
+              <ul class="space-y-2">
+                <template x-for="(item, index) in history" :key="index">
+                  <li
+                    class="bg-gray-100 dark:bg-gray-700 rounded-lg p-3 shadow transition-colors duration-300"
+                  >
+                    <div
+                      class="font-semibold text-gray-700 dark:text-gray-300"
+                      x-text="item.input"
+                    ></div>
+                    <div
+                      class="text-gray-600 dark:text-gray-400"
+                      x-text="item.output"
+                    ></div>
+                  </li>
+                </template>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Share Modal -->
+    <div
+      x-show="showShareModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      x-cloak
+    >
+      <div
+        class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-md w-full m-4"
+      >
+        <h3 class="text-xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+          Share Conversion
+        </h3>
+        <input
+          type="text"
+          x-model="shareLink"
+          class="w-full p-2 border rounded mb-4 bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-200"
+          readonly
+        />
+        <div class="flex justify-end space-x-2">
+          <button
+            @click="copyShareLink"
+            class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+          >
+            Copy Link
+          </button>
+          <button
+            @click="showShareModal = false"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Help Modal -->
+    <div
+      x-show="showHelpModal"
+      class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+      x-cloak
+    >
+      <div
+        class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl max-w-2xl w-full m-4"
+      >
+        <h3 class="text-2xl font-bold mb-4 text-gray-800 dark:text-gray-200">
+          How to Use Morse Code Maestro
+        </h3>
+        <div class="space-y-4 text-gray-700 dark:text-gray-300">
+          <p>
+            1. <strong>Input:</strong> Type your text or Morse code in the input
+            box.
+          </p>
+          <p>
+            2. <strong>Conversion:</strong> Choose "Text to Morse" or "Morse to
+            Text" mode.
+          </p>
+          <p>
+            3. <strong>Output:</strong> See the converted result in the output
+            box.
+          </p>
+          <p>
+            4. <strong>Play:</strong> Click "Play Morse Code" to hear the Morse
+            code audio.
+          </p>
+          <p>
+            5. <strong>Customize:</strong> Adjust speed and frequency using the
+            sliders.
+          </p>
+          <p>
+            6. <strong>Share:</strong> Click "Share" to generate a shareable
+            link.
+          </p>
+          <p>
+            7. <strong>Visual Morse:</strong> See a visual representation of the
+            Morse code below the input/output boxes.
+          </p>
+          <p>
+            8. <strong>History:</strong> View your recent conversions in the
+            sidebar.
+          </p>
+        </div>
+        <div class="mt-6 flex justify-end">
+          <button
+            @click="showHelpModal = false"
+            class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded transition duration-300 ease-in-out"
+          >
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function morseMaestro() {
+        return {
+          input: "",
+          output: "",
+          mode: "to_morse",
+          speed: 5,
+          frequency: 600,
+          history: [],
+          darkMode: false,
+          showShareModal: false,
+          showHelpModal: false,
+          shareLink: "",
+          MORSE_CODE_DICT: {
+            A: ".-",
+            B: "-...",
+            C: "-.-.",
+            D: "-..",
+            E: ".",
+            F: "..-.",
+            G: "--.",
+            H: "....",
+            I: "..",
+            J: ".---",
+            K: "-.-",
+            L: ".-..",
+            M: "--",
+            N: "-.",
+            O: "---",
+            P: ".--.",
+            Q: "--.-",
+            R: ".-.",
+            S: "...",
+            T: "-",
+            U: "..-",
+            V: "...-",
+            W: ".--",
+            X: "-..-",
+            Y: "-.--",
+            Z: "--..",
+            0: "-----",
+            1: ".----",
+            2: "..---",
+            3: "...--",
+            4: "....-",
+            5: ".....",
+            6: "-....",
+            7: "--...",
+            8: "---..",
+            9: "----."
+          },
+          initializeFromURL() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sharedId = urlParams.get("id");
+            if (sharedId) {
+              fetch(`/shared/${sharedId}`)
+                .then((response) => response.json())
+                .then((data) => {
+                  this.input = data.input;
+                  this.mode = data.mode;
+                  this.handleInput();
+                })
+                .catch((error) => console.error("Error:", error));
+            }
+          },
+          handleInput() {
+            if (this.input.trim() === "") {
+              this.output = "";
+              return;
+            }
+            this.convertText();
+          },
+          convertText() {
+            if (this.mode === "to_morse") {
+              this.output = this.textToMorse(this.input);
+            } else {
+              this.output = this.morseToText(this.input);
+            }
+            this.addToHistory();
+            this.updateVisualMorse();
+          },
+          textToMorse(text) {
+            return text
+              .toUpperCase()
+              .split("")
+              .map((char) => {
+                return this.MORSE_CODE_DICT[char] || char;
+              })
+              .join(" ");
+          },
+          morseToText(morse) {
+            const morseToChar = Object.fromEntries(
+              Object.entries(this.MORSE_CODE_DICT).map(([k, v]) => [v, k])
+            );
+            return morse
+              .split(" ")
+              .map((code) => {
+                return morseToChar[code] || code;
+              })
+              .join("");
+          },
+          copyToClipboard() {
+            navigator.clipboard.writeText(this.output).then(() => {
+              alert("Copied to clipboard!");
+            });
+          },
+          speakOutput() {
+            const utterance = new SpeechSynthesisUtterance(this.output);
+            speechSynthesis.speak(utterance);
+          },
+          playMorse() {
+            const morseCode =
+              this.mode === "to_morse" ? this.output : this.input;
+            this.playMorseAudio(morseCode);
+          },
+          playMorseAudio(morseCode) {
+            const audioContext = new (window.AudioContext ||
+              window.webkitAudioContext)();
+            const dotDuration = 1.2 / this.speed;
+            let startTime = audioContext.currentTime;
+
+            morseCode.split("").forEach((char) => {
+              if (char === ".") {
+                this.playBeep(audioContext, startTime, dotDuration);
+                startTime += dotDuration * 2;
+              } else if (char === "-") {
+                this.playBeep(audioContext, startTime, dotDuration * 3);
+                startTime += dotDuration * 4;
+              } else if (char === " ") {
+                startTime += dotDuration * 3;
+              }
+            });
+          },
+          playBeep(audioContext, startTime, duration) {
+            const oscillator = audioContext.createOscillator();
+            oscillator.type = "sine";
+            oscillator.frequency.value = this.frequency;
+
+            const gainNode = audioContext.createGain();
+            gainNode.gain.setValueAtTime(0, startTime);
+            gainNode.gain.linearRampToValueAtTime(1, startTime + 0.01);
+            gainNode.gain.setValueAtTime(1, startTime + duration - 0.01);
+            gainNode.gain.linearRampToValueAtTime(0, startTime + duration);
+
+            oscillator.connect(gainNode);
+            gainNode.connect(audioContext.destination);
+
+            oscillator.start(startTime);
+            oscillator.stop(startTime + duration);
+          },
+          addToHistory() {
+            this.history.unshift({
+              input: this.input,
+              output: this.output
+            });
+            if (this.history.length > 5) {
+              this.history.pop();
+            }
+          },
+          shareConversion() {
+            fetch("/share", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                input: this.input,
+                mode: this.mode
+              })
+            })
+              .then((response) => response.json())
+              .then((data) => {
+                this.shareLink = `https://tanbaycu.vercel.app/mamorse?id=${data.share_id}`;
+                this.showShareModal = true;
+              })
+              .catch((error) => {
+                console.error("Error:", error);
+                alert("An error occurred while generating the share link.");
+              });
+          },
+          copyShareLink() {
+            navigator.clipboard.writeText(this.shareLink).then(() => {
+              alert("Share link copied to clipboard!");
+            });
+          },
+          toggleTheme() {
+            this.darkMode = !this.darkMode;
+          },
+          toggleHelpModal() {
+            this.showHelpModal = !this.showHelpModal;
+          },
+          setMode(newMode) {
+            this.mode = newMode;
+            this.handleInput();
+          },
+          updateVisualMorse() {
+            const visualMorseContainer = document.getElementById("visualMorse");
+            visualMorseContainer.innerHTML = "";
+            const morseCode =
+              this.mode === "to_morse" ? this.output : this.input;
+            morseCode.split("").forEach((char) => {
+              const span = document.createElement("span");
+              span.className = "inline-block w-4 h-4 rounded-full";
+              if (char === ".") {
+                span.classList.add("bg-blue-500", "morse-dot");
+              } else if (char === "-") {
+                span.classList.add("bg-blue-500", "w-8", "morse-dash");
+              } else if (char === " ") {
+                span.classList.add("bg-transparent");
+              }
+              visualMorseContainer.appendChild(span);
+            });
+          }
+        };
+      }
+    </script>
+  </body>
+</html>

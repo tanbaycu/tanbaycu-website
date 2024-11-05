@@ -1,0 +1,753 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>API Status Dashboard - tanbaycu.vercel.app</title>
+    <link
+      rel="icon"
+      type="image/x-icon"
+      href="{{ url_for('static', filename='favicon.ico') }}"
+    />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/moment@2.29.4/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-moment@1.0.1/dist/chartjs-adapter-moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.132.2/build/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <link
+      href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+        background-color: #000;
+        color: #fff;
+      }
+      .glassmorphism {
+        background: rgba(255, 255, 255, 0.05);
+        backdrop-filter: blur(10px);
+        border-radius: 10px;
+        border: 1px solid rgba(255, 255, 255, 0.1);
+      }
+      .neon-border {
+        box-shadow: 0 0 5px #fff, 0 0 10px #fff, 0 0 15px #fff, 0 0 20px #0ff,
+          0 0 35px #0ff, 0 0 40px #0ff, 0 0 50px #0ff, 0 0 75px #0ff;
+      }
+      .animate-pulse {
+        animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      #vanta-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+      }
+      .chart-container {
+        position: relative;
+        height: 50vh;
+      }
+      .status-indicator {
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 5px;
+      }
+      .status-up {
+        background-color: #10b981;
+      }
+      .status-down {
+        background-color: #ef4444;
+      }
+      .status-degraded {
+        background-color: #f59e0b;
+      }
+
+      /* New styles for improved mobile layout */
+      @media (max-width: 640px) {
+        .mobile-full-width {
+          width: 100%;
+        }
+        .mobile-stack {
+          flex-direction: column;
+        }
+        .mobile-scroll {
+          overflow-x: auto;
+        }
+      }
+    </style>
+  </head>
+  <body class="text-white">
+    
+
+    <div class="container mx-auto p-4 md:p-8">
+      <div class="glassmorphism p-6 md:p-8 mb-8">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 mobile-stack"
+        >
+          <div>
+            <h1
+              class="text-3xl md:text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
+            >
+              API Status Dashboard
+            </h1>
+            <p class="text-lg text-gray-300">tanbaycu.vercel.app</p>
+          </div>
+          <div class="mt-4 md:mt-0 text-right">
+            <p class="text-sm text-gray-400">
+              Last checked:
+              <span id="last-checked" class="font-medium text-blue-300"
+                >Checking...</span
+              >
+            </p>
+            <p class="text-sm text-gray-400 mt-1">
+              Next check in:
+              <span id="next-check" class="font-medium text-blue-300">30s</span>
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-12">
+          <div class="glassmorphism p-6 col-span-1 mobile-full-width">
+            <h2 class="text-2xl font-semibold mb-6 text-blue-300">
+              System Health
+            </h2>
+            <div id="system-health-chart" class="h-64"></div>
+            <div
+              id="status-summary"
+              class="grid grid-cols-2 gap-4 text-center mt-6"
+            >
+              <div class="glassmorphism p-4">
+                <p
+                  class="text-2xl text-green-400 font-semibold"
+                  id="operational-count"
+                >
+                  0
+                </p>
+                <p class="text-sm text-green-300 mt-1">Operational</p>
+              </div>
+              <div class="glassmorphism p-4">
+                <p
+                  class="text-2xl text-yellow-400 font-semibold"
+                  id="degraded-count"
+                >
+                  0
+                </p>
+                <p class="text-sm text-yellow-300 mt-1">Degraded</p>
+              </div>
+              <div class="glassmorphism p-4">
+                <p class="text-2xl text-red-400 font-semibold" id="down-count">
+                  0
+                </p>
+                <p class="text-sm text-red-300 mt-1">Down</p>
+              </div>
+              <div class="glassmorphism p-4">
+                <p
+                  class="text-2xl text-blue-400 font-semibold"
+                  id="total-count"
+                >
+                  {{ routes|length }}
+                </p>
+                <p class="text-sm text-blue-300 mt-1">Total Services</p>
+              </div>
+            </div>
+          </div>
+          <div class="glassmorphism p-6 col-span-2 mobile-full-width">
+            <h2 class="text-2xl font-semibold mb-6 text-blue-300">
+              Response Time Analysis
+            </h2>
+            <div id="response-time-analysis" class="h-96"></div>
+          </div>
+        </div>
+
+        <div class="mb-12 mobile-scroll">
+          <h2 class="text-2xl font-semibold mb-6 text-blue-300">
+            Service Performance Matrix
+          </h2>
+          <div class="overflow-x-auto">
+            <table class="min-w-full glassmorphism">
+              <thead>
+                <tr>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                  >
+                    Service
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                  >
+                    Status
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                  >
+                    Response Time
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                  >
+                    Uptime (24h)
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                  >
+                    Load
+                  </th>
+                  <th
+                    class="px-6 py-3 text-left text-xs font-medium text-gray-300 uppercase tracking-wider"
+                  >
+                    Trend
+                  </th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-700" id="status-table">
+                {% for route in routes %}
+                <tr
+                  hx-get="{{ url_for('check_route_status', path=route.path) }}"
+                  hx-trigger="load, every 30s"
+                >
+                  <td
+                    class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-300"
+                  >
+                    {{ route.name }}
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    Checking...
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    -
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    -
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    -
+                  </td>
+                  <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">
+                    -
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="mb-12">
+          <h2 class="text-2xl font-semibold mb-6 text-blue-300">
+            Real-time Service Monitoring
+          </h2>
+          <div
+            class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+            id="real-time-charts"
+          >
+            {% for route in routes %}
+            <div class="glassmorphism p-4">
+              <h3 class="text-lg font-semibold mb-2 text-gray-300">
+                {{ route.name }}
+              </h3>
+              <div
+                id="chart-{{ route.name | replace(' ', '-') | lower }}"
+                class="h-40"
+              ></div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+
+        <div class="mb-12">
+          <h2 class="text-2xl font-semibold mb-6 text-blue-300">
+            Incident Timeline
+          </h2>
+          <div id="incident-timeline" class="h-96"></div>
+        </div>
+
+        <div class="mb-12">
+          <h2 class="text-2xl font-semibold mb-6 text-blue-300">
+            Predictive Analytics
+          </h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="glassmorphism p-4">
+              <h3 class="text-lg font-semibold mb-2 text-gray-300">
+                Response Time Forecast
+              </h3>
+              <div id="response-time-forecast" class="h-64"></div>
+            </div>
+            <div class="glassmorphism p-4">
+              <h3 class="text-lg font-semibold mb-2 text-gray-300">
+                Anomaly Detection
+              </h3>
+              <div id="anomaly-detection" class="h-64"></div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          hx-get="{{ url_for('check_all_routes') }}"
+          hx-target="#status-table"
+          class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-lg transition duration-300 shadow-md hover:shadow-lg neon-border"
+        >
+          Refresh All Statuses
+        </button>
+      </div>
+    </div>
+    <script>
+      // Vanta.js background
+      VANTA.NET({
+        el: "#vanta-background",
+        mouseControls: true,
+        touchControls: true,
+        gyroControls: false,
+        minHeight: 200.0,
+        minWidth: 200.0,
+        scale: 1.0,
+        scaleMobile: 1.0,
+        color: 0x3498db,
+        backgroundColor: 0x000000
+      });
+
+      let responseTimeData = {};
+      let trendData = {};
+      let realTimeCharts = {};
+
+      document.body.addEventListener("htmx:afterSwap", function (event) {
+        updateSystemHealth();
+        updateResponseTimeAnalysis();
+        updateRealTimeCharts();
+        updateIncidentTimeline();
+        updatePredictiveAnalytics();
+      });
+
+      function updateSystemHealth() {
+        const totalServices =
+          document.querySelectorAll("#status-table tr").length;
+        const upServices = document.querySelectorAll(".status-up").length;
+        const degradedServices =
+          document.querySelectorAll(".status-degraded").length;
+        const downServices = document.querySelectorAll(".status-down").length;
+
+        document.getElementById("operational-count").textContent = upServices;
+        document.getElementById("degraded-count").textContent =
+          degradedServices;
+        document.getElementById("down-count").textContent = downServices;
+
+        const options = {
+          series: [upServices, degradedServices, downServices],
+          chart: {
+            type: "radialBar",
+            height: 250,
+            background: "transparent"
+          },
+          plotOptions: {
+            radialBar: {
+              dataLabels: {
+                name: {
+                  fontSize: "22px"
+                },
+                value: {
+                  fontSize: "16px"
+                },
+                total: {
+                  show: true,
+                  label: "Total",
+                  formatter: function (w) {
+                    return totalServices;
+                  }
+                }
+              }
+            }
+          },
+          labels: ["Operational", "Degraded", "Down"],
+          colors: ["#10B981", "#F59E0B", "#EF4444"]
+        };
+
+        if (window.systemHealthChart) {
+          window.systemHealthChart.updateOptions(options);
+        } else {
+          window.systemHealthChart = new ApexCharts(
+            document.querySelector("#system-health-chart"),
+            options
+          );
+          window.systemHealthChart.render();
+        }
+
+        document.getElementById("last-checked").textContent =
+          new Date().toLocaleTimeString();
+      }
+
+      function updateResponseTimeAnalysis() {
+        const options = {
+          series: Object.keys(trendData).map((service) => ({
+            name: service,
+            data: trendData[service]
+          })),
+
+          chart: {
+            type: "area",
+            height: 350,
+            stacked: true,
+            background: "transparent"
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: "smooth"
+          },
+          fill: {
+            type: "gradient",
+            gradient: {
+              opacityFrom: 0.6,
+              opacityTo: 0.8
+            }
+          },
+          legend: {
+            position: "top",
+            horizontalAlign: "left"
+          },
+          xaxis: {
+            type: "datetime"
+          },
+          yaxis: {
+            title: {
+              text: "Response Time (ms)"
+            }
+          },
+          tooltip: {
+            x: {
+              format: "dd/MM/yy HH:mm"
+            }
+          }
+        };
+
+        if (window.responseTimeAnalysisChart) {
+          window.responseTimeAnalysisChart.updateOptions(options);
+        } else {
+          window.responseTimeAnalysisChart = new ApexCharts(
+            document.querySelector("#response-time-analysis"),
+            options
+          );
+          window.responseTimeAnalysisChart.render();
+        }
+      }
+
+      function updateRealTimeCharts() {
+        Object.keys(responseTimeData).forEach((service) => {
+          const chartId = `chart-${service.toLowerCase().replace(/ /g, "-")}`;
+          const options = {
+            series: [
+              {
+                data: responseTimeData[service].slice(-30)
+              }
+            ],
+            chart: {
+              id: chartId,
+              height: 160,
+              type: "line",
+              animations: {
+                enabled: true,
+                easing: "linear",
+                dynamicAnimation: {
+                  speed: 1000
+                }
+              },
+              toolbar: {
+                show: false
+              },
+              zoom: {
+                enabled: false
+              },
+              background: "transparent"
+            },
+            dataLabels: {
+              enabled: false
+            },
+            stroke: {
+              curve: "smooth"
+            },
+            markers: {
+              size: 0
+            },
+            xaxis: {
+              type: "datetime",
+              range: 30 * 1000
+            },
+            yaxis: {
+              max: 1000
+            },
+            legend: {
+              show: false
+            },
+            grid: {
+              show: false
+            }
+          };
+
+          if (realTimeCharts[service]) {
+            realTimeCharts[service].updateOptions(options);
+          } else {
+            realTimeCharts[service] = new ApexCharts(
+              document.querySelector(`#${chartId}`),
+              options
+            );
+            realTimeCharts[service].render();
+          }
+        });
+      }
+
+      function updateIncidentTimeline() {
+        const incidents = [
+          {
+            x: "API Check",
+            y: [
+              new Date("2023-05-15T10:00:00").getTime(),
+              new Date("2023-05-15T11:00:00").getTime()
+            ]
+          },
+          {
+            x: "URL Shortener",
+            y: [
+              new Date("2023-05-16T14:00:00").getTime(),
+              new Date("2023-05-16T15:00:00").getTime()
+            ]
+          },
+          {
+            x: "File Upload",
+            y: [
+              new Date("2023-05-17T09:00:00").getTime(),
+              new Date("2023-05-17T09:30:00").getTime()
+            ]
+          }
+        ];
+
+        const options = {
+          series: [
+            {
+              data: incidents
+            }
+          ],
+          chart: {
+            height: 350,
+            type: "rangeBar",
+            background: "transparent"
+          },
+          plotOptions: {
+            bar: {
+              horizontal: true
+            }
+          },
+          xaxis: {
+            type: "datetime"
+          },
+          fill: {
+            type: "gradient",
+            gradient: {
+              shade: "light",
+              type: "vertical",
+              shadeIntensity: 0.25,
+              gradientToColors: undefined,
+              inverseColors: true,
+              opacityFrom: 1,
+              opacityTo: 1,
+              stops: [50, 0, 100, 100]
+            }
+          },
+          legend: {
+            position: "top"
+          }
+        };
+
+        if (window.incidentTimelineChart) {
+          window.incidentTimelineChart.updateOptions(options);
+        } else {
+          window.incidentTimelineChart = new ApexCharts(
+            document.querySelector("#incident-timeline"),
+            options
+          );
+          window.incidentTimelineChart.render();
+        }
+      }
+
+      function updatePredictiveAnalytics() {
+        // Response Time Forecast
+        const forecastOptions = {
+          series: [
+            {
+              name: "Actual",
+              data: [31, 40, 28, 51, 42, 109, 100]
+            },
+            {
+              name: "Forecast",
+              data: [11, 32, 45, 32, 34, 52, 41]
+            }
+          ],
+          chart: {
+            height: 250,
+            type: "area",
+            background: "transparent"
+          },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: "smooth"
+          },
+          xaxis: {
+            type: "datetime",
+            categories: [
+              "2018-09-19T00:00:00.000Z",
+              "2018-09-19T01:30:00.000Z",
+              "2018-09-19T02:30:00.000Z",
+              "2018-09-19T03:30:00.000Z",
+              "2018-09-19T04:30:00.000Z",
+              "2018-09-19T05:30:00.000Z",
+              "2018-09-19T06:30:00.000Z"
+            ]
+          },
+          tooltip: {
+            x: {
+              format: "dd/MM/yy HH:mm"
+            }
+          }
+        };
+
+        if (window.forecastChart) {
+          window.forecastChart.updateOptions(forecastOptions);
+        } else {
+          window.forecastChart = new ApexCharts(
+            document.querySelector("#response-time-forecast"),
+            forecastOptions
+          );
+          window.forecastChart.render();
+        }
+
+        // Anomaly Detection
+        const anomalyOptions = {
+          series: [
+            {
+              name: "Response Time",
+              data: [31, 40, 28, 51, 42, 109, 100, 31, 40, 28, 51, 42, 109, 100]
+            }
+          ],
+          chart: {
+            height: 250,
+            type: "line",
+            background: "transparent"
+          },
+          stroke: {
+            width: 5,
+            curve: "smooth"
+          },
+          xaxis: {
+            type: "datetime",
+            categories: [
+              "1/11/2000",
+              "2/11/2000",
+              "3/11/2000",
+              "4/11/2000",
+              "5/11/2000",
+              "6/11/2000",
+              "7/11/2000",
+              "8/11/2000",
+              "9/11/2000",
+              "10/11/2000",
+              "11/11/2000",
+              "12/11/2000",
+              "1/11/2001",
+              "2/11/2001"
+            ]
+          },
+          annotations: {
+            points: [
+              {
+                x: new Date("11/11/2000").getTime(),
+                y: 109,
+                marker: {
+                  size: 8,
+                  fillColor: "#ff0000",
+                  strokeColor: "#fff",
+                  radius: 2
+                },
+                label: {
+                  text: "Anomaly Detected"
+                }
+              }
+            ]
+          },
+          fill: {
+            type: "gradient",
+            gradient: {
+              shade: "dark",
+              gradientToColors: ["#FDD835"],
+              shadeIntensity: 1,
+              type: "horizontal",
+              opacityFrom: 1,
+              opacityTo: 1,
+              stops: [0, 100, 100, 100]
+            }
+          },
+          markers: {
+            size: 4,
+            colors: ["#FFA41B"],
+            strokeColors: "#fff",
+            strokeWidth: 2,
+            hover: {
+              size: 7
+            }
+          },
+          yaxis: {
+            min: 0,
+            max: 120,
+            title: {
+              text: "Response Time"
+            }
+          }
+        };
+
+        if (window.anomalyChart) {
+          window.anomalyChart.updateOptions(anomalyOptions);
+        } else {
+          window.anomalyChart = new ApexCharts(
+            document.querySelector("#anomaly-detection"),
+            anomalyOptions
+          );
+          window.anomalyChart.render();
+        }
+      }
+
+      setInterval(function () {
+        const nextCheckSpan = document.getElementById("next-check");
+        let secondsLeft = parseInt(nextCheckSpan.textContent);
+        if (secondsLeft > 0) {
+          nextCheckSpan.textContent = secondsLeft - 1 + "s";
+        } else {
+          nextCheckSpan.textContent = "30s";
+        }
+      }, 1000);
+
+      // Initial calls
+      updateSystemHealth();
+      updateResponseTimeAnalysis();
+      updateIncidentTimeline();
+      updatePredictiveAnalytics();
+    </script>
+  </body>
+</html>
