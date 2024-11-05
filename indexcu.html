@@ -1,786 +1,1152 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="vi">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Trivia Cosmos</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-      rel="stylesheet"
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
     />
+    <title>Tân 7 Cú - Dự án Web Senior Đầu Tay</title>
+    <meta
+      name="description"
+      content="Khám phá các công cụ trực tuyến hữu ích như tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!"
+    />
+    <meta
+      name="keywords"
+      content="tải lên tệp, rút gọn liên kết, tạo mã QR, kiểm tra API, dự báo thời tiết"
+    />
+    <meta name="author" content="Tân 7 Cú" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      property="og:title"
+      content="Trang Chủ - Công Cụ Hữu Ích Trực Tuyến"
+    />
+    <meta
+      property="og:description"
+      content="Khám phá các công cụ trực tuyến hữu ích. Tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!"
+    />
+    <meta
+      property="og:image"
+      content="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png"
+    />
+    <meta property="og:url" content="https://tanbaycu.vercel.app" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Trang Chủ - Công Cụ Hữu Ích Trực Tuyến"
+    />
+    <meta
+      name="twitter:description"
+      content="Khám phá công cụ trực tuyến hữu ích. Tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png"
+    />
+    <link rel="canonical" href="https://tanbaycu.vercel.app" />
     <link
       rel="icon"
       type="image/png"
       href="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png"
     />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap");
+      :root {
+        --primary-color: #6c63ff;
+        --secondary-color: #4caf50;
+        --background: #0f172a;
+        --surface: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --accent: #ffa500;
+        --font-size-base: 16px;
+        --spacing-unit: 1rem;
+      }
+
+      html {
+        font-size: var(--font-size-base);
+      }
 
       body {
-        font-family: "Space Grotesk", sans-serif;
-        background: #000000;
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.5;
         overflow-x: hidden;
+        font-size: 1rem;
       }
 
-      .star {
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .navbar {
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: var(--spacing-unit) 0;
+        transition: all 0.3s ease;
+      }
+
+      .navbar-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .nav-links a,
+      .menu-button {
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        font-size: 1rem;
+        padding: 0.5rem;
+      }
+
+      .nav-links a:hover,
+      .menu-button:hover {
+        color: var(--accent);
+      }
+
+      .menu-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      .menu-button svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Hero Section Styles */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        padding: 4rem 1rem;
+      }
+
+      .hero::before {
+        content: "";
         position: absolute;
-        width: 2px;
-        height: 2px;
-        background: #ffffff;
-        border-radius: 50%;
-        animation: twinkle 5s infinite;
-      }
-
-      @keyframes twinkle {
-        0% {
-          opacity: 0;
-        }
-        50% {
-          opacity: 1;
-        }
-        100% {
-          opacity: 0;
-        }
-      }
-
-      .planet {
-        position: absolute;
-        border-radius: 50%;
-        animation: orbit 30s linear infinite;
-      }
-
-      @keyframes orbit {
-        from {
-          transform: rotate(0deg) translateX(100px) rotate(0deg);
-        }
-        to {
-          transform: rotate(360deg) translateX(100px) rotate(-360deg);
-        }
-      }
-
-      .hexagon {
-        clip-path: polygon(
-          25% 0%,
-          75% 0%,
-          100% 50%,
-          75% 100%,
-          25% 100%,
-          0% 50%
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          45deg,
+          rgba(108, 99, 255, 0.2),
+          rgba(76, 175, 80, 0.2)
         );
+        z-index: -1;
       }
 
-      .glow {
-        box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff,
-          0 0 40px #00ffff;
+      .hero-content {
+        max-width: 800px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        margin-bottom: 1rem;
+        animation: fadeInUp 1s ease;
+      }
+
+      .hero p {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        animation: fadeInUp 1s ease 0.2s;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Features Section Styles */
+      .features {
+        padding: 4rem 1rem;
+        background-color: var(--surface);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .feature-card {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+
+      .feature-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-description {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* Action Buttons Styles */
+      .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .action-button {
+        background-color: var(--primary-color);
+        color: var(--text-primary);
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 250px;
+      }
+
+      .action-button:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-3px);
+      }
+
+      /* Off-canvas Menu Styles */
+      .off-canvas-menu {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 80%;
+        max-width: 300px;
+        height: 100%;
+        background-color: var(--surface);
+        z-index: 2000;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .off-canvas-menu.open {
+        left: 0;
+      }
+
+      .menu-header {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--primary-color);
+      }
+
+      .menu-logo {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: 10px;
+        border-radius: 50%;
+      }
+
+      .menu-header h2 {
+        color: var(--text-primary);
+        font-size: 1.2rem;
+        margin: 0;
+      }
+
+      .menu-nav {
+        padding: 20px 0;
+      }
+
+      .menu-nav a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .menu-nav a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .menu-nav i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+        width: 20px;
+        text-align: center;
+      }
+
+      .close-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      /* Footer Styles */
+      .footer {
+        background-color: var(--surface);
+        color: var(--text-secondary);
+        padding: 2rem 1rem;
+        text-align: center;
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .footer-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-size: 0.9rem;
+      }
+
+      .footer-links a:hover {
+        color: var(--accent);
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .social-icons a {
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        transition: color 0.3s ease;
+      }
+
+      .social-icons a:hover {
+        color: var(--accent);
+      }
+      /* Styles mới cho Animated Counters */
+      .counters-section {
+        padding: 4rem 0;
+        background-color: var(--surface);
+      }
+
+      .counters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .counter-item {
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--background);
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .counter-item:hover {
+        transform: translateY(-5px);
+      }
+
+      .counter-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .counter {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--text-primary);
+      }
+
+      .counter-label {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 1rem;
+        color: var(--text-secondary);
+      }
+
+      /* Styles mới cho Carousel */
+      .carousel-section {
+        padding: 4rem 0;
+        background-color: var(--background);
+      }
+
+      .carousel {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+
+      .carousel-inner {
+        display: flex;
+        transition: transform 0.5s ease;
+      }
+
+      .carousel-item {
+        flex: 0 0 100%;
+        position: relative;
+      }
+
+      .carousel-item img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+
+      .carousel-caption {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .carousel-control {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        font-size: 1.5rem;
+        padding: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .carousel-control:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      .carousel-control.prev {
+        left: 10px;
+      }
+
+      .carousel-control.next {
+        right: 10px;
+      }
+
+      /* Styles mới cho Newsletter Signup */
+      .newsletter-section {
+        padding: 4rem 0;
+        background-color: var(--surface);
+        text-align: center;
+      }
+
+      .newsletter-form {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      .newsletter-form input[type="email"] {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 4px 0 0 4px;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .newsletter-form button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        background-color: var(--primary-color);
+        color: var(--text-primary);
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .newsletter-form button:hover {
+        background-color: var(--secondary-color);
       }
     </style>
   </head>
-  <body class="h-full text-white flex items-center justify-center p-4">
-    <div id="stars-container"></div>
-    <div class="planet bg-purple-500 w-20 h-20 opacity-50"></div>
-    <div
-      class="planet bg-blue-500 w-16 h-16 opacity-50"
-      style="animation-duration: 40s; animation-delay: -10s"
-    ></div>
 
-    <div id="game-container" class="relative z-10 w-full max-w-4xl">
-      <header class="text-center mb-8">
-        <h1
-          class="text-5xl font-bold mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-600"
-        >
-          Trivia Cosmos
-        </h1>
-        <p id="category" class="text-lg text-blue-300"></p>
-      </header>
-
-      <main class="space-y-8">
-        <div id="loading" class="text-center py-10">
-          <div
-            class="inline-block animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"
-          ></div>
-          <p class="mt-4 text-xl text-blue-300" data-lang-key="loading">
-            Exploring the universe of knowledge...
-          </p>
+  <body>
+    <nav class="navbar">
+      <div class="container navbar-content">
+        <div class="nav-links">
+          <a href="{{ url_for('homepage', refresh=time()) }}">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </a>
+          <a href="/about-me">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"
+              />
+              <circle cx="12" cy="10" r="3" />
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+          </a>
+          <a href="/dev">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"
+              ></path>
+              <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+            </svg>
+          </a>
         </div>
-
-        <div
-          id="error"
-          class="hidden bg-red-900 border-l-4 border-red-500 text-red-300 p-4 mb-4 rounded"
-          role="alert"
-        >
-          <p class="font-bold" data-lang-key="error">Error</p>
-          <p></p>
-          <button
-            id="retry-btn"
-            class="mt-2 bg-red-700 text-white px-4 py-2 rounded hover:bg-red-600 transition duration-300"
-            data-lang-key="retry"
+        <button class="menu-button" id="menu-toggle" aria-label="Open menu">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
           >
-            Retry
-          </button>
-        </div>
-
-        <div id="question-container" class="hidden">
-          <div
-            class="hexagon bg-gradient-to-br from-blue-900 to-purple-900 p-6 glow"
-          >
-            <h2 id="question" class="text-2xl font-semibold mb-4"></h2>
-            <div
-              id="timer"
-              class="text-right text-sm font-bold text-blue-300"
-            ></div>
-          </div>
-          <div
-            id="answers"
-            class="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-6"
-          ></div>
-        </div>
-
-        <div
-          id="result"
-          class="hidden text-center mt-6 bg-gradient-to-r from-blue-900 to-purple-900 p-6 rounded-lg"
-        >
-          <p id="result-text" class="text-3xl font-bold mb-3"></p>
-          <p id="correct-answer" class="text-lg text-green-400 mb-2"></p>
-          <p id="explanation" class="text-blue-200 italic"></p>
-        </div>
-      </main>
-
-      <footer class="mt-8 flex justify-between items-center">
-        <div
-          class="bg-gradient-to-r from-blue-900 to-purple-900 p-4 rounded-lg"
-        >
-          <p id="score" class="text-lg font-semibold">Score: 0</p>
-          <p id="streak" class="text-sm text-blue-300">Streak: 0</p>
-        </div>
-        <button
-          id="next-btn"
-          class="hidden bg-gradient-to-r from-blue-500 to-purple-500 text-white px-6 py-3 rounded-full hover:from-blue-600 hover:to-purple-600 transition duration-300 transform hover:scale-105"
-          data-lang-key="next_question"
-        >
-          Next Question
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
         </button>
-        <button
-          id="settings-btn"
-          class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-4 py-2 rounded-full hover:from-green-600 hover:to-blue-600 transition duration-300 transform hover:scale-105"
+      </div>
+    </nav>
+
+    <div class="off-canvas-menu" id="off-canvas-menu">
+      <button id="close-menu" class="close-menu" aria-label="Close menu">
+        &times;
+      </button>
+      <div class="menu-header">
+        <img
+          src="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png"
+          alt="Tân 7 Cú Logo"
+          class="menu-logo"
+        />
+        <h2>Tân 7 Cú</h2>
+      </div>
+      <nav class="menu-nav">
+        <a href="/upload_file"><i class="fas fa-upload"></i>Upload tệp</a>
+        <a href="/aichat"><i class="fas fa-robot"></i> Chat với Gemini</a>
+        <a href="/shorten-link"><i class="fas fa-link"></i>Rút gọn link</a>
+        <a href="/api-check"><i class="fas fa-code"></i>Kiểm tra API</a>
+        <a href="/qrcode"><i class="fas fa-qrcode"></i>Tạo mã QRCODE</a>
+        <a href="/clipython"><i class="fab fa-python"></i>Trình chạy Python</a>
+        <a href="/facts"><i class="fas fa-lightbulb"></i>Fact</a>
+        <a href="/trivia"><i class="fas fa-brain"></i> Trivia</a>
+        <a href="/ipconfig"><i class="fas fa-network-wired"></i>IP check</a>
+        <a href="/weather"><i class="fas fa-cloud-sun"></i>Dự báo thời tiết</a>
+        <a href="/urldownload"><i class="fas fa-download"></i>Download Video</a>
+        <a href="/random-image"><i class="fas fa-image"></i>Random Image</a>
+        <a href="/news"><i class="fas fa-newspaper"></i>Tin tức</a>
+        <a href="/pdf"><i class="fas fa-file-pdf"></i>PDF</a>
+        <a href="/mamorse"
+          ><i class="fa fa-assistive-listening-systems"></i>Mã morse</a
         >
-          <i class="fas fa-cog mr-2"></i> Settings
-        </button>
-      </footer>
+        <a href="/spotify"><i class="fab fa-spotify"></i>Clone Spotify</a>
+        <a href="/crypto"><i class="fab fa-bitcoin"></i> Bitcoin</a>
+        <a href="/formatcode"
+          ><i class="fas fa-file-code"></i>Code Beautifier</a
+        >
+        <a href="/password"><i class="fas fa-key"></i>Check Password</a>
+        <a href="/country"
+          ><i class="fas fa-globe"></i>Xem thông tin các nước</a
+        >
+        <a href="/bmi"><i class="fas fa-weight"></i>Tính BMI</a>
+        <a href="/math"><i class="fas fa-calculator"></i>Làm toán</a>
+        <a href="/documents"><i class="fas fa-clipboard"></i> API Documents</a>
+        <a href="/about"><i class="fas fa-info-circle"></i>About</a>
+        <a href="/tools"><i class="fas fa-tools"></i> More Tools</a>
+        <a href="/webapp"><i class="fas fa-tools"></i> More Webapp</a>
+      </nav>
     </div>
 
-    <div
-      id="settings-modal"
-      class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center hidden z-50"
-    >
-      <div
-        class="bg-gradient-to-br from-blue-900 to-purple-900 p-8 rounded-lg w-full max-w-md mx-4 glow"
-      >
-        <h2
-          class="text-3xl font-bold mb-6 text-center text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400"
-          data-lang-key="game_settings"
-        >
-          Cosmic Settings
-        </h2>
-        <div class="space-y-6">
-          <div>
-            <label
-              for="language"
-              class="block text-sm font-medium text-blue-300"
-              data-lang-key="language"
-              >Language:</label
-            >
-            <select
-              id="language"
-              class="mt-1 block w-full pl-3 pr-10 py-2 text-white bg-blue-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="en">English</option>
-              <option value="vi">Tiếng Việt</option>
-            </select>
+    <div class="overlay" id="overlay"></div>
+
+    <header class="hero">
+      <div class="container hero-content">
+        <h1>Chào mừng bạn đến với Website của tôi</h1>
+        <p>Khám phá các công cụ trực tuyến hữu ích ngay tại đây!</p>
+        <div class="action-buttons">
+          <a href="/upload_file" class="action-button">Upload File</a>
+          <a href="/aichat" class="action-button">Gemini AI</a>
+          <a href="/shorten-link" class="action-button">Shorten Link</a>
+          <a href="/api-check" class="action-button">API Checker</a>
+          <a href="/qrcode" class="action-button">QR Code Generator</a>
+          <a href="/formatcode" class="action-button">Format Code</a>
+        </div>
+      </div>
+    </header>
+    <section class="counters-section">
+      <div class="container">
+        <h2>Thống kê ấn tượng</h2>
+        <div class="counters-grid">
+          <div class="counter-item">
+            <i class="fas fa-users counter-icon"></i>
+            <span class="counter" data-target="1785632711">0</span>
+            <span class="counter-label">Page views</span>
           </div>
-          <div>
-            <label
-              for="difficulty"
-              class="block text-sm font-medium text-blue-300"
-              data-lang-key="difficulty"
-              >Difficulty:</label
-            >
-            <select
-              id="difficulty"
-              class="mt-1 block w-full pl-3 pr-10 py-2 text-white bg-blue-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="easy" data-lang-key="easy">Novice Explorer</option>
-              <option value="medium" data-lang-key="medium">
-                Space Adventurer
-              </option>
-              <option value="hard" data-lang-key="hard">Cosmic Master</option>
-            </select>
+          <div class="counter-item">
+            <i class="fas fa-tools counter-icon"></i>
+            <span class="counter" data-target="25">0</span>
+            <span class="counter-label">Công cụ</span>
           </div>
-          <div>
-            <label
-              for="category-select"
-              class="block text-sm font-medium text-blue-300"
-              data-lang-key="category"
-              >Category:</label
-            >
-            <select
-              id="category-select"
-              class="mt-1 block w-full pl-3 pr-10 py-2 text-white bg-blue-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            >
-              <option value="" data-lang-key="any_category">
-                All Cosmic Realms
-              </option>
-            </select>
-          </div>
-          <div>
-            <label
-              for="question-count"
-              class="block text-sm font-medium text-blue-300"
-              data-lang-key="question_count"
-              >Number of Questions:</label
-            >
-            <input
-              type="number"
-              id="question-count"
-              min="1"
-              max="50"
-              value="10"
-              class="mt-1 block w-full pl-3 pr-10 py-2 text-white bg-blue-800 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            />
+          <div class="counter-item">
+            <i class="fas fa-globe counter-icon"></i>
+            <span class="counter" data-target="11">0</span>
+            <span class="counter-label">Thành viên</span>
           </div>
         </div>
-        <div class="mt-8 flex justify-end">
-          <button
-            id="save-settings"
-            class="bg-gradient-to-r from-green-500 to-blue-500 text-white px-6 py-2 rounded-full hover:from-green-600 hover:to-blue-600 transition duration-300 transform hover:scale-105"
-            data-lang-key="save_and_start"
-          >
-            Launch Mission
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="container">
+        <h2>Các công cụ và tính năng</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-upload"></i></div>
+            <h3 class="feature-title">Upload tệp</h3>
+            <p class="feature-description">
+              Tải lên và quản lý tệp của bạn một cách dễ dàng
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-robot"></i></div>
+            <h3 class="feature-title">Chat với Gemini</h3>
+            <p class="feature-description">
+              Trò chuyện thông minh với AI Gemini
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-link"></i></div>
+            <h3 class="feature-title">Rút gọn link</h3>
+            <p class="feature-description">Tạo liên kết ngắn gọn nhanh chóng</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-code"></i></div>
+            <h3 class="feature-title">Kiểm tra API</h3>
+            <p class="feature-description">
+              Công cụ mạnh mẽ để kiểm tra và debug API
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
+            <h3 class="feature-title">Tạo mã QRCODE</h3>
+            <p class="feature-description">
+              Tạo mã QR tùy chỉnh cho mọi mục đích
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fab fa-python"></i></div>
+            <h3 class="feature-title">Trình chạy Python</h3>
+            <p class="feature-description">
+              Chạy và kiểm tra mã Python trực tuyến
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+            <h3 class="feature-title">Fact</h3>
+            <p class="feature-description">
+              Khám phá những sự thật thú vị mỗi ngày
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-brain"></i></div>
+            <h3 class="feature-title">Trivia</h3>
+            <p class="feature-description">
+              Thử thách kiến thức của bạn với câu đố thú vị
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-network-wired"></i></div>
+            <h3 class="feature-title">IP check</h3>
+            <p class="feature-description">
+              Kiểm tra thông tin IP và mạng của bạn
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-cloud-sun"></i></div>
+            <h3 class="feature-title">Dự báo thời tiết</h3>
+            <p class="feature-description">Xem thông tin thời tiết cập nhật</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-download"></i></div>
+            <h3 class="feature-title">Download Video</h3>
+            <p class="feature-description">
+              Tải video từ các nền tảng trực tuyến
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-image"></i></div>
+            <h3 class="feature-title">Random Image</h3>
+            <p class="feature-description">
+              Khám phá hình ảnh ngẫu nhiên thú vị
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-newspaper"></i></div>
+            <h3 class="feature-title">Tin tức</h3>
+            <p class="feature-description">
+              Cập nhật tin tức mới nhất từ nhiều nguồn
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
+            <h3 class="feature-title">PDF</h3>
+            <p class="feature-description">Công cụ xử lý và quản lý tệp PDF</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fa fa-assistive-listening-systems"></i>
+            </div>
+            <h3 class="feature-title">Mã morse</h3>
+            <p class="feature-description">
+              Mã hóa và giải mã thông điệp Morse
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fab fa-spotify"></i></div>
+            <h3 class="feature-title">Clone Spotify</h3>
+            <p class="feature-description">
+              Trải nghiệm giao diện tương tự Spotify
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fab fa-bitcoin"></i></div>
+            <h3 class="feature-title">Bitcoin</h3>
+            <p class="feature-description">
+              Theo dõi giá và thông tin về Bitcoin
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-file-code"></i></div>
+            <h3 class="feature-title">Code Beautifier</h3>
+            <p class="feature-description">
+              Làm đẹp và định dạng mã nguồn của bạn
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-key"></i></div>
+            <h3 class="feature-title">Check Password</h3>
+            <p class="feature-description">
+              Kiểm tra độ mạnh và bảo mật của mật khẩu
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-globe"></i></div>
+            <h3 class="feature-title">Xem thông tin các nước</h3>
+            <p class="feature-description">
+              Khám phá thông tin chi tiết về các quốc gia
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-weight"></i></div>
+            <h3 class="feature-title">Tính BMI</h3>
+            <p class="feature-description">
+              Tính chỉ số khối cơ thể (BMI) của bạn
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+            <h3 class="feature-title">Làm toán</h3>
+            <p class="feature-description">
+              Giải quyết các bài toán và phép tính
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-clipboard"></i></div>
+            <h3 class="feature-title">API Documents</h3>
+            <p class="feature-description">Tài liệu và hướng dẫn sử dụng API</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="carousel-section">
+      <div class="container">
+        <h2>Khám phá các tính năng của chúng tôi</h2>
+        <div class="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/g28fkFCW/D3-B27-CDC-20-BF-409-F-B9-A5-6-F35735-CB901.png"
+                alt="Tính năng 1"
+                height="400"
+                width="600"
+              />
+              
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/y84bGpkr/A34-AFA92-B463-4-D6-F-A2-AB-B976-ABE57-E5-F.png"
+                alt="Tính năng 2"
+              />
+              
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/cJTkrsTV/0-D1-B9067-EA7-F-4-D1-E-AE37-72621-C696075.png"
+                alt="Tính năng 3"
+              />
+              
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/5jcnZjNF/45-A1-E069-5-A23-47-B3-A8-E5-F9-D914-F52-A3-B.png"
+                alt="Tính năng 3"
+              />
+              
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/qB9rkLN2/9-C804781-D2-F5-4-BEA-9129-B1-A8-CF3-DCE1-C.png"
+                alt="Tính năng 3"
+              />
+            </div>
+          </div>
+          <button class="carousel-control prev" aria-label="Previous slide">
+            &#10094;
+          </button>
+          <button class="carousel-control next" aria-label="Next slide">
+            &#10095;
           </button>
         </div>
       </div>
-    </div>
+    </section>
 
+    <section class="newsletter-section">
+      <div class="container">
+        <h2>Đăng ký nhận bản tin</h2>
+        <p>
+          Nhận thông báo về các tính năng mới và mẹo sử dụng công cụ hàng tuần!
+        </p>
+        <form class="newsletter-form">
+          <input
+            type="email"
+            placeholder="Nhập địa chỉ email của bạn"
+            required
+          />
+          <button type="submit">Đăng ký</button>
+        </form>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer-content">
+        <p>&copy; 2024 - Designed by Me with Flask and ❤️</p>
+        <div class="footer-links">
+          <a href="/">Trang Chủ</a>
+        </div>
+        <div class="footer-links">
+          <a href="/status">Status</a>
+        </div>
+        <div class="social-icons">
+          <a
+            href="https://github.com/tanbaycu"
+            target="_blank"
+            aria-label="GitHub"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+              ></path>
+            </svg>
+          </a>
+          <a
+            href="https://www.facebook.com/tanbaycu.404s/"
+            target="_blank"
+            aria-label="Facebook"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+
+    <script
+      src="https://kit.fontawesome.com/your-fontawesome-kit.js"
+      crossorigin="anonymous"
+    ></script>
     <script>
-      const triviaAPIs = [
-        {
-          name: "Open Trivia DB",
-          url: "https://opentdb.com/api.php?type=multiple",
-          processResponse: (data) => {
-            if (data.results && data.results.length > 0) {
-              return data.results.map((question) => ({
-                category: question.category,
-                question: question.question,
-                correct_answer: question.correct_answer,
-                incorrect_answers: question.incorrect_answers
-              }));
-            }
-            return null;
-          }
-        },
-        {
-          name: "The Trivia API",
-          url: "https://the-trivia-api.com/api/questions",
-          processResponse: (data) => {
-            if (data && data.length > 0) {
-              return data.map((question) => ({
-                category: question.category,
-                question: question.question,
-                correct_answer: question.correctAnswer,
-                incorrect_answers: question.incorrectAnswers
-              }));
-            }
-            return null;
-          }
+      document.addEventListener("DOMContentLoaded", () => {
+        function toggleMenu() {
+          const offCanvasMenu = document.getElementById("off-canvas-menu");
+          const overlay = document.getElementById("overlay");
+          offCanvasMenu.classList.toggle("open");
+          overlay.classList.toggle("show");
+          document.body.classList.toggle("menu-open");
         }
-      ];
 
-      let currentQuestions = [];
-      let currentQuestionIndex = 0;
-      let score = 0;
-      let streak = 0;
-      let timer;
-      let timeLeft = 30;
-      let currentLanguage = "en";
-      let currentAPIIndex = 0;
-      let retryCount = 0;
-      const MAX_RETRIES = 3;
+        document
+          .getElementById("menu-toggle")
+          .addEventListener("click", toggleMenu);
+        document
+          .getElementById("close-menu")
+          .addEventListener("click", toggleMenu);
+        document
+          .getElementById("overlay")
+          .addEventListener("click", toggleMenu);
 
-      const gameContainer = document.getElementById("game-container");
-      const loadingElement = document.getElementById("loading");
-      const errorElement = document.getElementById("error");
-      const questionContainer = document.getElementById("question-container");
-      const categoryElement = document.getElementById("category");
-      const questionElement = document.getElementById("question");
-      const answersElement = document.getElementById("answers");
-      const resultElement = document.getElementById("result");
-      const resultTextElement = document.getElementById("result-text");
-      const correctAnswerElement = document.getElementById("correct-answer");
-      const explanationElement = document.getElementById("explanation");
-      const scoreElement = document.getElementById("score");
-      const streakElement = document.getElementById("streak");
-      const nextButton = document.getElementById("next-btn");
-      const timerElement = document.getElementById("timer");
-      const settingsModal = document.getElementById("settings-modal");
-      const settingsButton = document.getElementById("settings-btn");
-      const languageSelect = document.getElementById("language");
-      const difficultySelect = document.getElementById("difficulty");
-      const categorySelect = document.getElementById("category-select");
-      const questionCountInput = document.getElementById("question-count");
-      const saveSettingsButton = document.getElementById("save-settings");
-      const retryButton = document.getElementById("retry-btn");
-
-      const translations = {
-        en: {
-          loading: "Loading your challenge...",
-          error: "Error",
-          retry: "Retry",
-          next_question: "Next Question",
-          game_settings: "Game Settings",
-          language: "Language:",
-          difficulty: "Difficulty:",
-          category: "Category:",
-          question_count: "Number of Questions:",
-          easy: "Easy",
-          medium: "Medium",
-          hard: "Hard",
-          any_category: "Any Category",
-          save_and_start: "Save & Start",
-          time_left: "Time left: ",
-          correct: "Correct!",
-          incorrect: "Incorrect!",
-          correct_answer: "Correct answer: ",
-          no_explanation: "No explanation available for this question.",
-          score: "Score: ",
-          streak: "Streak: ",
-          game_over: "Game Over!",
-          final_score: "Final Score: ",
-          play_again: "Play Again"
-        },
-        vi: {
-          loading: "Đang tải câu đố...",
-          error: "Lỗi",
-          retry: "Thử lại",
-          next_question: "Câu hỏi tiếp theo",
-          game_settings: "Cài đặt trò chơi",
-          language: "Ngôn ngữ:",
-          difficulty: "Độ khó:",
-          category: "Danh mục:",
-          question_count: "Số lượng câu hỏi:",
-          easy: "Dễ",
-          medium: "Trung bình",
-          hard: "Khó",
-          any_category: "Tất cả danh mục",
-          save_and_start: "Lưu & Bắt đầu",
-          time_left: "Thời gian còn lại: ",
-          correct: "Chính xác!",
-          incorrect: "Không chính xác!",
-          correct_answer: "Câu trả lời đúng: ",
-          no_explanation: "Không có giải thích cho câu hỏi này.",
-          score: "Điểm: ",
-          streak: "Chuỗi đúng: ",
-          game_over: "Trò chơi kết thúc!",
-          final_score: "Điểm số cuối cùng: ",
-          play_again: "Chơi lại"
-        }
-      };
-
-      function updateLanguage() {
-        document.querySelectorAll("[data-lang-key]").forEach((element) => {
-          const key = element.getAttribute("data-lang-key");
-          if (translations[currentLanguage][key]) {
-            element.textContent = translations[currentLanguage][key];
-          }
-        });
-      }
-
-      function showError(message) {
-        errorElement.querySelector("p:last-of-type").textContent = message;
-        errorElement.classList.remove("hidden");
-        loadingElement.classList.add("hidden");
-      }
-
-      function hideError() {
-        errorElement.classList.add("hidden");
-      }
-
-      async function fetchCategories() {
-        try {
-          const response = await fetch("https://opentdb.com/api_category.php");
-          if (!response.ok) {
-            throw new Error("Failed to fetch categories");
-          }
-          const data = await response.json();
-          categorySelect.innerHTML = `<option value="" data-lang-key="any_category">${translations[currentLanguage].any_category}</option>`;
-          data.trivia_categories.forEach((category) => {
-            const option = document.createElement("option");
-            option.value = category.id;
-            option.textContent = category.name;
-            categorySelect.appendChild(option);
+        // Close menu when clicking on a menu item (for mobile)
+        document.querySelectorAll(".menu-nav a").forEach((link) => {
+          link.addEventListener("click", () => {
+            if (window.innerWidth <= 768) {
+              toggleMenu();
+            }
           });
-        } catch (error) {
-          console.error("Error fetching categories:", error);
-          showError(translations[currentLanguage].error + ": " + error.message);
-        }
-      }
+        });
 
-      async function fetchQuestions() {
-        try {
-          loadingElement.classList.remove("hidden");
-          questionContainer.classList.add("hidden");
-          resultElement.classList.add("hidden");
-          nextButton.classList.add("hidden");
-          hideError();
-
-          const api = triviaAPIs[currentAPIIndex];
-          let url = api.url;
-
-          if (api.name === "Open Trivia DB") {
-            const difficulty = difficultySelect.value;
-            const category = categorySelect.value;
-            const amount = questionCountInput.value;
-            url += `&amount=${amount}&difficulty=${difficulty}`;
-            if (category) {
-              url += `&category=${category}`;
-            }
-          } else if (api.name === "The Trivia API") {
-            url += `?limit=${questionCountInput.value}`;
+        // Adjust menu on window resize
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 768) {
+            document.getElementById("off-canvas-menu").classList.remove("open");
+            document.getElementById("overlay").classList.remove("show");
+            document.body.classList.remove("menu-open");
           }
+        });
 
-          const response = await fetch(url);
-          if (!response.ok) {
-            throw new Error("Failed to fetch questions");
-          }
-          const data = await response.json();
-          const processedQuestions = api.processResponse(data);
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth"
+            });
+          });
+        });
 
-          if (processedQuestions && processedQuestions.length > 0) {
-            currentQuestions = processedQuestions;
-            currentQuestionIndex = 0;
-            displayQuestion();
-            startTimer();
-            retryCount = 0;
+        // Navbar background change on scroll
+        window.addEventListener("scroll", () => {
+          const navbar = document.querySelector(".navbar");
+          if (window.scrollY > 50) {
+            navbar.style.background = "rgba(30, 41, 59, 0.95)";
           } else {
-            throw new Error("No questions available");
+            navbar.style.background = "rgba(30, 41, 59, 0.8)";
           }
-        } catch (error) {
-          console.error("Error:", error);
-          if (retryCount < MAX_RETRIES) {
-            retryCount++;
-            currentAPIIndex = (currentAPIIndex + 1) % triviaAPIs.length;
-            await fetchQuestions();
-          } else {
-            showError(
-              translations[currentLanguage].error + ": " + error.message
-            );
-          }
-        }
-      }
-
-      function displayQuestion() {
-        const currentQuestion = currentQuestions[currentQuestionIndex];
-        categoryElement.textContent = currentQuestion.category;
-        questionElement.textContent = decodeHTML(currentQuestion.question);
-
-        const answers = [
-          ...currentQuestion.incorrect_answers,
-          currentQuestion.correct_answer
-        ];
-        shuffleArray(answers);
-
-        answersElement.innerHTML = "";
-        answers.forEach((answer, index) => {
-          const button = document.createElement("button");
-          button.textContent = decodeHTML(answer);
-          button.classList.add(
-            "w-full",
-            "text-left",
-            "bg-white",
-            "bg-opacity-10",
-            "hover:bg-opacity-20",
-            "p-4",
-            "rounded-lg",
-            "transition",
-            "duration-300",
-            "fade-in",
-            "focus:outline-none",
-            "focus:ring-2",
-            "focus:ring-blue-500",
-            "text-white"
-          );
-          button.style.animationDelay = `${index * 100}ms`;
-          button.addEventListener("click", () => checkAnswer(answer));
-          answersElement.appendChild(button);
         });
 
-        loadingElement.classList.add("hidden");
-        questionContainer.classList.remove("hidden");
-      }
-
-      function checkAnswer(selectedAnswer) {
-        clearInterval(timer);
-        const currentQuestion = currentQuestions[currentQuestionIndex];
-        const isCorrect = selectedAnswer === currentQuestion.correct_answer;
-        if (isCorrect) {
-          score += calculateScore();
-          streak++;
-        } else {
-          streak = 0;
-        }
-        updateScoreDisplay();
-
-        resultTextElement.textContent = isCorrect
-          ? translations[currentLanguage].correct
-          : translations[currentLanguage].incorrect;
-        resultTextElement.classList.add(
-          isCorrect ? "text-green-400" : "text-red-400"
-        );
-        correctAnswerElement.textContent = `${
-          translations[currentLanguage].correct_answer
-        }${decodeHTML(currentQuestion.correct_answer)}`;
-        explanationElement.textContent =
-          currentQuestion.explanation ||
-          translations[currentLanguage].no_explanation;
-
-        questionContainer.classList.add("hidden");
-        resultElement.classList.remove("hidden");
-
-        Array.from(answersElement.children).forEach((button) => {
-          if (
-            button.textContent === decodeHTML(currentQuestion.correct_answer)
-          ) {
-            button.classList.add("bg-green-500", "bg-opacity-50");
-          } else if (
-            button.textContent === decodeHTML(selectedAnswer) &&
-            !isCorrect
-          ) {
-            button.classList.add("bg-red-500", "bg-opacity-50");
-          }
-          button.disabled = true;
-        });
-
-        questionContainer.classList.remove("hidden");
-
-        if (currentQuestionIndex < currentQuestions.length - 1) {
-          nextButton.classList.remove("hidden");
-        } else {
-          endGame();
-        }
-      }
-
-      function startTimer() {
-        timeLeft = 30;
-        updateTimerDisplay();
-        timer = setInterval(() => {
-          timeLeft--;
-          updateTimerDisplay();
-          if (timeLeft <= 0) {
-            clearInterval(timer);
-            checkAnswer(""); // Time's up, treat as incorrect answer
-          }
-        }, 1000);
-      }
-
-      function updateTimerDisplay() {
-        timerElement.textContent = `${translations[currentLanguage].time_left}${timeLeft}s`;
-        timerElement.classList.toggle("text-red-400", timeLeft <= 5);
-      }
-
-      function calculateScore() {
-        const baseScore = 10;
-        const timeBonus = Math.max(0, timeLeft);
-        const difficultyMultiplier = getDifficultyMultiplier();
-        return baseScore + timeBonus * difficultyMultiplier;
-      }
-
-      function getDifficultyMultiplier() {
-        switch (difficultySelect.value) {
-          case "easy":
-            return 1;
-          case "medium":
-            return 1.5;
-          case "hard":
-            return 2;
-          default:
-            return 1;
-        }
-      }
-
-      function updateScoreDisplay() {
-        scoreElement.textContent = `${translations[currentLanguage].score}${score}`;
-        streakElement.textContent = `${translations[currentLanguage].streak}${streak}`;
-      }
-
-      function shuffleArray(array) {
-        for (let i = array.length - 1; i > 0; i--) {
-          const j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-        }
-      }
-
-      function decodeHTML(html) {
-        const txt = document.createElement("textarea");
-        txt.innerHTML = html;
-        return txt.value;
-      }
-
-      function endGame() {
-        questionContainer.classList.add("hidden");
-        resultElement.classList.add("hidden");
-        nextButton.classList.add("hidden");
-
-        const gameOverElement = document.createElement("div");
-        gameOverElement.classList.add("text-center", "py-10");
-        gameOverElement.innerHTML = `
-                <h2 class="text-4xl font-bold mb-4 text-white neon-text">${translations[currentLanguage].game_over}</h2>
-                <p class="text-2xl mb-6 text-white">${translations[currentLanguage].final_score}${score}</p>
-                <button id="play-again" class="bg-blue-500 text-white px-6 py-2 rounded-full hover:bg-blue-600 transition duration-300">
-                    ${translations[currentLanguage].play_again}
-                </button>
-            `;
-
-        gameContainer.querySelector("main").appendChild(gameOverElement);
-
-        document.getElementById("play-again").addEventListener("click", () => {
-          gameOverElement.remove();
-          settingsModal.classList.remove("hidden");
-        });
-      }
-
-      nextButton.addEventListener("click", () => {
-        currentQuestionIndex++;
-        displayQuestion();
-        startTimer();
-        resultElement.classList.add("hidden");
-        nextButton.classList.add("hidden");
-      });
-
-      retryButton.addEventListener("click", fetchQuestions);
-
-      settingsButton.addEventListener("click", () => {
-        settingsModal.classList.remove("hidden");
-      });
-
-      saveSettingsButton.addEventListener("click", () => {
-        settingsModal.classList.add("hidden");
-        currentLanguage = languageSelect.value;
-        updateLanguage();
-        score = 0;
-        streak = 0;
-        updateScoreDisplay();
-        fetchQuestions();
-      });
-
-      languageSelect.addEventListener("change", (event) => {
-        currentLanguage = event.target.value;
-        updateLanguage();
-      });
-
-      // Initialize the game
-      fetchCategories();
-      updateLanguage();
-      settingsModal.classList.remove("hidden");
-
-      // Particle animation
-      const particlesContainer = document.createElement("div");
-      particlesContainer.style.position = "fixed";
-      particlesContainer.style.top = "0";
-      particlesContainer.style.left = "0";
-      particlesContainer.style.width = "100%";
-      particlesContainer.style.height = "100%";
-      particlesContainer.style.pointerEvents = "none";
-      particlesContainer.style.zIndex = "-1";
-      document.body.appendChild(particlesContainer);
-
-      function createParticle() {
-        const particle = document.createElement("div");
-        particle.style.position = "absolute";
-        particle.style.width = "5px";
-        particle.style.height = "5px";
-        particle.style.background = `rgba(${Math.random() * 255}, ${
-          Math.random() * 255
-        }, ${Math.random() * 255}, 0.7)`;
-        particle.style.borderRadius = "50%";
-        particle.style.pointerEvents = "none";
-
-        const startX = Math.random() * window.innerWidth;
-        const startY = Math.random() * window.innerHeight;
-        const endX = Math.random() * window.innerWidth;
-        const endY = Math.random() * window.innerHeight;
-
-        particle.style.left = `${startX}px`;
-        particle.style.top = `${startY}px`;
-
-        particlesContainer.appendChild(particle);
-
-        const animation = particle.animate(
-          [
-            { transform: `translate(0, 0)` },
-            { transform: `translate(${endX - startX}px, ${endY - startY}px)` }
-          ],
-          {
-            duration: Math.random() * 3000 + 2000,
-            easing: "linear",
-            iterations: Infinity
-          }
-        );
-
-        animation.onfinish = () => {
-          particle.remove();
-          createParticle();
+        // Add animation to feature cards on scroll
+        const featureCards = document.querySelectorAll(".feature-card");
+        const observerOptions = {
+          threshold: 0.5
         };
-      }
 
-      for (let i = 0; i < 50; i++) {
-        createParticle();
-      }
-      const starsContainer = document.getElementById("stars-container");
-      for (let i = 0; i < 100; i++) {
-        const star = document.createElement("div");
-        star.className = "star";
-        star.style.left = `${Math.random() * 100}%`;
-        star.style.top = `${Math.random() * 100}%`;
-        star.style.animationDelay = `${Math.random() * 5}s`;
-        starsContainer.appendChild(star);
-      }
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        }, observerOptions);
 
-      // Thêm hiệu ứng cho các nút trả lời
-      document
-        .getElementById("answers")
-        .addEventListener("click", function (e) {
-          if (e.target.tagName === "BUTTON") {
-            e.target.classList.add(
-              "ring-4",
-              "ring-blue-500",
-              "ring-opacity-50"
-            );
-          }
+        featureCards.forEach((card) => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(20px)";
+          card.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          observer.observe(card);
         });
-
-      // Thêm hiệu ứng cho nút Next Question
-      const nextBtn = document.getElementById("next-btn");
-      nextBtn.addEventListener("mouseenter", function () {
-        this.classList.add("animate-pulse");
       });
-      nextBtn.addEventListener("mouseleave", function () {
-        this.classList.remove("animate-pulse");
+      document.addEventListener("DOMContentLoaded", function () {
+        const carousel = document.querySelector(".carousel-inner");
+        const items = carousel.querySelectorAll(".carousel-item");
+        const prevBtn = document.querySelector(".carousel-control.prev");
+        const nextBtn = document.querySelector(".carousel-control.next");
+        let currentIndex = 0;
+
+        function showSlide(index) {
+          carousel.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        prevBtn.addEventListener("click", () => {
+          currentIndex = (currentIndex - 1 + items.length) % items.length;
+          showSlide(currentIndex);
+        });
+
+        nextBtn.addEventListener("click", () => {
+          currentIndex = (currentIndex + 1) % items.length;
+          showSlide(currentIndex);
+        });
+      });
+      const counters = document.querySelectorAll(".counter");
+      const speed = 200;
+
+      counters.forEach((counter) => {
+        const updateCount = () => {
+          const target = +counter.getAttribute("data-target");
+          const count = +counter.innerText;
+          const inc = target / speed;
+
+          if (count < target) {
+            counter.innerText = Math.ceil(count + inc);
+            setTimeout(updateCount, 1);
+          } else {
+            counter.innerText = target;
+          }
+        };
+
+        updateCount();
       });
 
-      // Hiệu ứng mở modal cài đặt
-      document
-        .getElementById("settings-btn")
-        .addEventListener("click", function () {
-          document.getElementById("settings-modal").classList.remove("hidden");
-        });
+      // Carousel
+      const carousel = document.querySelector(".carousel-inner");
+      const items = carousel.querySelectorAll(".carousel-item");
+      const prevBtn = document.querySelector(".carousel-control.prev");
+      const nextBtn = document.querySelector(".carousel-control.next");
+      let currentIndex = 0;
 
-      // Đóng modal khi click bên ngoài
-      document
-        .getElementById("settings-modal")
-        .addEventListener("click", function (e) {
-          if (e.target === this) {
-            this.classList.add("hidden");
-          }
-        });
+      function showSlide(index) {
+        carousel.style.transform = `translateX(-${index * 100}%)`;
+      }
+
+      prevBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        showSlide(currentIndex);
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % items.length;
+        showSlide(currentIndex);
+      });
     </script>
+    <script>
+      window.va =
+        window.va ||
+        function () {
+          (window.vaq = window.vaq || []).push(arguments);
+        };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
   </body>
 </html>
