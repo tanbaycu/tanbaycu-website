@@ -1,86 +1,101 @@
 <!DOCTYPE html>
 <html lang="en" class="light">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Web Projects Showcase</title>
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <title> Web Projects Showcase</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
+    <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
-
         body {
             font-family: 'Inter', sans-serif;
         }
-
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-
         .animate-fade-in {
             animation: fadeIn 0.5s ease-out;
         }
-
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-            }
-
-            to {
-                opacity: 1;
-            }
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
         .animate-spin {
             animation: spin 1s linear infinite;
         }
-
         @keyframes spin {
-            from {
-                transform: rotate(0deg);
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            display: none;
+        }
+        .project-card {
+            transition: all 0.3s ease;
+        }
+        .project-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        .list-view .project-card {
+            display: flex;
+            align-items: center;
+        }
+        .list-view .project-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+        }
+        @media (max-width: 640px) {
+            .list-view .project-card {
+                flex-direction: column;
+                align-items: flex-start;
             }
-
-            to {
-                transform: rotate(360deg);
+            .list-view .project-card img {
+                width: 100%;
+                height: 200px;
             }
         }
     </style>
 </head>
-
 <body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
     <div class="container mx-auto px-4 py-8">
         <header class="mb-8 animate-fade-in">
             <h1 class="text-4xl font-bold text-center text-gray-800 dark:text-white mb-4">My Web Projects</h1>
             <div class="flex flex-wrap justify-between items-center gap-4">
                 <div class="relative flex-grow max-w-md">
-                    <input type="text" id="search" placeholder="Search projects..."
-                        class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <i data-lucide="search"
-                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="search" placeholder="Search projects..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
                 <div class="flex items-center space-x-4 flex-wrap">
-                    <select id="categoryFilter"
-                        class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select id="categoryFilter" class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="all">All Categories</option>
                         <option value="education">Education</option>
                         <option value="technology">Technology</option>
                         <option value="productivity">Productivity</option>
                         <option value="nature">Nature</option>
                     </select>
-                    <select id="sortProjects"
-                        class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select id="sortProjects" class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="name">Sort by Name</option>
                         <option value="category">Sort by Category</option>
+                        <option value="rating">Sort by Rating</option>
                     </select>
-                    <button id="viewToggle"
-                        class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button id="viewToggle" class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <i data-lucide="layout-grid" class="hidden"></i>
                         <i data-lucide="list" class=""></i>
                     </button>
-                    <button id="themeToggle"
-                        class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button id="themeToggle" class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <i data-lucide="sun" class="hidden dark:inline"></i>
                         <i data-lucide="moon" class="inline dark:hidden"></i>
                     </button>
@@ -94,83 +109,123 @@
                 <span class="ml-2 text-gray-600 dark:text-gray-300">Loading...</span>
             </div>
             <div id="projects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300"
-                    data-category="education">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="education" data-aos="fade-up">
                     <a href="#" class="block" data-project="funfacts">
-                        <img src="https://i.postimg.cc/tTbdGt2N/Thi-t-k-ch-a-c-t-n.png" alt="Fun Facts Hub"
-                            class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/tTbdGt2N/Thi-t-k-ch-a-c-t-n.png" alt="Fun Facts Hub" class="w-full h-48 object-cover lazy-load">
                         <div class="p-6">
-                            <div class="flex items-center mb-2">
-                                <i data-lucide="lightbulb" class="w-6 h-6 mr-2 text-yellow-500"></i>
-                                <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Fun Facts Hub</h2>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <i data-lucide="lightbulb" class="w-6 h-6 mr-2 text-yellow-500"></i>
+                                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Fun Facts Hub</h2>
+                                </div>
+                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                    <i data-lucide="bookmark" class="w-6 h-6"></i>
+                                </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Discover interesting and amusing facts about
-                                various topics.</p>
-                            <span class="inline-block mt-2 text-sm text-blue-500 dark:text-blue-400">Education</span>
+                            <p class="text-gray-600 dark:text-gray-300">Discover interesting and amusing facts about various topics.</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Education</span>
+                                <div class="flex items-center">
+                                    <i data-lucide="star" class="w-4 h-4 text-yellow-500 mr-1"></i>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">4.5</span>
+                                </div>
+                            </div>
                         </div>
                     </a>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300"
-                    data-category="technology">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="technology" data-aos="fade-up" data-aos-delay="100">
                     <a href="#" class="block" data-project="gemini">
-                        <img src="https://i.postimg.cc/HxX31LSc/image.png" alt="Gemini UI Chat"
-                            class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/HxX31LSc/image.png" alt="Gemini UI Chat" class="w-full h-48 object-cover lazy-load">
                         <div class="p-6">
-                            <div class="flex items-center mb-2">
-                                <i data-lucide="message-circle" class="w-6 h-6 mr-2 text-blue-500"></i>
-                                <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Gemini UI Chat</h2>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <i data-lucide="message-circle" class="w-6 h-6 mr-2 text-blue-500"></i>
+                                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Gemini UI Chat</h2>
+                                </div>
+                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                    <i data-lucide="bookmark" class="w-6 h-6"></i>
+                                </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Experience AI-powered conversations with a sleek
-                                user interface.</p>
-                            <span class="inline-block mt-2 text-sm text-blue-500 dark:text-blue-400">Technology</span>
+                            <p class="text-gray-600 dark:text-gray-300">Experience AI-powered conversations with a sleek user interface.</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Technology</span>
+                                <div class="flex items-center">
+                                    <i data-lucide="star" class="w-4 h-4 text-yellow-500 mr-1"></i>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">4.8</span>
+                                </div>
+                            </div>
                         </div>
                     </a>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300"
-                    data-category="productivity">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="productivity" data-aos="fade-up" data-aos-delay="200">
                     <a href="#" class="block" data-project="pdftool">
-                        <img src="https://i.postimg.cc/436xP8hC/image.png" alt="PDF Tool"
-                            class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/436xP8hC/image.png" alt="PDF Tool" class="w-full h-48 object-cover lazy-load">
                         <div class="p-6">
-                            <div class="flex items-center mb-2">
-                                <i data-lucide="file-text" class="w-6 h-6 mr-2 text-red-500"></i>
-                                <h2 class="text-xl font-semibold text-gray-800 dark:text-white">PDF Tool</h2>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <i data-lucide="file-text" class="w-6 h-6 mr-2 text-red-500"></i>
+                                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">PDF Tool</h2>
+                                </div>
+                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                    <i data-lucide="bookmark" class="w-6 h-6"></i>
+                                </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Powerful tools for working with and manipulating
-                                PDF files.</p>
-                            <span class="inline-block mt-2 text-sm text-blue-500 dark:text-blue-400">Productivity</span>
+                            <p class="text-gray-600 dark:text-gray-300">Powerful tools for working with and manipulating PDF files.</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Productivity</span>
+                                <div class="flex items-center">
+                                    <i data-lucide="star" class="w-4 h-4 text-yellow-500 mr-1"></i>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">4.2</span>
+                                </div>
+                            </div>
                         </div>
                     </a>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300"
-                    data-category="technology">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="technology" data-aos="fade-up" data-aos-delay="300">
                     <a href="#" class="block" data-project="eb2">
-                        <img src="https://i.postimg.cc/xd20XKp6/F9636-ADF-3741-41-DC-ADEA-A0-FB8-A8124-F2.png"
-                            alt="EB2 Project" class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/xd20XKp6/F9636-ADF-3741-41-DC-ADEA-A0-FB8-A8124-F2.png" alt="EB2 Project" class="w-full h-48 object-cover lazy-load">
                         <div class="p-6">
-                            <div class="flex items-center mb-2">
-                                <i data-lucide="cpu" class="w-6 h-6 mr-2 text-green-500"></i>
-                                <h2 class="text-xl font-semibold text-gray-800 dark:text-white">EB2 Project</h2>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <i data-lucide="cpu" class="w-6 h-6 mr-2 text-green-500"></i>
+                                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">EB2 Project</h2>
+                                </div>
+                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                    <i data-lucide="bookmark" class="w-6 h-6"></i>
+                                </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Explore the innovative EB2 project and its
-                                features.</p>
-                            <span class="inline-block mt-2 text-sm text-blue-500 dark:text-blue-400">Technology</span>
+                            <p class="text-gray-600 dark:text-gray-300">Explore the innovative EB2 project and its features.</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Technology</span>
+                                <div class="flex items-center">
+                                    <i data-lucide="star" class="w-4 h-4 text-yellow-500 mr-1"></i>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">4.6</span>
+                                </div>
+                            </div>
                         </div>
                     </a>
                 </div>
-                <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-105 transition duration-300"
-                    data-category="nature">
+                <div class="project-card bg-white  dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="nature" data-aos="fade-up" data-aos-delay="400">
                     <a href="#" class="block" data-project="vuonmai">
-                        <img src="https://i.postimg.cc/gJHGFW97/Ch-n-T-o-1.png" alt="Vuon Mai Chin Teo"
-                            class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/gJHGFW97/Ch-n-T-o-1.png" alt="Vuon Mai Chin Teo" class="w-full h-48 object-cover lazy-load">
                         <div class="p-6">
-                            <div class="flex items-center mb-2">
-                                <i data-lucide="flower" class="w-6 h-6 mr-2 text-pink-500"></i>
-                                <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Vuon Mai Chin Teo</h2>
+                            <div class="flex items-center justify-between mb-2">
+                                <div class="flex items-center">
+                                    <i data-lucide="flower" class="w-6 h-6 mr-2 text-pink-500"></i>
+                                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Vuon Mai Chin Teo</h2>
+                                </div>
+                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                    <i data-lucide="bookmark" class="w-6 h-6"></i>
+                                </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Discover the beauty of gardens and nature in
-                                this project.</p>
-                            <span class="inline-block mt-2 text-sm text-blue-500 dark:text-blue-400">Nature</span>
+                            <p class="text-gray-600 dark:text-gray-300">Discover the beauty of gardens and nature in this project.</p>
+                            <div class="flex justify-between items-center mt-4">
+                                <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Nature</span>
+                                <div class="flex items-center">
+                                    <i data-lucide="star" class="w-4 h-4 text-yellow-500 mr-1"></i>
+                                    <span class="text-sm text-gray-600 dark:text-gray-400">4.7</span>
+                                </div>
+                            </div>
                         </div>
                     </a>
                 </div>
@@ -183,17 +238,14 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full mx-4">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 dark:text-white"></h2>
-                <button id="closeModal"
-                    class="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100">
+                <button id="closeModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
             <img id="modalImage" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-4">
             <p id="modalDescription" class="text-gray-600 dark:text-gray-300 mb-4"></p>
-            <div class="flex justify-between items-center">
-                <a id="modalLink" href="#" target="_blank"
-                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Visit
-                    Project</a>
+            <div class="flex justify-between items-center mb-4">
+                <a id="modalLink" href="#" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Visit Project</a>
                 <div class="flex space-x-2">
                     <button id="shareTwitter" class="text-blue-400 hover:text-blue-600">
                         <i data-lucide="twitter" class="w-6 h-6"></i>
@@ -206,12 +258,33 @@
                     </button>
                 </div>
             </div>
+            <div class="mb-4">
+                <h3 class="text-lg font-semibold mb-2 text-gray-900 dark:text-white">Rate this project:</h3>
+                <div class="flex items-center" id="ratingStars">
+                    <i data-lucide="star" class="w-6 h-6 text-gray-300 cursor-pointer"></i>
+                    <i data-lucide="star" class="w-6 h-6 text-gray-300 cursor-pointer"></i>
+                    <i data-lucide="star" class="w-6 h-6 text-gray-300 cursor-pointer"></i>
+                    <i data-lucide="star" class="w-6 h-6 text-gray-300 cursor-pointer"></i>
+                    <i data-lucide="star" class="w-6 h-6 text-gray-300 cursor-pointer"></i>
+                </div>
+            </div>
         </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast">
+        Project bookmarked successfully!
     </div>
 
     <script>
         // Initialize Lucide icons
         lucide.createIcons();
+
+        // Initialize AOS
+        AOS.init({
+            duration: 1000,
+            once: true,
+        });
 
         // Theme toggle functionality
         const themeToggle = document.getElementById('themeToggle');
@@ -236,7 +309,7 @@
         }
 
         themeToggle.addEventListener('click', () => {
-            const isDark = !html.classList.contains('dark');
+            const isDark = html.classList.toggle('dark');
             setTheme(isDark);
         });
 
@@ -244,12 +317,9 @@
         const viewToggle = document.getElementById('viewToggle');
         const projectsContainer = document.getElementById('projects');
         viewToggle.addEventListener('click', () => {
-            projectsContainer.classList.toggle('grid-cols-1');
-            projectsContainer.classList.toggle('sm:grid-cols-2');
-            projectsContainer.classList.toggle('lg:grid-cols-3');
+            projectsContainer.classList.toggle('list-view');
             viewToggle.querySelector('[data-lucide="layout-grid"]').classList.toggle('hidden');
             viewToggle.querySelector('[data-lucide="list"]').classList.toggle('hidden');
-
         });
 
         // Search, filter, and sort functionality
@@ -294,6 +364,10 @@
                         return a.querySelector('h2').textContent.localeCompare(b.querySelector('h2').textContent);
                     } else if (sortBy === 'category') {
                         return a.dataset.category.localeCompare(b.dataset.category);
+                    } else if (sortBy === 'rating') {
+                        const ratingA = parseFloat(a.querySelector('.text-sm.text-gray-600').textContent);
+                        const ratingB = parseFloat(b.querySelector('.text-sm.text-gray-600').textContent);
+                        return ratingB - ratingA;
                     }
                 });
 
@@ -319,6 +393,7 @@
         const shareTwitter = document.getElementById('shareTwitter');
         const shareFacebook = document.getElementById('shareFacebook');
         const shareLinkedIn = document.getElementById('shareLinkedIn');
+        const ratingStars = document.getElementById('ratingStars');
 
         const projectData = {
             funfacts: {
@@ -396,7 +471,70 @@
         shareTwitter.addEventListener('click', () => shareProject('twitter'));
         shareFacebook.addEventListener('click', () => shareProject('facebook'));
         shareLinkedIn.addEventListener('click', () => shareProject('linkedin'));
+
+        // Rating functionality
+        ratingStars.addEventListener('click', (e) => {
+            if (e.target.tagName === 'I') {
+                const rating = Array.from(e.target.parentNode.children).indexOf(e.target) + 1;
+                Array.from(ratingStars.children).forEach((star, index) => {
+                    star.classList.toggle('text-yellow-500', index < rating);
+                    star.classList.toggle('text-gray-300', index >= rating);
+                });
+                // Here you would typically send this rating to your backend
+                console.log(`Rated ${rating} stars`);
+            }
+        });
+
+        // Bookmark functionality
+        document.querySelectorAll('.bookmark-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                btn.classList.toggle('text-yellow-500');
+                showToast('Project bookmarked successfully!');
+            });
+        });
+
+        // Toast notification
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.display = 'block';
+            setTimeout(() => {
+                toast.style.display = 'none';
+            }, 3000);
+        }
+
+        // Lazy loading for images
+        document.addEventListener("DOMContentLoaded", function() {
+            var lazyloadImages = document.querySelectorAll("img.lazy-load");    
+            var lazyloadThrottleTimeout;
+            
+            function lazyload () {
+                if(lazyloadThrottleTimeout) {
+                    clearTimeout(lazyloadThrottleTimeout);
+                }    
+                
+                lazyloadThrottleTimeout = setTimeout(function() {
+                    var scrollTop = window.pageYOffset;
+                    lazyloadImages.forEach(function(img) {
+                        if(img.offsetTop < (window.innerHeight + scrollTop)) {
+                            img.src = img.dataset.src;
+                            img.classList.remove('lazy-load');
+                        }
+                    });
+                    if(lazyloadImages.length == 0) { 
+                        document.removeEventListener("scroll",lazyload);
+                        window.removeEventListener("resize", lazyload);
+                        window.removeEventListener("orientationChange", lazyload);
+                    }
+                }, 20);
+            }
+            
+            document.addEventListener("scroll", lazyload);
+            window.addEventListener("resize", lazyload);
+            window.addEventListener("orientationChange", lazyload);
+        });
     </script>
 </body>
-
 </html>
