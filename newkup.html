@@ -1,0 +1,2066 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no"
+    />
+    <title>Tân 7 Cú - Dự án Web Senior Đầu Tay</title>
+    <meta
+      name="description"
+      content="Khám phá các công cụ trực tuyến hữu ích như tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!"
+    />
+    <meta
+      name="keywords"
+      content="tải lên tệp, rút gọn liên kết, tạo mã QR, kiểm tra API, dự báo thời tiết"
+    />
+    <meta name="author" content="Tân 7 Cú" />
+    <meta name="robots" content="index, follow" />
+    <meta
+      property="og:title"
+      content="Trang Chủ - Công Cụ Hữu Ích Trực Tuyến"
+    />
+    <meta
+      property="og:description"
+      content="Khám phá các công cụ trực tuyến hữu ích. Tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!"
+    />
+    <meta
+      property="og:image"
+      content="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png"
+    />
+    <meta property="og:url" content="https://tanbaycu.vercel.app" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="Trang Chủ - Công Cụ Hữu Ích Trực Tuyến"
+    />
+    <meta
+      name="twitter:description"
+      content="Khám phá công cụ trực tuyến hữu ích. Tải lên tệp, rút gọn liên kết, tạo mã QR và nhiều hơn nữa!"
+    />
+    <meta
+      name="twitter:image"
+      content="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png"
+    />
+    <link rel="canonical" href="https://tanbaycu.vercel.app" />
+    <link
+      rel="icon"
+      type="image/png"
+      href="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css"
+    />
+
+    <style>
+      :root {
+        --primary-color: #6c63ff;
+        --secondary-color: #4caf50;
+        --background: #0f172a;
+        --surface: #1e293b;
+        --text-primary: #f8fafc;
+        --text-secondary: #94a3b8;
+        --accent: #ffa500;
+        --font-size-base: 16px;
+        --spacing-unit: 1rem;
+      }
+
+      html {
+        font-size: var(--font-size-base);
+      }
+
+      body {
+        font-family: "Poppins", sans-serif;
+        background-color: var(--background);
+        color: var(--text-primary);
+        line-height: 1.5;
+        overflow-x: hidden;
+        font-size: 1rem;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+      }
+
+      .navbar {
+        background: rgba(30, 41, 59, 0.8);
+        backdrop-filter: blur(10px);
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+        padding: var(--spacing-unit) 0;
+        transition: all 0.3s ease;
+      }
+
+      .navbar-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+
+      .logo {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--primary-color);
+        text-decoration: none;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .nav-links a,
+      .menu-button {
+        color: var(--text-primary);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+        font-size: 1rem;
+        padding: 0.5rem;
+      }
+
+      .nav-links a:hover,
+      .menu-button:hover {
+        color: var(--accent);
+      }
+
+      .menu-button {
+        background: none;
+        border: none;
+        cursor: pointer;
+      }
+
+      .menu-button svg {
+        width: 24px;
+        height: 24px;
+      }
+
+      /* Hero Section Styles */
+      .hero {
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+        padding: 4rem 1rem;
+      }
+
+      .hero::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(
+          45deg,
+          rgba(108, 99, 255, 0.2),
+          rgba(76, 175, 80, 0.2)
+        );
+        z-index: -1;
+      }
+
+      .hero-content {
+        max-width: 800px;
+      }
+
+      .hero h1 {
+        font-size: clamp(2rem, 5vw, 3.5rem);
+        margin-bottom: 1rem;
+        animation: fadeInUp 1s ease;
+      }
+
+      .hero p {
+        font-size: clamp(1rem, 3vw, 1.2rem);
+        color: var(--text-secondary);
+        margin-bottom: 2rem;
+        animation: fadeInUp 1s ease 0.2s;
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      /* Features Section Styles */
+      .features {
+        padding: 4rem 1rem;
+        background-color: var(--surface);
+      }
+
+      .features-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+      }
+
+      .feature-card {
+        background: rgba(15, 23, 42, 0.6);
+        border-radius: 10px;
+        padding: 1.5rem;
+        text-align: center;
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+      }
+
+      .feature-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      }
+
+      .feature-icon {
+        font-size: 2.5rem;
+        color: var(--accent);
+        margin-bottom: 1rem;
+      }
+
+      .feature-title {
+        font-size: 1.25rem;
+        margin-bottom: 0.5rem;
+      }
+
+      .feature-description {
+        color: var(--text-secondary);
+        font-size: 0.9rem;
+      }
+
+      /* Action Buttons Styles */
+      .action-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+      }
+
+      .action-button {
+        background-color: var(--primary-color);
+        color: var(--text-primary);
+        padding: 0.75rem 1.5rem;
+        border-radius: 5px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        font-size: 1rem;
+        width: 100%;
+        max-width: 250px;
+      }
+
+      .action-button:hover {
+        background-color: var(--secondary-color);
+        transform: translateY(-3px);
+      }
+
+      /* Off-canvas Menu Styles */
+      .off-canvas-menu {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 80%;
+        max-width: 300px;
+        height: 100%;
+        background-color: var(--surface);
+        z-index: 2000;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+      }
+
+      .off-canvas-menu.open {
+        left: 0;
+      }
+
+      .menu-header {
+        display: flex;
+        align-items: center;
+        padding: 1rem;
+        background-color: var(--primary-color);
+      }
+
+      .menu-logo {
+        width: 2.5rem;
+        height: 2.5rem;
+        margin-right: 10px;
+        border-radius: 50%;
+      }
+
+      .menu-header h2 {
+        color: var(--text-primary);
+        font-size: 1.2rem;
+        margin: 0;
+      }
+
+      .menu-nav {
+        padding: 20px 0;
+      }
+
+      .menu-nav a {
+        display: flex;
+        align-items: center;
+        padding: 0.75rem 1rem;
+        color: var(--text-primary);
+        text-decoration: none;
+        transition: background-color 0.3s ease;
+        font-size: 1rem;
+      }
+
+      .menu-nav a:hover {
+        background-color: rgba(255, 255, 255, 0.1);
+      }
+
+      .menu-nav i {
+        margin-right: 10px;
+        font-size: 1.2rem;
+        width: 20px;
+        text-align: center;
+      }
+
+      .close-menu {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background: none;
+        border: none;
+        color: var(--text-primary);
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+
+      /* Footer Styles */
+      .footer {
+        background-color: var(--surface);
+        color: var(--text-secondary);
+        padding: 2rem 1rem;
+        text-align: center;
+      }
+
+      .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        gap: 1rem;
+      }
+
+      .footer-links {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .footer-links a {
+        color: var(--text-secondary);
+        text-decoration: none;
+        transition: color 0.3s ease;
+        font-size: 0.9rem;
+      }
+
+      .footer-links a:hover {
+        color: var(--accent);
+      }
+
+      .social-icons {
+        display: flex;
+        gap: 1rem;
+      }
+
+      .social-icons a {
+        color: var(--text-secondary);
+        font-size: 1.5rem;
+        transition: color 0.3s ease;
+      }
+
+      .social-icons a:hover {
+        color: var(--accent);
+      }
+      /* Styles mới cho Animated Counters */
+      .counters-section {
+        padding: 4rem 0;
+        background-color: var(--surface);
+      }
+
+      .counters-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin-top: 2rem;
+      }
+
+      .counter-item {
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--background);
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+      }
+
+      .counter-item:hover {
+        transform: translateY(-5px);
+      }
+
+      .counter-icon {
+        font-size: 3rem;
+        color: var(--primary-color);
+        margin-bottom: 1rem;
+      }
+
+      .counter {
+        font-size: 2.5rem;
+        font-weight: bold;
+        color: var(--text-primary);
+      }
+
+      .counter-label {
+        display: block;
+        margin-top: 0.5rem;
+        font-size: 1rem;
+        color: var(--text-secondary);
+      }
+
+      /* Styles mới cho Carousel */
+      .carousel-section {
+        padding: 4rem 0;
+        background-color: var(--background);
+      }
+
+      .carousel {
+        position: relative;
+        width: 100%;
+        max-width: 800px;
+        margin: 0 auto;
+        overflow: hidden;
+      }
+
+      .carousel-inner {
+        display: flex;
+        transition: transform 0.5s ease;
+      }
+
+      .carousel-item {
+        flex: 0 0 100%;
+        position: relative;
+      }
+
+      .carousel-item img {
+        width: 100%;
+        height: auto;
+        object-fit: cover;
+      }
+
+      .carousel-caption {
+        position: absolute;
+        bottom: 20px;
+        left: 0;
+        right: 0;
+        background-color: rgba(0, 0, 0, 0.7);
+        color: #fff;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .carousel-control {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        background-color: rgba(0, 0, 0, 0.5);
+        color: #fff;
+        border: none;
+        font-size: 1.5rem;
+        padding: 1rem;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .carousel-control:hover {
+        background-color: rgba(0, 0, 0, 0.8);
+      }
+
+      .carousel-control.prev {
+        left: 10px;
+      }
+
+      .carousel-control.next {
+        right: 10px;
+      }
+
+      /* Styles mới cho Newsletter Signup */
+      .newsletter-section {
+        padding: 4rem 0;
+        background-color: var(--surface);
+        text-align: center;
+      }
+
+      .newsletter-form {
+        display: flex;
+        justify-content: center;
+        margin-top: 2rem;
+      }
+
+      .newsletter-form input[type="email"] {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        border: none;
+        border-radius: 4px 0 0 4px;
+        width: 100%;
+        max-width: 300px;
+      }
+
+      .newsletter-form button {
+        padding: 0.5rem 1rem;
+        font-size: 1rem;
+        background-color: var(--primary-color);
+        color: var(--text-primary);
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .newsletter-form button:hover {
+        background-color: var(--secondary-color);
+      }
+      :root {
+        --primary-color: #6c63ff;
+        --background: #ffffff;
+        --surface: #f0f0f0;
+        --text-primary: #333333;
+        --text-secondary: #666666;
+        --accent-color: #ff9800;
+        --fab-size: 56px;
+        --fab-margin: 16px;
+        --transition-speed: 0.3s;
+        --font-size-base: 16px;
+        --layout-width: 100%;
+        --layout-max-width: 1200px;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+        font-size: var(--font-size-base);
+        line-height: 1.5;
+        color: var(--text-primary);
+        background-color: var(--background);
+        transition: background-color var(--transition-speed) ease,
+          color var(--transition-speed) ease,
+          font-size var(--transition-speed) ease;
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+      }
+
+      body.dark-mode {
+        --background: #121212;
+        --surface: #1e1e1e;
+        --text-primary: #ffffff;
+        --text-secondary: #b0b0b0;
+      }
+
+      .smart-controls {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        z-index: 1000;
+      }
+
+      .scroll-progress {
+        height: 4px;
+        background-color: var(--accent-color);
+        width: 0%;
+        transition: width 0.1s ease;
+      }
+
+      .reading-time {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        background-color: var(--surface);
+        color: var(--text-primary);
+        padding: 5px 10px;
+        border-radius: 20px;
+        font-size: 14px;
+      }
+
+      .interactive-background {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .gesture-zone {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100px;
+        height: 100%;
+        z-index: 999;
+      }
+
+      .voice-control {
+        position: fixed;
+        bottom: 20px;
+        left: 20px;
+        z-index: 1000;
+      }
+
+      .voice-control button {
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        border-radius: 50%;
+        width: 48px;
+        height: 48px;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        transition: background-color var(--transition-speed) ease;
+      }
+
+      .voice-control button:hover {
+        background-color: var(--accent-color);
+      }
+
+      .fab-container {
+        position: fixed;
+        bottom: var(--fab-margin);
+        right: var(--fab-margin);
+        display: flex;
+        flex-direction: column-reverse;
+        align-items: flex-end;
+        z-index: 1000;
+      }
+
+      .fab {
+        width: var(--fab-size);
+        height: var(--fab-size);
+        border-radius: 50%;
+        background-color: var(--primary-color);
+        color: white;
+        border: none;
+        cursor: pointer;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        transition: transform var(--transition-speed) ease,
+          opacity var(--transition-speed) ease,
+          background-color var(--transition-speed) ease;
+      }
+
+      .fab:hover {
+        transform: scale(1.1);
+      }
+
+      .fab-toggle {
+        z-index: 2;
+      }
+
+      .fab-actions {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(20px);
+        transition: opacity var(--transition-speed) ease,
+          transform var(--transition-speed) ease;
+      }
+
+      .fab-container.open .fab-actions {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateY(0);
+      }
+
+      .fab-container.open .fab-toggle {
+        transform: rotate(45deg);
+      }
+
+      .tooltip {
+        position: absolute;
+        background-color: var(--surface);
+        color: var(--text-primary);
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        white-space: nowrap;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity var(--transition-speed) ease;
+      }
+
+      .fab:hover .tooltip {
+        opacity: 1;
+      }
+
+      .notification-center {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 1001;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        max-width: 300px;
+      }
+
+      .notification {
+        background-color: var(--surface);
+        color: var(--text-primary);
+        padding: 10px 15px;
+        border-radius: 4px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        animation: slideIn 0.3s ease, fadeOut 0.3s ease 2.7s forwards;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(100%);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes fadeOut {
+        from {
+          opacity: 1;
+        }
+        to {
+          opacity: 0;
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        *,
+        *::before,
+        *::after {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+          scroll-behavior: auto !important;
+        }
+      }
+
+      @media (max-width: 768px) {
+        .fab-container {
+          bottom: var(--fab-margin);
+          right: var(--fab-margin);
+        }
+
+        .gesture-zone {
+          width: 50px;
+        }
+      }
+
+      main {
+        width: var(--layout-width);
+        max-width: var(--layout-max-width);
+        margin: 0 auto;
+        padding: 20px;
+        transition: width var(--transition-speed) ease,
+          max-width var(--transition-speed) ease;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav class="navbar">
+      <div class="container navbar-content">
+        <div class="nav-links">
+          <a href="{{ url_for('homepage', refresh=time()) }}">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+              <polyline points="9 22 9 12 15 12 15 22"></polyline>
+            </svg>
+          </a>
+          <a href="/about-me">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M5.52 19c.64-2.2 1.84-3 3.22-3h6.52c1.38 0 2.58.8 3.22 3"
+              />
+              <circle cx="12" cy="10" r="3" />
+              <circle cx="12" cy="12" r="10" />
+            </svg>
+          </a>
+          <a href="/dev">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M14 2H6a2 2 0 0 0-2 2v16c0 1.1.9 2 2 2h12a2 2 0 0 0 2-2V8l-6-6z"
+              ></path>
+              <path d="M14 3v5h5M16 13H8M16 17H8M10 9H8" />
+            </svg>
+          </a>
+        </div>
+        <button class="menu-button" id="menu-toggle" aria-label="Open menu">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <line x1="3" y1="12" x2="21" y2="12"></line>
+            <line x1="3" y1="6" x2="21" y2="6"></line>
+            <line x1="3" y1="18" x2="21" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+    </nav>
+
+    <div class="off-canvas-menu" id="off-canvas-menu">
+      <button id="close-menu" class="close-menu" aria-label="Close menu">
+        &times;
+      </button>
+      <div class="menu-header">
+        <img
+          src="https://i.postimg.cc/nhvjk62Q/Tan-7-cu-2.png"
+          alt="Tân 7 Cú Logo"
+          class="menu-logo"
+        />
+        <h2>Tân 7 Cú</h2>
+      </div>
+      <nav class="menu-nav">
+        <a href="/upload_file"><i class="fas fa-upload"></i>Upload tệp</a>
+        <a href="/aichat"><i class="fas fa-robot"></i> Chat với Gemini</a>
+        <a href="/shorten-link"><i class="fas fa-link"></i>Rút gọn link</a>
+        <a href="/api-check"><i class="fas fa-code"></i>Kiểm tra API</a>
+        <a href="/qrcode"><i class="fas fa-qrcode"></i>Tạo mã QRCODE</a>
+        <a href="/clipython"><i class="fab fa-python"></i>Trình chạy Python</a>
+        <a href="/facts"><i class="fas fa-lightbulb"></i>Fact</a>
+        <a href="/trivia"><i class="fas fa-brain"></i> Trivia</a>
+        <a href="/ipconfig"><i class="fas fa-network-wired"></i>IP check</a>
+        <a href="/weather"><i class="fas fa-cloud-sun"></i>Dự báo thời tiết</a>
+        <a href="/urldownload"><i class="fas fa-download"></i>Download Video</a>
+        <a href="/random-image"><i class="fas fa-image"></i>Random Image</a>
+        <a href="/news"><i class="fas fa-newspaper"></i>Tin tức</a>
+        <a href="/pdf"><i class="fas fa-file-pdf"></i>PDF</a>
+        <a href="/mamorse"
+          ><i class="fa fa-assistive-listening-systems"></i>Mã morse</a
+        >
+        <a href="/spotify"><i class="fab fa-spotify"></i>Clone Spotify</a>
+        <a href="/crypto"><i class="fab fa-bitcoin"></i> Bitcoin</a>
+        <a href="/formatcode"
+          ><i class="fas fa-file-code"></i>Code Beautifier</a
+        >
+        <a href="/password"><i class="fas fa-key"></i>Check Password</a>
+        <a href="/country"
+          ><i class="fas fa-globe"></i>Xem thông tin các nước</a
+        >
+        <a href="/bmi"><i class="fas fa-weight"></i>Tính BMI</a>
+        <a href="/math"><i class="fas fa-calculator"></i>Làm toán</a>
+        <a href="/documents"><i class="fas fa-clipboard"></i> API Documents</a>
+        <a href="/about"><i class="fas fa-info-circle"></i>About</a>
+        <a href="/tools"><i class="fas fa-tools"></i> More Tools</a>
+        <a href="/webapp"><i class="fas fa-tools"></i> More Webapp</a>
+      </nav>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
+    <header class="hero">
+      <div class="container hero-content">
+        <h1>Chào mừng bạn đến với Website của tôi</h1>
+        <p>Khám phá các công cụ trực tuyến hữu ích ngay tại đây!</p>
+        <div class="action-buttons">
+          <a href="/upload_file" class="action-button">Upload File</a>
+          <a href="/aichat" class="action-button">Gemini AI</a>
+          <a href="/shorten-link" class="action-button">Shorten Link</a>
+          <a href="/api-check" class="action-button">API Checker</a>
+          <a href="/qrcode" class="action-button">QR Code Generator</a>
+          <a href="/formatcode" class="action-button">Format Code</a>
+        </div>
+      </div>
+    </header>
+    <section class="counters-section">
+      <div class="container">
+        <h2>Thống kê ấn tượng</h2>
+        <div class="counters-grid">
+          <div class="counter-item">
+            <i class="fas fa-users counter-icon"></i>
+            <span class="counter" data-target="1785632711">0</span>
+            <span class="counter-label">Page views</span>
+          </div>
+          <div class="counter-item">
+            <i class="fas fa-tools counter-icon"></i>
+            <span class="counter" data-target="25">0</span>
+            <span class="counter-label">Công cụ</span>
+          </div>
+          <div class="counter-item">
+            <i class="fas fa-globe counter-icon"></i>
+            <span class="counter" data-target="11">0</span>
+            <span class="counter-label">Thành viên</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="features">
+      <div class="container">
+        <h2>Các công cụ và tính năng</h2>
+        <div class="features-grid">
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-upload"></i></div>
+            <h3 class="feature-title">Upload tệp</h3>
+            <p class="feature-description">
+              Tải lên và quản lý tệp của bạn một cách dễ dàng
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-robot"></i></div>
+            <h3 class="feature-title">Chat với Gemini</h3>
+            <p class="feature-description">
+              Trò chuyện thông minh với AI Gemini
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-link"></i></div>
+            <h3 class="feature-title">Rút gọn link</h3>
+            <p class="feature-description">Tạo liên kết ngắn gọn nhanh chóng</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-code"></i></div>
+            <h3 class="feature-title">Kiểm tra API</h3>
+            <p class="feature-description">
+              Công cụ mạnh mẽ để kiểm tra và debug API
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-qrcode"></i></div>
+            <h3 class="feature-title">Tạo mã QRCODE</h3>
+            <p class="feature-description">
+              Tạo mã QR tùy chỉnh cho mọi mục đích
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fab fa-python"></i></div>
+            <h3 class="feature-title">Trình chạy Python</h3>
+            <p class="feature-description">
+              Chạy và kiểm tra mã Python trực tuyến
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-lightbulb"></i></div>
+            <h3 class="feature-title">Fact</h3>
+            <p class="feature-description">
+              Khám phá những sự thật thú vị mỗi ngày
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-brain"></i></div>
+            <h3 class="feature-title">Trivia</h3>
+            <p class="feature-description">
+              Thử thách kiến thức của bạn với câu đố thú vị
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-network-wired"></i></div>
+            <h3 class="feature-title">IP check</h3>
+            <p class="feature-description">
+              Kiểm tra thông tin IP và mạng của bạn
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-cloud-sun"></i></div>
+            <h3 class="feature-title">Dự báo thời tiết</h3>
+            <p class="feature-description">Xem thông tin thời tiết cập nhật</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-download"></i></div>
+            <h3 class="feature-title">Download Video</h3>
+            <p class="feature-description">
+              Tải video từ các nền tảng trực tuyến
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-image"></i></div>
+            <h3 class="feature-title">Random Image</h3>
+            <p class="feature-description">
+              Khám phá hình ảnh ngẫu nhiên thú vị
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-newspaper"></i></div>
+            <h3 class="feature-title">Tin tức</h3>
+            <p class="feature-description">
+              Cập nhật tin tức mới nhất từ nhiều nguồn
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-file-pdf"></i></div>
+            <h3 class="feature-title">PDF</h3>
+            <p class="feature-description">Công cụ xử lý và quản lý tệp PDF</p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon">
+              <i class="fa fa-assistive-listening-systems"></i>
+            </div>
+            <h3 class="feature-title">Mã morse</h3>
+            <p class="feature-description">
+              Mã hóa và giải mã thông điệp Morse
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fab fa-spotify"></i></div>
+            <h3 class="feature-title">Clone Spotify</h3>
+            <p class="feature-description">
+              Trải nghiệm giao diện tương tự Spotify
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fab fa-bitcoin"></i></div>
+            <h3 class="feature-title">Bitcoin</h3>
+            <p class="feature-description">
+              Theo dõi giá và thông tin về Bitcoin
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-file-code"></i></div>
+            <h3 class="feature-title">Code Beautifier</h3>
+            <p class="feature-description">
+              Làm đẹp và định dạng mã nguồn của bạn
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-key"></i></div>
+            <h3 class="feature-title">Check Password</h3>
+            <p class="feature-description">
+              Kiểm tra độ mạnh và bảo mật của mật khẩu
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-globe"></i></div>
+            <h3 class="feature-title">Xem thông tin các nước</h3>
+            <p class="feature-description">
+              Khám phá thông tin chi tiết về các quốc gia
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-weight"></i></div>
+            <h3 class="feature-title">Tính BMI</h3>
+            <p class="feature-description">
+              Tính chỉ số khối cơ thể (BMI) của bạn
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-calculator"></i></div>
+            <h3 class="feature-title">Làm toán</h3>
+            <p class="feature-description">
+              Giải quyết các bài toán và phép tính
+            </p>
+          </div>
+          <div class="feature-card">
+            <div class="feature-icon"><i class="fas fa-clipboard"></i></div>
+            <h3 class="feature-title">API Documents</h3>
+            <p class="feature-description">Tài liệu và hướng dẫn sử dụng API</p>
+          </div>
+        </div>
+      </div>
+    </section>
+    <section class="carousel-section">
+      <div class="container">
+        <h2>Khám phá các tính năng của chúng tôi</h2>
+        <div class="carousel">
+          <div class="carousel-inner">
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/g28fkFCW/D3-B27-CDC-20-BF-409-F-B9-A5-6-F35735-CB901.png"
+                alt="Tính năng 1"
+                height="400"
+                width="600"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/y84bGpkr/A34-AFA92-B463-4-D6-F-A2-AB-B976-ABE57-E5-F.png"
+                alt="Tính năng 2"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/cJTkrsTV/0-D1-B9067-EA7-F-4-D1-E-AE37-72621-C696075.png"
+                alt="Tính năng 3"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/5jcnZjNF/45-A1-E069-5-A23-47-B3-A8-E5-F9-D914-F52-A3-B.png"
+                alt="Tính năng 3"
+              />
+            </div>
+            <div class="carousel-item">
+              <img
+                src="https://i.postimg.cc/qB9rkLN2/9-C804781-D2-F5-4-BEA-9129-B1-A8-CF3-DCE1-C.png"
+                alt="Tính năng 3"
+              />
+            </div>
+          </div>
+          <button class="carousel-control prev" aria-label="Previous slide">
+            &#10094;
+          </button>
+          <button class="carousel-control next" aria-label="Next slide">
+            &#10095;
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="newsletter-section">
+      <div class="container">
+        <h2>Đăng ký nhận bản tin</h2>
+        <p>
+          Nhận thông báo về các tính năng mới và mẹo sử dụng công cụ hàng tuần!
+        </p>
+        <form class="newsletter-form">
+          <input
+            type="email"
+            placeholder="Nhập địa chỉ email của bạn"
+            required
+          />
+          <button type="submit">Đăng ký</button>
+        </form>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <div class="container footer-content">
+        <p>&copy; 2024 - Designed by Me with Flask and ❤️</p>
+        <div class="footer-links">
+          <a href="/">Trang Chủ</a>
+        </div>
+        <div class="footer-links">
+          <a href="/status">Status</a>
+        </div>
+        <div class="social-icons">
+          <a
+            href="https://github.com/tanbaycu"
+            target="_blank"
+            aria-label="GitHub"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"
+              ></path>
+            </svg>
+          </a>
+          <a
+            href="https://www.facebook.com/tanbaycu.404s/"
+            target="_blank"
+            aria-label="Facebook"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            >
+              <path
+                d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"
+              ></path>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </footer>
+    <div id="smartControls" class="smart-controls">
+      <div
+        id="scrollProgress"
+        class="scroll-progress"
+        role="progressbar"
+        aria-valuemin="0"
+        aria-valuemax="100"
+        aria-valuenow="0"
+      ></div>
+      <div id="readingTime" class="reading-time" aria-live="polite"></div>
+      <div id="interactiveBackground" class="interactive-background"></div>
+      <div id="gestureZone" class="gesture-zone"></div>
+      <div id="voiceControl" class="voice-control">
+        <button id="voiceToggle" aria-label="Toggle voice control">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <path
+              d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"
+            ></path>
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2"></path>
+            <line x1="12" y1="19" x2="12" y2="23"></line>
+            <line x1="8" y1="23" x2="16" y2="23"></line>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="fab-container" id="fabContainer">
+      <button id="fabToggle" class="fab fab-toggle" aria-label="Toggle menu">
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          height="24"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="2"
+          stroke-linecap="round"
+          stroke-linejoin="round"
+        >
+          <line x1="12" y1="5" x2="12" y2="19"></line>
+          <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+      </button>
+      <div class="fab-actions">
+        <button
+          id="themeToggle"
+          class="fab fab-action"
+          aria-label="Toggle theme"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+          </svg>
+        </button>
+        <button
+          id="accentColorToggle"
+          class="fab fab-action"
+          aria-label="Change accent color"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <circle cx="12" cy="12" r="10"></circle>
+            <circle cx="12" cy="12" r="6"></circle>
+            <circle cx="12" cy="12" r="2"></circle>
+          </svg>
+        </button>
+        <button
+          id="fontSizeToggle"
+          class="fab fab-action"
+          aria-label="Adjust font size"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="4 7 4 4 20 4 20 7"></polyline>
+            <line x1="9" y1="20" x2="15" y2="20"></line>
+            <line x1="12" y1="4" x2="12" y2="20"></line>
+          </svg>
+        </button>
+        <button
+          id="layoutToggle"
+          class="fab fab-action"
+          aria-label="Toggle layout"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+            <line x1="3" y1="9" x2="21" y2="9"></line>
+            <line x1="9" y1="21" x2="9" y2="9"></line>
+          </svg>
+        </button>
+        <button id="backToTop" class="fab fab-action" aria-label="Back to top">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+          >
+            <polyline points="18 15 12 9 6 15"></polyline>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <div id="notificationCenter" class="notification-center"></div>
+    <script
+      src="https://kit.fontawesome.com/your-fontawesome-kit.js"
+      crossorigin="anonymous"
+    ></script>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        function toggleMenu() {
+          const offCanvasMenu = document.getElementById("off-canvas-menu");
+          const overlay = document.getElementById("overlay");
+          offCanvasMenu.classList.toggle("open");
+          overlay.classList.toggle("show");
+          document.body.classList.toggle("menu-open");
+        }
+
+        document
+          .getElementById("menu-toggle")
+          .addEventListener("click", toggleMenu);
+        document
+          .getElementById("close-menu")
+          .addEventListener("click", toggleMenu);
+        document
+          .getElementById("overlay")
+          .addEventListener("click", toggleMenu);
+
+        // Close menu when clicking on a menu item (for mobile)
+        document.querySelectorAll(".menu-nav a").forEach((link) => {
+          link.addEventListener("click", () => {
+            if (window.innerWidth <= 768) {
+              toggleMenu();
+            }
+          });
+        });
+
+        // Adjust menu on window resize
+        window.addEventListener("resize", () => {
+          if (window.innerWidth > 768) {
+            document.getElementById("off-canvas-menu").classList.remove("open");
+            document.getElementById("overlay").classList.remove("show");
+            document.body.classList.remove("menu-open");
+          }
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+          anchor.addEventListener("click", function (e) {
+            e.preventDefault();
+            document.querySelector(this.getAttribute("href")).scrollIntoView({
+              behavior: "smooth"
+            });
+          });
+        });
+
+        // Navbar background change on scroll
+        window.addEventListener("scroll", () => {
+          const navbar = document.querySelector(".navbar");
+          if (window.scrollY > 50) {
+            navbar.style.background = "rgba(30, 41, 59, 0.95)";
+          } else {
+            navbar.style.background = "rgba(30, 41, 59, 0.8)";
+          }
+        });
+
+        // Add animation to feature cards on scroll
+        const featureCards = document.querySelectorAll(".feature-card");
+        const observerOptions = {
+          threshold: 0.5
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.style.opacity = "1";
+              entry.target.style.transform = "translateY(0)";
+            }
+          });
+        }, observerOptions);
+
+        featureCards.forEach((card) => {
+          card.style.opacity = "0";
+          card.style.transform = "translateY(20px)";
+          card.style.transition = "opacity 0.5s ease, transform 0.5s ease";
+          observer.observe(card);
+        });
+      });
+      document.addEventListener("DOMContentLoaded", function () {
+        const carousel = document.querySelector(".carousel-inner");
+        const items = carousel.querySelectorAll(".carousel-item");
+        const prevBtn = document.querySelector(".carousel-control.prev");
+        const nextBtn = document.querySelector(".carousel-control.next");
+        let currentIndex = 0;
+
+        function showSlide(index) {
+          carousel.style.transform = `translateX(-${index * 100}%)`;
+        }
+
+        prevBtn.addEventListener("click", () => {
+          currentIndex = (currentIndex - 1 + items.length) % items.length;
+          showSlide(currentIndex);
+        });
+
+        nextBtn.addEventListener("click", () => {
+          currentIndex = (currentIndex + 1) % items.length;
+          showSlide(currentIndex);
+        });
+      });
+      const counters = document.querySelectorAll(".counter");
+      const speed = 200;
+
+      counters.forEach((counter) => {
+        const updateCount = () => {
+          const target = +counter.getAttribute("data-target");
+          const count = +counter.innerText;
+          const inc = target / speed;
+
+          if (count < target) {
+            counter.innerText = Math.ceil(count + inc);
+            setTimeout(updateCount, 1);
+          } else {
+            counter.innerText = target;
+          }
+        };
+
+        updateCount();
+      });
+
+      // Carousel
+      const carousel = document.querySelector(".carousel-inner");
+      const items = carousel.querySelectorAll(".carousel-item");
+      const prevBtn = document.querySelector(".carousel-control.prev");
+      const nextBtn = document.querySelector(".carousel-control.next");
+      let currentIndex = 0;
+
+      function showSlide(index) {
+        carousel.style.transform = `translateX(-${index * 100}%)`;
+      }
+
+      prevBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex - 1 + items.length) % items.length;
+        showSlide(currentIndex);
+      });
+
+      nextBtn.addEventListener("click", () => {
+        currentIndex = (currentIndex + 1) % items.length;
+        showSlide(currentIndex);
+      });
+      const body = document.body;
+      const fabContainer = document.getElementById("fabContainer");
+      const fabToggle = document.getElementById("fabToggle");
+      const themeToggle = document.getElementById("themeToggle");
+      const accentColorToggle = document.getElementById("accentColorToggle");
+      const fontSizeToggle = document.getElementById("fontSizeToggle");
+      const layoutToggle = document.getElementById("layoutToggle");
+      const backToTop = document.getElementById("backToTop");
+      const scrollProgress = document.getElementById("scrollProgress");
+      const readingTime = document.getElementById("readingTime");
+      const interactiveBackground = document.getElementById(
+        "interactiveBackground"
+      );
+      const gestureZone = document.getElementById("gestureZone");
+      const voiceToggle = document.getElementById("voiceToggle");
+      const notificationCenter = document.getElementById("notificationCenter");
+
+      // Theme switching
+      const themes = ["light", "dark", "system"];
+      let currentThemeIndex = 0;
+
+      function updateTheme() {
+        const theme = themes[currentThemeIndex];
+        if (theme === "system") {
+          if (
+            window.matchMedia &&
+            window.matchMedia("(prefers-color-scheme: dark)").matches
+          ) {
+            body.classList.add("dark-mode");
+          } else {
+            body.classList.remove("dark-mode");
+          }
+        } else if (theme === "dark") {
+          body.classList.add("dark-mode");
+        } else {
+          body.classList.remove("dark-mode");
+        }
+        localStorage.setItem("theme", theme);
+        updateThemeIcon();
+        showNotification(`Theme changed to ${theme}`);
+      }
+
+      function updateThemeIcon() {
+        const theme = themes[currentThemeIndex];
+        themeToggle.innerHTML =
+          theme === "light"
+            ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>'
+            : theme === "dark"
+            ? '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>'
+            : '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a10 10 0 0 1 0 20 10 10 0 0 1 0-20z"></path><path d="M12 22V2"></path><path d="M2 12h20"></path></svg>';
+      }
+
+      themeToggle.addEventListener("click", () => {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        updateTheme();
+      });
+
+      // Accent color switching
+      const accentColors = [
+        "#ff9800",
+        "#4caf50",
+        "#2196f3",
+        "#9c27b0",
+        "#f44336"
+      ];
+      let currentAccentColorIndex = 0;
+
+      function updateAccentColor() {
+        const color = accentColors[currentAccentColorIndex];
+        document.documentElement.style.setProperty("--accent-color", color);
+        localStorage.setItem("accentColor", color);
+        showNotification(`Accent color changed`);
+      }
+
+      accentColorToggle.addEventListener("click", () => {
+        currentAccentColorIndex =
+          (currentAccentColorIndex + 1) % accentColors.length;
+        updateAccentColor();
+      });
+
+      // Font size adjustment
+      const fontSizes = ["14px", "16px", "18px", "20px", "22px"];
+      let currentFontSizeIndex = 1; // Start with 16px as default
+
+      function updateFontSize() {
+        const fontSize = fontSizes[currentFontSizeIndex];
+        document.documentElement.style.setProperty(
+          "--font-size-base",
+          fontSize
+        );
+        localStorage.setItem("fontSize", fontSize);
+        showNotification(`Font size changed to ${fontSize}`);
+      }
+
+      fontSizeToggle.addEventListener("click", () => {
+        currentFontSizeIndex = (currentFontSizeIndex + 1) % fontSizes.length;
+        updateFontSize();
+      });
+
+      // Layout toggle
+      const layouts = ["100%", "800px", "1000px", "1200px"];
+      let currentLayoutIndex = 0;
+
+      function updateLayout() {
+        const layout = layouts[currentLayoutIndex];
+        document.documentElement.style.setProperty("--layout-width", layout);
+        localStorage.setItem("layout", layout);
+        showNotification(`Layout width changed to ${layout}`);
+      }
+
+      layoutToggle.addEventListener("click", () => {
+        currentLayoutIndex = (currentLayoutIndex + 1) % layouts.length;
+        updateLayout();
+      });
+
+      // Back to top
+      backToTop.addEventListener("click", () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+
+      // Scroll progress
+      function updateScrollProgress() {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+        const scrollTop =
+          window.pageYOffset || document.documentElement.scrollTop;
+        const scrollPercentage =
+          (scrollTop / (documentHeight - windowHeight)) * 100;
+        scrollProgress.style.width = `${scrollPercentage}%`;
+        scrollProgress.setAttribute(
+          "aria-valuenow",
+          Math.round(scrollPercentage)
+        );
+      }
+
+      window.addEventListener("scroll", updateScrollProgress);
+
+      // Reading time estimator
+      function updateReadingTime() {
+        const text = document.body.innerText;
+        const wordCount = text.trim().split(/\s+/).length;
+        const readingTimeMinutes = Math.ceil(wordCount / 200); // Assuming 200 words per minute
+        readingTime.textContent = `${readingTimeMinutes} min read`;
+      }
+
+      // Interactive background
+      function createInteractiveBackground() {
+        const colors = ["#ff9800", "#4caf50", "#2196f3", "#9c27b0", "#f44336"];
+        let lastMouseX = 0;
+        let lastMouseY = 0;
+
+        document.addEventListener("mousemove", (e) => {
+          const mouseX = e.clientX;
+          const mouseY = e.clientY;
+
+          if (
+            Math.abs(mouseX - lastMouseX) > 20 ||
+            Math.abs(mouseY - lastMouseY) > 20
+          ) {
+            const dot = document.createElement("div");
+            dot.style.position = "absolute";
+            dot.style.left = `${mouseX}px`;
+            dot.style.top = `${mouseY}px`;
+            dot.style.width = "5px";
+            dot.style.height = "5px";
+            dot.style.borderRadius = "50%";
+            dot.style.backgroundColor =
+              colors[Math.floor(Math.random() * colors.length)];
+            dot.style.opacity = "0.5";
+            dot.style.transition = "all 1s ease";
+
+            interactiveBackground.appendChild(dot);
+
+            setTimeout(() => {
+              dot.style.transform = `translate(${Math.random() * 100 - 50}px, ${
+                Math.random() * 100 - 50
+              }px)`;
+              dot.style.opacity = "0";
+            }, 50);
+
+            setTimeout(() => {
+              interactiveBackground.removeChild(dot);
+            }, 1050);
+
+            lastMouseX = mouseX;
+            lastMouseY = mouseY;
+          }
+        });
+      }
+
+      createInteractiveBackground();
+
+      // Gesture controls
+      let touchStartX = 0;
+      let touchStartY = 0;
+
+      gestureZone.addEventListener("touchstart", (e) => {
+        touchStartX = e.touches[0].clientX;
+        touchStartY = e.touches[0].clientY;
+      });
+
+      gestureZone.addEventListener("touchend", (e) => {
+        const touchEndX = e.changedTouches[0].clientX;
+        const touchEndY = e.changedTouches[0].clientY;
+        const deltaX = touchEndX - touchStartX;
+        const deltaY = touchEndY - touchStartY;
+
+        if (Math.abs(deltaX) > Math.abs(deltaY)) {
+          if (deltaX > 50) {
+            showNotification("Swipe right detected");
+            // Add your desired action here
+          } else if (deltaX < -50) {
+            showNotification("Swipe left detected");
+            // Add your desired action here
+          }
+        } else {
+          if (deltaY > 50) {
+            showNotification("Swipe down detected");
+            // Add your desired action here
+          } else if (deltaY < -50) {
+            showNotification("Swipe up detected");
+            // Add your desired action here
+          }
+        }
+      });
+
+      // Voice control
+      let recognition;
+
+      if ("webkitSpeechRecognition" in window) {
+        recognition = new webkitSpeechRecognition();
+        recognition.continuous = false;
+        recognition.lang = "en-US";
+
+        recognition.onresult = (event) => {
+          const command = event.results[0][0].transcript.toLowerCase();
+          showNotification(`Voice command: ${command}`);
+
+          if (command.includes("dark mode")) {
+            currentThemeIndex = 1;
+            updateTheme();
+          } else if (command.includes("light mode")) {
+            currentThemeIndex = 0;
+            updateTheme();
+          } else if (command.includes("change color")) {
+            accentColorToggle.click();
+          } else if (command.includes("increase font")) {
+            if (currentFontSizeIndex < fontSizes.length - 1) {
+              currentFontSizeIndex++;
+              updateFontSize();
+            }
+          } else if (command.includes("decrease font")) {
+            if (currentFontSizeIndex > 0) {
+              currentFontSizeIndex--;
+              updateFontSize();
+            }
+          } else if (command.includes("scroll up")) {
+            window.scrollBy(0, -300);
+          } else if (command.includes("scroll down")) {
+            window.scrollBy(0, 300);
+          }
+        };
+      }
+
+      voiceToggle.addEventListener("click", () => {
+        if (recognition) {
+          recognition.start();
+          showNotification("Voice control activated. Speak a command.");
+        } else {
+          showNotification("Speech recognition not supported in this browser.");
+        }
+      });
+
+      // Notification system
+      function showNotification(message) {
+        const notification = document.createElement("div");
+        notification.className = "notification";
+        notification.textContent = message;
+        notificationCenter.appendChild(notification);
+
+        setTimeout(() => {
+          notificationCenter.removeChild(notification);
+        }, 3000);
+      }
+
+      // FAB menu toggle
+      fabToggle.addEventListener("click", () => {
+        fabContainer.classList.toggle("open");
+      });
+
+      // Keyboard shortcuts
+      document.addEventListener("keydown", (event) => {
+        if (event.ctrlKey && event.shiftKey) {
+          switch (event.key.toLowerCase()) {
+            case "t":
+              themeToggle.click();
+              break;
+            case "c":
+              accentColorToggle.click();
+              break;
+            case "f":
+              fontSizeToggle.click();
+              break;
+            case "l":
+              layoutToggle.click();
+              break;
+            case "b":
+              backToTop.click();
+              break;
+            case "v":
+              voiceToggle.click();
+              break;
+          }
+        }
+      });
+
+      // Close FAB menu when clicking outside
+      document.addEventListener("click", (event) => {
+        if (!fabContainer.contains(event.target)) {
+          fabContainer.classList.remove("open");
+        }
+      });
+
+      // Initialization
+      function init() {
+        // Load saved preferences
+        const savedTheme = localStorage.getItem("theme");
+        if (savedTheme) {
+          currentThemeIndex = themes.indexOf(savedTheme);
+          updateTheme();
+        }
+
+        const savedAccentColor = localStorage.getItem("accentColor");
+        if (savedAccentColor) {
+          currentAccentColorIndex = accentColors.indexOf(savedAccentColor);
+          updateAccentColor();
+        }
+
+        const savedFontSize = localStorage.getItem("fontSize");
+        if (savedFontSize) {
+          currentFontSizeIndex = fontSizes.indexOf(savedFontSize);
+          updateFontSize();
+        }
+
+        const savedLayout = localStorage.getItem("layout");
+        if (savedLayout) {
+          currentLayoutIndex = layouts.indexOf(savedLayout);
+          updateLayout();
+        }
+
+        updateReadingTime();
+        updateScrollProgress();
+      }
+
+      init();
+
+      // Add tooltips
+      const buttons = document.querySelectorAll(".fab-action");
+      buttons.forEach((button) => {
+        const tooltip = document.createElement("span");
+        tooltip.className = "tooltip";
+        tooltip.textContent = button.getAttribute("aria-label");
+        button.appendChild(tooltip);
+      });
+
+      // Intersection Observer for lazy loading and animations
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.1 }
+      );
+
+      document
+        .querySelectorAll(".feature-card, .carousel-item")
+        .forEach((el) => {
+          observer.observe(el);
+        });
+
+      // Custom event for theme change
+      const themeChangeEvent = new CustomEvent("themeChange", {
+        detail: { theme: themes[currentThemeIndex] }
+      });
+
+      // Dispatch custom event when theme changes
+      function dispatchThemeChangeEvent() {
+        document.dispatchEvent(themeChangeEvent);
+      }
+
+      // Update theme change event listener
+      themeToggle.addEventListener("click", () => {
+        currentThemeIndex = (currentThemeIndex + 1) % themes.length;
+        updateTheme();
+        dispatchThemeChangeEvent();
+      });
+
+      // Example of using the custom event
+      document.addEventListener("themeChange", (e) => {
+        console.log(`Theme changed to: ${e.detail.theme}`);
+        // You can add more logic here to respond to theme changes
+      });
+
+      // Advanced scroll-based animations
+      function createScrollAnimations() {
+        const animatedElements = document.querySelectorAll(".scroll-animate");
+
+        const scrollObserver = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                entry.target.classList.add("animate");
+              } else {
+                entry.target.classList.remove("animate");
+              }
+            });
+          },
+          { threshold: 0.1 }
+        );
+
+        animatedElements.forEach((el) => {
+          scrollObserver.observe(el);
+        });
+      }
+
+      createScrollAnimations();
+
+      // Dynamic content loading
+      function loadDynamicContent() {
+        const dynamicContentAreas = document.querySelectorAll(
+          "[data-dynamic-content]"
+        );
+
+        dynamicContentAreas.forEach((area) => {
+          const contentType = area.dataset.dynamicContent;
+          fetch(`/api/content/${contentType}`)
+            .then((response) => response.json())
+            .then((data) => {
+              area.innerHTML = data.content;
+              showNotification(`Loaded ${contentType} content`);
+            })
+            .catch((error) => {
+              console.error("Error loading dynamic content:", error);
+              showNotification(`Failed to load ${contentType} content`);
+            });
+        });
+      }
+
+      loadDynamicContent();
+
+      // Advanced performance monitoring
+      function monitorPerformance() {
+        let lastFrameTime = performance.now();
+        let framesThisSecond = 0;
+        let fps = 0;
+
+        function loop(currentFrameTime) {
+          framesThisSecond++;
+
+          if (currentFrameTime > lastFrameTime + 1000) {
+            fps = framesThisSecond;
+            framesThisSecond = 0;
+            lastFrameTime = currentFrameTime;
+            console.log(`Current FPS: ${fps}`);
+
+            if (fps < 30) {
+              showNotification("Performance issue detected. Optimizing...");
+              // Implement performance optimizations here
+            }
+          }
+
+          requestAnimationFrame(loop);
+        }
+
+        requestAnimationFrame(loop);
+      }
+
+      monitorPerformance();
+
+      // Experimental: AI-powered content recommendations
+      function getContentRecommendations() {
+        // This is a mock function. In a real implementation, you would call an AI service.
+        const mockRecommendations = [
+          "How to optimize your website for speed",
+          "The future of web design: trends to watch",
+          "Accessibility best practices for modern web apps"
+        ];
+
+        const recommendationList = document.createElement("ul");
+        mockRecommendations.forEach((rec) => {
+          const li = document.createElement("li");
+          li.textContent = rec;
+          recommendationList.appendChild(li);
+        });
+
+        showNotification("New content recommendations available!");
+        // In a real implementation, you would insert this list into your page
+        console.log("Content recommendations:", recommendationList);
+      }
+
+      // Call this function periodically or based on user behavior
+      setTimeout(getContentRecommendations, 10000);
+    </script>
+    <script>
+      window.va =
+        window.va ||
+        function () {
+          (window.vaq = window.vaq || []).push(arguments);
+        };
+    </script>
+    <script defer src="/_vercel/insights/script.js"></script>
+  </body>
+</html>
