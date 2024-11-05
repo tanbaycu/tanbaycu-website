@@ -1041,7 +1041,36 @@ def country():
 def bmi():
     return render_template("bmi.html")
 
-    
+@app.route('/webapp')
+def webapp():
+    projects = [
+        {
+            "name": "Fun Facts Hub",
+            "url": "https://funfactshub.vercel.app",
+            "description": "A hub for interesting fun facts"
+        },
+        {
+            "name": "Gemini UI Chat",
+            "url": "https://gemini-ui-chat.vercel.app",
+            "description": "A chat interface powered by Gemini AI"
+        },
+        {
+            "name": "PDF Tool",
+            "url": "https://pdf-05.gptengineer.run/",
+            "description": "A tool for working with PDF files"
+        },
+        {
+            "name": "EB2 Project",
+            "url": "https://eb2.vercel.app/",
+            "description": "EB2 project showcase"
+        },
+        {
+            "name": "Vuon Mai Chin Teo",
+            "url": "https://vuonmaichinteo.vercel.app/",
+            "description": "A garden-related project"
+        }
+    ]
+    return render_template('webapp.html', projects=projects) 
        
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
