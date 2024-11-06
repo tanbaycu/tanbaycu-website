@@ -1041,17 +1041,201 @@ def country():
 def bmi():
     return render_template("bmi.html")
 
+
 @app.route("/documents")
-def bmi():
+def documents():
     return render_template("documents.html")
 
-@app.route("/trivia")
-def bmi():
+
+MORSE_CODE_DICT = {
+    "A": ".-",
+    "B": "-...",
+    "C": "-.-.",
+    "D": "-..",
+    "E": ".",
+    "F": "..-.",
+    "G": "--.",
+    "H": "....",
+    "I": "..",
+    "J": ".---",
+    "K": "-.-",
+    "L": ".-..",
+    "M": "--",
+    "N": "-.",
+    "O": "---",
+    "P": ".--.",
+    "Q": "--.-",
+    "R": ".-.",
+    "S": "...",
+    "T": "-",
+    "U": "..-",
+    "V": "...-",
+    "W": ".--",
+    "X": "-..-",
+    "Y": "-.--",
+    "Z": "--..",
+    "0": "-----",
+    "1": ".----",
+    "2": "..---",
+    "3": "...--",
+    "4": "....-",
+    "5": ".....",
+    "6": "-....",
+    "7": "--...",
+    "8": "---..",
+    "9": "----.",
+    " ": " ",
+}
+
+SHARED_CONVERSIONS = {}
+
+
+@app.route("/mamorse", methods=["GET"])
+def morse_maestro():
+    return render_template("morse.html")
+
+
+@app.route("/convert", methods=["POST"])
+def convert():
+    data = request.json
+    text = data["text"]
+    mode = data["mode"]
+
+    try:
+        if mode == "to_morse":
+            result = " ".join(MORSE_CODE_DICT.get(char.upper(), char) for char in text)
+        else:
+            morse_to_char = {v: k for k, v in MORSE_CODE_DICT.items()}
+            result = "".join(morse_to_char.get(code, code) for code in text.split())
+
+        return jsonify({"result": result})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 400
+
+
+@app.route("/share", methods=["POST"])
+def share_conversion():
+    data = request.json
+    share_id = str(uuid.uuid4())
+    SHARED_CONVERSIONS[share_id] = data
+    return jsonify({"share_id": share_id})
+
+
+@app.route("/shared/<share_id>", methods=["GET"])
+def get_shared_conversion(share_id):
+    if share_id in SHARED_CONVERSIONS:
+        return jsonify(SHARED_CONVERSIONS[share_id])
+    else:
+        abort(404)
+
+
+@app.route("/morse_code_dict", methods=["GET"])
+def get_morse_code_dict():
+    return jsonify(MORSE_CODE_DICT)
+
+
+@app.route("/trivia", methods=["GET"])
+def trivia():
     return render_template("trivia.html")
+
+
+routes = [
+    {'path': '/', 'name': 'Home'},
+    {'path': '/about-me', 'name': 'About Me'},
+    {'path': '/dev', 'name': 'Dev'},
+    {'path': '/shorten-link', 'name': 'URL Shortener'},
+    {'path': '/upload_file', 'name': 'File Upload'},
+    {'path': '/upload-history', 'name': 'Upload History'},
+    {'path': '/download-history', 'name': 'Download History'},
+    {'path': '/about', 'name': 'About'},
+    {'path': '/api-check', 'name': 'API Check'},
+    {'path': '/qrcode', 'name': 'QR Code'},
+    {'path': '/clipython', 'name': 'CLI Python'},
+    {'path': '/facts', 'name': 'Facts'},
+    {'path': '/ipconfig', 'name': 'IP Config'},
+    {'path': '/weather', 'name': 'Weather'},
+    {'path': '/urldownload', 'name': 'URL Download'},
+    {'path': '/random-image', 'name': 'Random Image'},
+    {'path': '/news', 'name': 'News'},
+    {'path': '/math', 'name': 'Math Operations'},
+    {'path': '/projects', 'name': 'Projects'},
+    {'path': '/aichat', 'name': 'AI Chat'},
+    {'path': '/pdf', 'name': 'PDF'},
+    {'path': '/tools', 'name': 'Tools'},
+    {'path': '/spotify', 'name': 'Spotify'},
+    {'path': '/crypto', 'name': 'Crypto'},
+    {'path': '/formatcode', 'name': 'Format Code'},
+    {'path': '/password', 'name': 'Password'},
+    {'path': '/country', 'name': 'Country'},
+    {'path': '/bmi', 'name': 'BMI Calculator'},
+    {'path': '/documents', 'name': 'Documents'},
+    {'path': '/mamorse', 'name': 'Morse Code'},
+    {'path': '/trivia', 'name': 'Trivia'},
+]
+
+@app.route('/status')
+def status_page():
+    return render_template('status.html', routes=routes)
+
+@app.route('/check-route-status')
+def check_route_status():
+    path = request.args.get('path')
+    route_name = next((route['name'] for route in routes if route['path'] == path), path)
+    start_time = time.time()
+    try:
+        # Simulating API call with random response time and status
+        time.sleep(random.uniform(0.1, 2.0))
+        response_time = round((time.time() - start_time) * 1000)
+        
+        if random.random() < 0.9:  # 90% chance of success
+            if response_time < 200:
+                status = 'up'
+            elif response_time < 1000:
+                status = 'degraded'
+            else:
+                status = 'down'
+        else:
+            status = 'down'
+            response_time = None
+    except Exception:
+        status = 'down'
+        response_time = None
+
+    return render_template('status_card.html', status=status, response_time=response_time, route_name=route_name)
+
+@app.route('/check-all-routes')
+def check_all_routes():
+    return render_template('status.html', routes=routes)
+
+@app.route('/api/incidents')
+def get_incidents():
+    # Simulated incident data
+    incidents = [
+        {
+            "id": 1,
+            "service": "API Check",
+            "description": "Intermittent outages due to server overload",
+            "status": "Resolved",
+            "created_at": "2023-05-15T14:30:00Z",
+            "updated_at": "2023-05-15T16:45:00Z"
+        },
+        {
+            "id": 2,
+            "service": "URL Shortener",
+            "description": "Database connection issues causing slow response times",
+            "status": "Investigating",
+            "created_at": "2023-05-18T09:15:00Z",
+            "updated_at": "2023-05-18T10:30:00Z"
+        }
+    ]
+    return jsonify(incidents)
+
+
 @app.route("/webapp")
 def webapp():
     return render_template("webapp.html")
-       
+
+    
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
