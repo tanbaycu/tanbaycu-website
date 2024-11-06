@@ -294,45 +294,53 @@ def about():
 @app.route("/api-check", methods=["GET", "POST"])
 def api_check():
     if request.method == "POST":
-        url = request.form.get("url")
-        method = request.form.get("method")
-        payload = request.form.get("payload")
+        data = request.json
+        url = data.get("url")
+        method = data.get("method")
+        headers = data.get("headers")
+        payload = data.get("payload")
+        timeout = int(data.get("timeout", 30))
 
-        # Kiểm tra phương thức và gửi yêu cầu
+        # Parse headers
         try:
-            if method == "GET":
-                response = requests.get(url)
-            elif method == "POST":
-                response = requests.post(
-                    url, json=json.loads(payload) if payload else {}
-                )
-            elif method == "PUT":
-                response = requests.put(
-                    url, json=json.loads(payload) if payload else {}
-                )
-            elif method == "DELETE":
-                response = requests.delete(url)
+            headers = json.loads(headers) if headers else {}
+        except json.JSONDecodeError:
+            return jsonify({"error": "Invalid JSON in headers"}), 400
 
-            # Trả về kết quả
-            return (
-                jsonify(
-                    {
-                        "status": response.status_code,
-                        "data": (
-                            response.json()
-                            if response.headers.get("Content-Type")
-                            == "application/json"
-                            else response.text
-                        ),
-                    }
-                ),
-                response.status_code,
-            )
+        # Parse payload
+        try:
+            payload = json.loads(payload) if payload else {}
+        except json.JSONDecodeError:
+            return jsonify({"error": "Invalid JSON in payload"}), 400
+
+        # Prepare request kwargs
+        kwargs = {
+            "url": url,
+            "headers": headers,
+            "timeout": timeout
+        }
+
+        if method in ["POST", "PUT", "PATCH"]:
+            kwargs["json"] = payload
+
+        # Send request
+        try:
+            response = requests.request(method, **kwargs)
+
+            # Prepare response data
+            response_data = {
+                "status": response.status_code,
+                "statusText": response.reason,
+                "headers": dict(response.headers),
+                "body": response.json() if response.headers.get("Content-Type") == "application/json" else response.text
+            }
+
+            return jsonify(response_data), 200
 
         except requests.exceptions.RequestException as e:
             return jsonify({"error": str(e)}), 500
 
-    # Nếu là phương thức GET, render trang api_check.html
+    # If it's a GET request, render the api_check.html template
     return render_template("api_check.html")
 
 
