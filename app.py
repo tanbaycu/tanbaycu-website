@@ -1041,6 +1041,13 @@ def country():
 def bmi():
     return render_template("bmi.html")
 
+@app.route("/documents")
+def bmi():
+    return render_template("documents.html")
+
+@app.route("/trivia")
+def bmi():
+    return render_template("trivia.html")
 @app.route("/webapp")
 def webapp():
     return render_template("webapp.html")
