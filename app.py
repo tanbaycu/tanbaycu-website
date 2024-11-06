@@ -1243,6 +1243,9 @@ def get_incidents():
 def webapp():
     return render_template("webapp.html")
 
+@app.route("/solar3d")
+def solar3d():
+    return render_template("solar3d.html")
     
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
