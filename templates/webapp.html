@@ -1,36 +1,56 @@
 <!DOCTYPE html>
 <html lang="en" class="light">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Web Projects Showcase</title>
+    <title>Web Projects Showcase</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <script src="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/hammer.js/2.0.8/hammer.min.js"></script>
     <link href="https://cdn.jsdelivr.net/npm/aos@2.3.4/dist/aos.css" rel="stylesheet">
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+
         body {
             font-family: 'Inter', sans-serif;
         }
+
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
+
         .animate-fade-in {
             animation: fadeIn 0.5s ease-out;
         }
+
         @keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
+
         .animate-spin {
             animation: spin 1s linear infinite;
         }
+
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+
+            to {
+                transform: rotate(360deg);
+            }
         }
+
         .toast {
             position: fixed;
             bottom: 20px;
@@ -41,27 +61,33 @@
             border-radius: 5px;
             display: none;
         }
+
         .project-card {
             transition: all 0.3s ease;
         }
+
         .project-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         }
+
         .list-view .project-card {
             display: flex;
             align-items: center;
         }
+
         .list-view .project-card img {
             width: 100px;
             height: 100px;
             object-fit: cover;
         }
+
         @media (max-width: 640px) {
             .list-view .project-card {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .list-view .project-card img {
                 width: 100%;
                 height: 200px;
@@ -69,33 +95,41 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-300">
     <div class="container mx-auto px-4 py-8">
         <header class="mb-8 animate-fade-in">
             <h1 class="text-4xl font-bold text-center text-gray-800 dark:text-white mb-4">My Web Projects</h1>
             <div class="flex flex-wrap justify-between items-center gap-4">
                 <div class="relative flex-grow max-w-md">
-                    <input type="text" id="search" placeholder="Search projects..." class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
-                    <i data-lucide="search" class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    <input type="text" id="search" placeholder="Search projects..."
+                        class="w-full pl-10 pr-4 py-2 rounded-lg border border-gray-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <i data-lucide="search"
+                        class="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
                 </div>
                 <div class="flex items-center space-x-4 flex-wrap">
-                    <select id="categoryFilter" class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select id="categoryFilter"
+                        class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="all">All Categories</option>
                         <option value="education">Education</option>
                         <option value="technology">Technology</option>
                         <option value="productivity">Productivity</option>
                         <option value="nature">Nature</option>
+                        <option value="game">Game</option>
                     </select>
-                    <select id="sortProjects" class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <select id="sortProjects"
+                        class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-900 dark:text-white border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value="name">Sort by Name</option>
                         <option value="category">Sort by Category</option>
                         <option value="rating">Sort by Rating</option>
                     </select>
-                    <button id="viewToggle" class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button id="viewToggle"
+                        class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <i data-lucide="layout-grid" class="hidden"></i>
                         <i data-lucide="list" class=""></i>
                     </button>
-                    <button id="themeToggle" class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                    <button id="themeToggle"
+                        class="p-2 rounded-lg bg-white dark:bg-gray-800 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <i data-lucide="sun" class="hidden dark:inline"></i>
                         <i data-lucide="moon" class="inline dark:hidden"></i>
                     </button>
@@ -109,20 +143,24 @@
                 <span class="ml-2 text-gray-600 dark:text-gray-300">Loading...</span>
             </div>
             <div id="projects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="education" data-aos="fade-up">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                    data-category="education" data-aos="fade-up">
                     <a href="#" class="block" data-project="funfacts">
-                        <img src="https://i.postimg.cc/tTbdGt2N/Thi-t-k-ch-a-c-t-n.png" alt="Fun Facts Hub" class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/tTbdGt2N/Thi-t-k-ch-a-c-t-n.png" alt="Fun Facts Hub"
+                            class="w-full h-48 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center">
                                     <i data-lucide="lightbulb" class="w-6 h-6 mr-2 text-yellow-500"></i>
                                     <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Fun Facts Hub</h2>
                                 </div>
-                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                <button
+                                    class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
                                     <i data-lucide="bookmark" class="w-6 h-6"></i>
                                 </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Discover interesting and amusing facts about various topics.</p>
+                            <p class="text-gray-600 dark:text-gray-300">Discover interesting and amusing facts about
+                                various topics.</p>
                             <div class="flex justify-between items-center mt-4">
                                 <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Education</span>
                                 <div class="flex items-center">
@@ -133,16 +171,19 @@
                         </div>
                     </a>
                 </div>
-                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="technology" data-aos="fade-up" data-aos-delay="100">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                    data-category="technology" data-aos="fade-up" data-aos-delay="100">
                     <a href="#" class="block" data-project="gemini">
-                        <img src="https://i.postimg.cc/HxX31LSc/image.png" alt="Gemini UI Chat" class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/HxX31LSc/image.png" alt="Gemini UI Chat"
+                            class="w-full h-48 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center">
                                     <i data-lucide="message-circle" class="w-6 h-6 mr-2 text-blue-500"></i>
                                     <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Gemini UI Chat</h2>
                                 </div>
-                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                <button
+                                    class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
                                     <i data-lucide="bookmark" class="w-6 h-6"></i>
                                 </button>
                             </div>
@@ -157,20 +198,24 @@
                         </div>
                     </a>
                 </div>
-                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="productivity" data-aos="fade-up" data-aos-delay="200">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                    data-category="productivity" data-aos="fade-up" data-aos-delay="200">
                     <a href="#" class="block" data-project="pdftool">
-                        <img src="https://i.postimg.cc/436xP8hC/image.png" alt="PDF Tool" class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/436xP8hC/image.png" alt="PDF Tool"
+                            class="w-full h-48 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center">
                                     <i data-lucide="file-text" class="w-6 h-6 mr-2 text-red-500"></i>
                                     <h2 class="text-xl font-semibold text-gray-800 dark:text-white">PDF Tool</h2>
                                 </div>
-                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                <button
+                                    class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
                                     <i data-lucide="bookmark" class="w-6 h-6"></i>
                                 </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Powerful tools for working with and manipulating PDF files.</p>
+                            <p class="text-gray-600 dark:text-gray-300">Powerful tools for working with and manipulating
+                                PDF files.</p>
                             <div class="flex justify-between items-center mt-4">
                                 <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Productivity</span>
                                 <div class="flex items-center">
@@ -181,20 +226,24 @@
                         </div>
                     </a>
                 </div>
-                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="game" data-aos="fade-up" data-aos-delay="500">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                    data-category="game" data-aos="fade-up" data-aos-delay="300">
                     <a href="#" class="block" data-project="blockmenja">
-                        <img src="https://i.postimg.cc/wjS6CGnb/Thi-t-k-ch-a-c-t-n-2.png" alt="Block Menja" class="w-full h-48 object-cover" data-src="https://bl0ck-menja.vercel.app/screenshot.png">
+                        <img src="https://i.postimg.cc/wjS6CGnb/Thi-t-k-ch-a-c-t-n-2.png" alt="Block Menja"
+                            class="w-full h-48 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center">
                                     <i data-lucide="gamepad-2" class="w-6 h-6 mr-2 text-purple-500"></i>
                                     <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Block Menja</h2>
                                 </div>
-                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                <button
+                                    class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
                                     <i data-lucide="bookmark" class="w-6 h-6"></i>
                                 </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Exciting block-breaking game with stunning 3D graphics and addictive gameplay.</p>
+                            <p class="text-gray-600 dark:text-gray-300">Exciting block-breaking game with stunning 3D
+                                graphics and addictive gameplay.</p>
                             <div class="flex justify-between items-center mt-4">
                                 <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Game</span>
                                 <div class="flex items-center">
@@ -205,20 +254,24 @@
                         </div>
                     </a>
                 </div>
-                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="technology" data-aos="fade-up" data-aos-delay="300">
+                <div class="project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                    data-category="technology" data-aos="fade-up" data-aos-delay="400">
                     <a href="#" class="block" data-project="eb2">
-                        <img src="https://i.postimg.cc/xd20XKp6/F9636-ADF-3741-41-DC-ADEA-A0-FB8-A8124-F2.png" alt="EB2 Project" class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/xd20XKp6/F9636-ADF-3741-41-DC-ADEA-A0-FB8-A8124-F2.png"
+                            alt="EB2 Project" class="w-full h-48 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center">
                                     <i data-lucide="cpu" class="w-6 h-6 mr-2 text-green-500"></i>
                                     <h2 class="text-xl font-semibold text-gray-800 dark:text-white">EB2 Project</h2>
                                 </div>
-                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                <button
+                                    class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
                                     <i data-lucide="bookmark" class="w-6 h-6"></i>
                                 </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Khám phá các tính năng phát triển AI từ EB2, nhóm lập trình chuyên nghiệp.</p>
+                            <p class="text-gray-600 dark:text-gray-300">Khám phá các tính năng phát triển AI từ EB2,
+                                nhóm lập trình chuyên nghiệp.</p>
                             <div class="flex justify-between items-center mt-4">
                                 <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Technology</span>
                                 <div class="flex items-center">
@@ -229,20 +282,25 @@
                         </div>
                     </a>
                 </div>
-                <div class="project-card bg-white  dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden" data-category="nature" data-aos="fade-up" data-aos-delay="400">
+                <div class="project-card bg-white  dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden"
+                    data-category="nature" data-aos="fade-up" data-aos-delay="500">
                     <a href="#" class="block" data-project="vuonmai">
-                        <img src="https://i.postimg.cc/gJHGFW97/Ch-n-T-o-1.png" alt="Vuon Mai Chin Teo" class="w-full h-48 object-cover">
+                        <img src="https://i.postimg.cc/gJHGFW97/Ch-n-T-o-1.png" alt="Vuon Mai Chin Teo"
+                            class="w-full h-48 object-cover">
                         <div class="p-6">
                             <div class="flex items-center justify-between mb-2">
                                 <div class="flex items-center">
                                     <i data-lucide="flower" class="w-6 h-6 mr-2 text-pink-500"></i>
-                                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Vườn Mai Chín Tèo</h2>
+                                    <h2 class="text-xl font-semibold text-gray-800 dark:text-white">Vườn Mai Chín Tèo
+                                    </h2>
                                 </div>
-                                <button class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
+                                <button
+                                    class="bookmark-btn text-gray-500 hover:text-yellow-500 transition-colors duration-300">
                                     <i data-lucide="bookmark" class="w-6 h-6"></i>
                                 </button>
                             </div>
-                            <p class="text-gray-600 dark:text-gray-300">Ý tưởng viết web đầu tiên cho web bán cây cảnh mang tên cha của mình❤️</p>
+                            <p class="text-gray-600 dark:text-gray-300">Ý tưởng viết web đầu tiên cho web bán cây cảnh
+                                mang tên cha của mình❤️</p>
                             <div class="flex justify-between items-center mt-4">
                                 <span class="inline-block text-sm text-blue-500 dark:text-blue-400">Nature</span>
                                 <div class="flex items-center">
@@ -255,6 +313,32 @@
                 </div>
             </div>
         </main>
+
+        <!-- Project Statistics -->
+        <section class="mt-12 mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Project Statistics</h2>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6">
+                <canvas id="projectStats"></canvas>
+            </div>
+        </section>
+
+        <!-- Project Timeline -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Project Timeline</h2>
+            <div class="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-6 overflow-x-auto">
+                <div id="timeline" class="relative" style="height: 100px;">
+                    <!-- Timeline items will be added here dynamically -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Related Projects -->
+        <section class="mb-8">
+            <h2 class="text-2xl font-bold text-gray-800 dark:text-white mb-4">Related Projects</h2>
+            <div id="relatedProjects" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Related projects will be added here dynamically -->
+            </div>
+        </section>
     </div>
 
     <!-- Modal -->
@@ -262,14 +346,17 @@
         <div class="bg-white dark:bg-gray-800 rounded-lg p-8 max-w-2xl w-full mx-4">
             <div class="flex justify-between items-center mb-4">
                 <h2 id="modalTitle" class="text-2xl font-bold text-gray-900 dark:text-white"></h2>
-                <button id="closeModal" class="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100">
+                <button id="closeModal"
+                    class="text-gray-500 hover:text-gray-700 dark:text-gray-300 dark:hover:text-gray-100">
                     <i data-lucide="x" class="w-6 h-6"></i>
                 </button>
             </div>
             <img id="modalImage" src="" alt="" class="w-full h-64 object-cover rounded-lg mb-4">
             <p id="modalDescription" class="text-gray-600 dark:text-gray-300 mb-4"></p>
             <div class="flex justify-between items-center mb-4">
-                <a id="modalLink" href="#" target="_blank" class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Visit Project</a>
+                <a id="modalLink" href="#" target="_blank"
+                    class="inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition duration-300">Visit
+                    Project</a>
                 <div class="flex space-x-2">
                     <button id="shareTwitter" class="text-blue-400 hover:text-blue-600">
                         <i data-lucide="twitter" class="w-6 h-6"></i>
@@ -309,6 +396,52 @@
             duration: 1000,
             once: true,
         });
+
+        // Project data
+        const projectData = {
+            funfacts: {
+                title: "Fun Facts Hub",
+                description: "Fun Facts Hub is an interactive platform designed to engage users with fascinating trivia across various subjects. From science and history to pop culture and nature, this project aims to make learning enjoyable and accessible to everyone. Features include daily fact updates, quizzes, and user-submitted content.",
+                link: "https://funfactshub.vercel.app",
+                category: "education",
+                date: "2023-01-15"
+            },
+            gemini: {
+                title: "Gemini UI Chat",
+                description: "Gemini UI Chat showcases the power of AI in natural language processing. This project implements a cutting-edge chat interface powered by advanced language models. Users can engage in human-like conversations, get assistance with tasks, and explore the capabilities of AI-driven communication.",
+                link: "https://gemini-ui-chat.vercel.app",
+                category: "technology",
+                date: "2023-03-22"
+            },
+            pdftool: {
+                title: "PDF Tool",
+                description: "PDF Tool is a comprehensive suite of utilities for working with PDF files. From merging and splitting documents to converting PDFs to other formats, this project offers a user-friendly interface for all your PDF needs. It's designed to be efficient, secure, and accessible for both personal and professional use.",
+                link: "https://pdf-05.gptengineer.run/",
+                category: "productivity",
+                date: "2023-05-10"
+            },
+            eb2: {
+                title: "EB2 Project",
+                description: "The EB2 Project is an innovative initiative focusing on emerging technologies. While the specifics are under wraps, this project promises to push the boundaries of what's possible in the tech world. Stay tuned for groundbreaking developments that could reshape how we interact with technology.",
+                link: "https://eb2.vercel.app/",
+                category: "technology",
+                date: "2023-07-05"
+            },
+            vuonmai: {
+                title: "Vườn Mai Chín Tèo",
+                description: "Vườn Mai Chín Tèo is a digital garden experience that brings the beauty of nature to your screen. This project combines stunning visuals with interactive elements to create a virtual oasis. Explore different garden types, learn about plant care, and enjoy the tranquility of nature from anywhere in the world.",
+                link: "https://vuonmaichinteo.vercel.app/",
+                category: "nature",
+                date: "2023-09-18"
+            },
+            blockmenja: {
+                title: "Block Menja",
+                description: "Block Menja is an exciting block-breaking game with stunning 3D graphics and addictive gameplay. Challenge yourself with increasingly difficult levels and enjoy the satisfying experience of smashing blocks in a beautifully rendered 3D environment.",
+                link: "https://bl0ck-menja.vercel.app",
+                category: "game",
+                date: "2023-11-30"
+            }
+        };
 
         // Theme toggle functionality
         const themeToggle = document.getElementById('themeToggle');
@@ -419,45 +552,26 @@
         const shareLinkedIn = document.getElementById('shareLinkedIn');
         const ratingStars = document.getElementById('ratingStars');
 
-        const projectData = {
-            funfacts: {
-                title: "Fun Facts Hub",
-                description: "Fun Facts Hub is an interactive platform designed to engage users with fascinating trivia across various subjects. From science and history to pop culture and nature, this project aims to make learning enjoyable and accessible to everyone. Features include daily fact updates, quizzes, and user-submitted content.",
-                link: "https://funfactshub.vercel.app"
-            },
-            gemini: {
-                title: "Gemini UI Chat",
-                description: "Gemini UI Chat showcases the power of AI in natural language processing. This project implements a cutting-edge chat interface powered by advanced language models. Users can engage in human-like conversations, get assistance with tasks, and explore the capabilities of AI-driven communication.",
-                link: "https://gemini-ui-chat.vercel.app"
-            },
-            pdftool: {
-                title: "PDF Tool",
-                description: "PDF Tool is a comprehensive suite of utilities for working with PDF files. From merging and splitting documents to converting PDFs to other formats, this project offers a user-friendly interface for all your PDF needs. It's designed to be efficient, secure, and accessible for both personal and professional use.",
-                link: "https://pdf-05.gptengineer.run/"
-            },
-            eb2: {
-                title: "EB2 Project",
-                description: "The EB2 Project is an innovative initiative focusing on emerging technologies. While the specifics are under wraps, this project promises to push the boundaries of what's possible in the tech world. Stay tuned for groundbreaking developments that could reshape how we interact with technology.",
-                link: "https://eb2.vercel.app/"
-            },
-            vuonmai: {
-                title: "Vuon Mai Chin Teo",
-                description: "Vuon Mai Chin Teo is a digital garden experience that brings the beauty of nature to your screen. This project combines stunning visuals with interactive elements to create a virtual oasis. Explore different garden types, learn about plant care, and enjoy the tranquility of nature from anywhere in the world.",
-                link: "https://vuonmaichinteo.vercel.app/"
-            }
-        };
-
         document.querySelectorAll('#projects a').forEach(project => {
             project.addEventListener('click', (e) => {
                 e.preventDefault();
-                const projectId = project.dataset.project;
-                const data = projectData[projectId];
-                modalTitle.textContent = data.title;
-                modalImage.src = project.querySelector('img').src;
-                modalImage.alt = data.title;
-                modalDescription.textContent = data.description;
-                modalLink.href = data.link;
+                const project = projectData[e.currentTarget.dataset.project];
+                modalTitle.textContent = project.title;
+                modalImage.src = e.currentTarget.querySelector('img').src;
+                modalImage.alt = project.title;
+                modalDescription.textContent = project.description;
+                modalLink.href = project.link;
                 modal.classList.remove('hidden');
+
+                // Update share buttons
+                const shareUrl = encodeURIComponent(project.link);
+                const shareText = encodeURIComponent(`Check out this awesome project: ${project.title}`);
+                shareTwitter.href = `https://twitter.com/intent/tweet?url=${shareUrl}&text=${shareText}`;
+                shareFacebook.href = `https://www.facebook.com/sharer/sharer.php?u=${shareUrl}`;
+                shareLinkedIn.href = `https://www.linkedin.com/shareArticle?mini=true&url=${shareUrl}&title=${encodeURIComponent(project.title)}&summary=${encodeURIComponent(project.description)}`;
+
+                // Reset rating stars
+                ratingStars.querySelectorAll('i').forEach(star => star.classList.remove('text-yellow-500'));
             });
         });
 
@@ -465,100 +579,278 @@
             modal.classList.add('hidden');
         });
 
-        window.addEventListener('click', (e) => {
-            if (e.target === modal) {
-                modal.classList.add('hidden');
-            }
-        });
-
-        // Share functionality
-        function shareProject(platform) {
-            const projectTitle = modalTitle.textContent;
-            const projectUrl = modalLink.href;
-            let shareUrl;
-
-            switch (platform) {
-                case 'twitter':
-                    shareUrl = `https://twitter.com/intent/tweet?text=Check out this awesome project: ${projectTitle}&url=${encodeURIComponent(projectUrl)}`;
-                    break;
-                case 'facebook':
-                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(projectUrl)}`;
-                    break;
-                case 'linkedin':
-                    shareUrl = `https://www.linkedin.com/shareArticle?mini=true&url=${encodeURIComponent(projectUrl)}&title=${encodeURIComponent(projectTitle)}`;
-                    break;
-            }
-
-            window.open(shareUrl, '_blank');
-        }
-
-        shareTwitter.addEventListener('click', () => shareProject('twitter'));
-        shareFacebook.addEventListener('click', () => shareProject('facebook'));
-        shareLinkedIn.addEventListener('click', () => shareProject('linkedin'));
-
         // Rating functionality
-        ratingStars.addEventListener('click', (e) => {
-            if (e.target.tagName === 'I') {
-                const rating = Array.from(e.target.parentNode.children).indexOf(e.target) + 1;
-                Array.from(ratingStars.children).forEach((star, index) => {
-                    star.classList.toggle('text-yellow-500', index < rating);
-                    star.classList.toggle('text-gray-300', index >= rating);
+        ratingStars.querySelectorAll('i').forEach((star, index) => {
+            star.addEventListener('click', () => {
+                ratingStars.querySelectorAll('i').forEach((s, i) => {
+                    if (i <= index) {
+                        s.classList.add('text-yellow-500');
+                    } else {
+                        s.classList.remove('text-yellow-500');
+                    }
                 });
-                // Here you would typically send this rating to your backend
-                console.log(`Rated ${rating} stars`);
-            }
-        });
-
-        // Bookmark functionality
-        document.querySelectorAll('.bookmark-btn').forEach(btn => {
-            btn.addEventListener('click', (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                btn.classList.toggle('text-yellow-500');
-                showToast('Project bookmarked successfully!');
+                // Here you would typically send the rating to your backend
+                console.log(`Rated ${index + 1} stars`);
             });
         });
 
-        // Toast notification
-        function showToast(message) {
-            const toast = document.getElementById('toast');
-            toast.textContent = message;
-            toast.style.display = 'block';
-            setTimeout(() => {
-                toast.style.display = 'none';
-            }, 3000);
+        // Bookmark functionality
+        const bookmarkButtons = document.querySelectorAll('.bookmark-btn');
+        const toast = document.getElementById('toast');
+
+        bookmarkButtons.forEach(button => {
+            button.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                button.classList.toggle('text-yellow-500');
+
+                // Show toast notification
+                toast.style.display = 'block';
+                setTimeout(() => {
+                    toast.style.display = 'none';
+                }, 3000);
+            });
+        });
+
+        // Project Statistics Chart
+        const ctx = document.getElementById('projectStats').getContext('2d');
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Education', 'Technology', 'Productivity', 'Nature', 'Game'],
+                datasets: [{
+                    label: 'Number of Projects',
+                    data: [1, 2, 1, 1, 1],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.2)',
+                        'rgba(54, 162, 235, 0.2)',
+                        'rgba(255, 206, 86, 0.2)',
+                        'rgba(75, 192, 192, 0.2)',
+                        'rgba(153, 102, 255, 0.2)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 99, 132, 1)',
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(255, 206, 86, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                },
+                responsive: true,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    title: {
+                        display: true,
+                        text: 'Project Distribution by Category'
+                    }
+                }
+            }
+        });
+
+        // Project Timeline
+        const timeline = document.getElementById('timeline');
+        const timelineData = Object.values(projectData).sort((a, b) => new Date(a.date) - new Date(b.date));
+
+        timelineData.forEach((project, index) => {
+            const item = document.createElement('div');
+            item.className = 'absolute w-4 h-4 rounded-full bg-blue-500';
+            const position = index / (timelineData.length - 1) * 100;
+            item.style.left = `${position}%`;
+            item.style.top = '50%';
+            item.style.transform = 'translate(-50%, -50%)';
+
+            const label = document.createElement('div');
+            label.className = 'absolute text-xs text-gray-600 dark:text-gray-400';
+            label.style.left = `${position}%`;
+            label.style.top = '100%';
+            label.style.transform = 'translateX(-50%)';
+            label.textContent = new Date(project.date).toLocaleDateString();
+
+            timeline.appendChild(item);
+            timeline.appendChild(label);
+        });
+
+        // Related Projects
+        function getRelatedProjects(category, currentProject) {
+            return Object.entries(projectData)
+                .filter(([key, project]) => project.category === category && key !== currentProject)
+                .slice(0, 3);
         }
 
-        // Lazy loading for images
-        document.addEventListener("DOMContentLoaded", function() {
-            var lazyloadImages = document.querySelectorAll("img.lazy-load");    
-            var lazyloadThrottleTimeout;
-            
-            function lazyload () {
-                if(lazyloadThrottleTimeout) {
-                    clearTimeout(lazyloadThrottleTimeout);
-                }    
-                
-                lazyloadThrottleTimeout = setTimeout(function() {
-                    var scrollTop = window.pageYOffset;
-                    lazyloadImages.forEach(function(img) {
-                        if(img.offsetTop < (window.innerHeight + scrollTop)) {
-                            img.src = img.dataset.src;
-                            img.classList.remove('lazy-load');
+        function displayRelatedProjects(category, currentProject) {
+            const relatedProjectsContainer = document.getElementById('relatedProjects');
+            relatedProjectsContainer.innerHTML = '';
+
+            const relatedProjects = getRelatedProjects(category, currentProject);
+
+            relatedProjects.forEach(([key, project]) => {
+                const projectCard = document.createElement('div');
+                projectCard.className = 'project-card bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden';
+                projectCard.innerHTML = `
+                    <a href="#" class="block" data-project="${key}">
+                        <img src="${document.querySelector(`[data-project="${key}"] img`).src}" alt="${project.title}" class="w-full h-48 object-cover">
+                        <div class="p-6">
+                            <h3 class="text-xl font-semibold text-gray-800 dark:text-white mb-2">${project.title}</h3>
+                            <p class="text-gray-600 dark:text-gray-300">${project.description.substring(0, 100)}...</p>
+                        </div>
+                    </a>
+                `;
+                relatedProjectsContainer.appendChild(projectCard);
+            });
+
+            // Reattach event listeners for the new related project cards
+            relatedProjectsContainer.querySelectorAll('a').forEach(project => {
+                project.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const projectKey = e.currentTarget.dataset.project;
+                    const project = projectData[projectKey];
+                    modalTitle.textContent = project.title;
+                    modalImage.src = e.currentTarget.querySelector('img').src;
+                    modalImage.alt = project.title;
+                    modalDescription.textContent = project.description;
+                    modalLink.href = project.link;
+                    modal.classList.remove('hidden');
+                    displayRelatedProjects(project.category, projectKey);
+                });
+            });
+        }
+
+        // Update modal event listener to display related projects
+        document.querySelectorAll('#projects a').forEach(project => {
+            project.addEventListener('click', (e) => {
+                e.preventDefault();
+                const projectKey = e.currentTarget.dataset.project;
+                const project = projectData[projectKey];
+                modalTitle.textContent = project.title;
+                modalImage.src = e.currentTarget.querySelector('img').src;
+                modalImage.alt = project.title;
+                modalDescription.textContent = project.description;
+                modalLink.href = project.link;
+                modal.classList.remove('hidden');
+                displayRelatedProjects(project.category, projectKey);
+            });
+        });
+
+        // Initialize related projects for the first project
+        displayRelatedProjects(Object.values(projectData)[0].category, Object.keys(projectData)[0]);
+
+        // Infinite scrolling simulation
+        let page = 1;
+        const loadMoreProjects = debounce(() => {
+            if ((window.innerHeight + window.scrollY) >= document.body.offsetHeight - 500) {
+                loading.classList.remove('hidden');
+                loading.classList.add('flex');
+
+                setTimeout(() => {
+                    // Simulate loading more projects
+                    const newProjects = Array.from(document.querySelectorAll('#projects > div')).slice(0, 3);
+                    newProjects.forEach(project => {
+                        const clone = project.cloneNode(true);
+                        projectsContainer.appendChild(clone);
+                    });
+
+                    loading.classList.add('hidden');
+                    loading.classList.remove('flex');
+                    page++;
+                }, 1000);
+            }
+        }, 200);
+
+        window.addEventListener('scroll', loadMoreProjects);
+
+        // Image lazy loading
+        document.addEventListener("DOMContentLoaded", function () {
+            var lazyImages = [].slice.call(document.querySelectorAll("img.lazy"));
+
+            if ("IntersectionObserver" in window) {
+                let lazyImageObserver = new IntersectionObserver(function (entries, observer) {
+                    entries.forEach(function (entry) {
+                        if (entry.isIntersecting) {
+                            let lazyImage = entry.target;
+                            lazyImage.src = lazyImage.dataset.src;
+                            lazyImage.classList.remove("lazy");
+                            lazyImageObserver.unobserve(lazyImage);
                         }
                     });
-                    if(lazyloadImages.length == 0) { 
-                        document.removeEventListener("scroll",lazyload);
-                        window.removeEventListener("resize", lazyload);
-                        window.removeEventListener("orientationChange", lazyload);
+                });
+
+                lazyImages.forEach(function (lazyImage) {
+                    lazyImageObserver.observe(lazyImage);
+                });
+            } else {
+                // Fallback for browsers that don't support IntersectionObserver
+                let active = false;
+
+                const lazyLoad = function () {
+                    if (active === false) {
+                        active = true;
+
+                        setTimeout(function () {
+                            lazyImages.forEach(function (lazyImage) {
+                                if ((lazyImage.getBoundingClientRect().top <= window.innerHeight && lazyImage.getBoundingClientRect().bottom >= 0) && getComputedStyle(lazyImage).display !== "none") {
+                                    lazyImage.src = lazyImage.dataset.src;
+                                    lazyImage.classList.remove("lazy");
+
+                                    lazyImages = lazyImages.filter(function (image) {
+                                        return image !== lazyImage;
+                                    });
+
+                                    if (lazyImages.length === 0) {
+                                        document.removeEventListener("scroll", lazyLoad);
+                                        window.removeEventListener("resize", lazyLoad);
+                                        window.removeEventListener("orientationchange", lazyLoad);
+                                    }
+                                }
+                            });
+
+                            active = false;
+                        }, 200);
                     }
-                }, 20);
+                };
+
+                document.addEventListener("scroll", lazyLoad);
+                window.addEventListener("resize", lazyLoad);
+                window.addEventListener("orientationchange", lazyLoad);
             }
-            
-            document.addEventListener("scroll", lazyload);
-            window.addEventListener("resize", lazyload);
-            window.addEventListener("orientationChange", lazyload);
+        });
+
+        // Add touch support for mobile devices
+        let mc = new Hammer(document.body);
+
+        mc.on("swipeleft swiperight", function (ev) {
+            if (ev.type === "swipeleft") {
+                // Swipe left action (e.g., next project)
+                console.log("Swiped left");
+            } else if (ev.type === "swiperight") {
+                // Swipe right action (e.g., previous project)
+                console.log("Swiped right");
+            }
+        });
+
+        // Performance optimization
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animate-fade-in');
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.1 });
+
+        document.querySelectorAll('.project-card').forEach(card => {
+            observer.observe(card);
         });
     </script>
 </body>
+
 </html>
