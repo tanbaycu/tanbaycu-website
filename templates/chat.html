@@ -4,29 +4,32 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>File Upload - Tanbaycu</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
+    <title>Advanced File Upload - Tanbaycu</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
     <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --primary-color: #6366f1;
+            --primary-hover: #4f46e5;
             --secondary-color: #8b5cf6;
-            --background-color: #f3f4f6;
-            --surface-color: #ffffff;
+            --background-color: #ffffff;
+            --surface-color: #f3f4f6;
             --text-color: #1f2937;
             --text-muted: #6b7280;
+            --error-color: #ef4444;
+            --success-color: #10b981;
             --border-color: #e5e7eb;
+            --shadow-color: rgba(0, 0, 0, 0.1);
         }
 
-        @media (prefers-color-scheme: dark) {
-            :root {
-                --background-color: #111827;
-                --surface-color: #1f2937;
-                --text-color: #f3f4f6;
-                --text-muted: #9ca3af;
-                --border-color: #374151;
-            }
+        .dark-mode {
+            --background-color: #111827;
+            --surface-color: #1f2937;
+            --text-color: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: #374151;
+            --shadow-color: rgba(0, 0, 0, 0.3);
         }
 
         * {
@@ -43,15 +46,17 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .navbar {
             background-color: var(--surface-color);
-            padding: 1rem;
+            padding: 1rem 0;
             position: sticky;
             top: 0;
             z-index: 1000;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow-color);
         }
 
         .navbar-container {
@@ -60,16 +65,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding: 0 1.5rem;
         }
 
-        .navbar a {
+        .navbar a, .navbar button {
             color: var(--text-color);
             text-decoration: none;
             font-weight: 500;
             transition: color 0.3s ease;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
-        .navbar a:hover {
+        .navbar a:hover, .navbar button:hover {
             color: var(--primary-color);
         }
 
@@ -79,12 +92,12 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 2rem 1rem;
+            padding: 2rem 1.5rem;
         }
 
         .header {
             font-size: 2.5rem;
-            font-weight: 600;
+            font-weight: 700;
             color: var(--primary-color);
             margin-bottom: 2rem;
             text-align: center;
@@ -93,16 +106,16 @@
         .upload-section {
             background-color: var(--surface-color);
             border-radius: 1rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 10px 30px var(--shadow-color);
             padding: 2rem;
             width: 100%;
-            max-width: 500px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            max-width: 600px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
         }
 
         .upload-section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 40px var(--shadow-color);
         }
 
         .upload-area {
@@ -111,23 +124,25 @@
             padding: 2rem;
             text-align: center;
             cursor: pointer;
-            transition: background-color 0.3s ease;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
         }
 
         .upload-area:hover {
             background-color: rgba(99, 102, 241, 0.1);
+            border-color: var(--primary-hover);
         }
 
         .upload-icon {
             width: 64px;
             height: 64px;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
             color: var(--primary-color);
         }
 
         .upload-text {
             color: var(--text-muted);
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
         }
 
         .upload-button {
@@ -139,34 +154,56 @@
             font-weight: 500;
             border-radius: 2rem;
             cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-top: 1rem;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+            margin-top: 1.5rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
-        }
-
-        .upload-button svg {
-            margin-right: 0.5rem;
+            gap: 0.5rem;
         }
 
         .upload-button:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(45deg, var(--primary-hover), var(--secondary-color));
         }
 
-        .file-name {
-            margin-top: 1rem;
-            font-size: 0.9rem;
+        .file-info {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(99, 102, 241, 0.1);
+            border-radius: 0.5rem;
+            display: none;
+        }
+
+        .file-info h3 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .file-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .file-details span {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
         }
 
         footer {
             text-align: center;
-            padding: 1rem;
+            padding: 1.5rem;
             background-color: var(--surface-color);
             color: var(--text-muted);
-            margin-top: 2rem;
+            transition: background-color 0.3s ease, color 0.3s ease;
+            font-size: 0.9rem;
         }
 
         .offcanvas-menu {
@@ -176,26 +213,14 @@
             width: 300px;
             height: 100%;
             background-color: var(--surface-color);
-            transition: left 0.3s ease;
+            transition: left 0.3s ease, background-color 0.3s ease;
             z-index: 1001;
-            padding: 2rem;
-            overflow-y: auto;
-            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+            padding: 2rem 1.5rem;
+            box-shadow: 2px 0 10px var(--shadow-color);
         }
 
         .offcanvas-menu.active {
             left: 0;
-        }
-
-        .offcanvas-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            color: var(--text-color);
-            cursor: pointer;
-            font-size: 1.5rem;
         }
 
         .offcanvas-menu ul {
@@ -210,19 +235,23 @@
         .offcanvas-menu ul li a {
             color: var(--text-color);
             text-decoration: none;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
-            padding: 0.5rem;
-            border-radius: 0.5rem;
-            transition: background-color 0.3s ease;
+            transition: color 0.3s ease;
+            gap: 0.5rem;
         }
 
         .offcanvas-menu ul li a:hover {
-            background-color: rgba(99, 102, 241, 0.1);
+            color: var(--primary-color);
         }
 
-        .offcanvas-menu ul li a i {
-            margin-right: 0.5rem;
+        .menu-toggle {
+            background: none;
+            border: none;
+            color: var(--text-color);
+            font-size: 1.5rem;
+            cursor: pointer;
         }
 
         .overlay {
@@ -234,64 +263,6 @@
             background-color: rgba(0, 0, 0, 0.5);
             display: none;
             z-index: 1000;
-        }
-
-        .help-content {
-            margin-top: 1.5rem;
-            padding: 1rem;
-            background-color: rgba(99, 102, 241, 0.1);
-            border-radius: 0.5rem;
-        }
-
-        .help-content h3 {
-            margin-bottom: 0.5rem;
-            color: var(--primary-color);
-        }
-
-        .help-content p {
-            margin-bottom: 0.5rem;
-        }
-
-        .file-type-selector {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 0.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .file-type-button {
-            background-color: var(--surface-color);
-            color: var(--text-color);
-            border: 1px solid var(--border-color);
-            padding: 0.5rem 1rem;
-            border-radius: 2rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
-        }
-
-        .file-type-button:hover,
-        .file-type-button.active {
-            background-color: var(--primary-color);
-            color: #fff;
-            border-color: var(--primary-color);
-        }
-
-        .progress-bar {
-            width: 100%;
-            height: 0.5rem;
-            background-color: var(--border-color);
-            border-radius: 1rem;
-            margin-top: 1.5rem;
-            overflow: hidden;
-            display: none;
-        }
-
-        .progress {
-            width: 0%;
-            height: 100%;
-            background-color: var(--primary-color);
-            transition: width 0.3s ease;
         }
 
         @media (max-width: 768px) {
@@ -307,12 +278,54 @@
                 padding: 1.5rem;
             }
 
-            .file-type-selector {
-                flex-direction: column;
+            .upload-icon {
+                width: 48px;
+                height: 48px;
             }
 
-            .file-type-button {
-                width: 100%;
+            .upload-text {
+                font-size: 1rem;
+            }
+
+            .upload-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .navbar-container {
+                padding: 0 1rem;
+            }
+
+            .main-container {
+                padding: 1.5rem 1rem;
+            }
+
+            .header {
+                font-size: 1.75rem;
+            }
+
+            .upload-section {
+                padding: 1rem;
+            }
+
+            .upload-area {
+                padding: 1rem;
+            }
+
+            .upload-icon {
+                width: 40px;
+                height: 40px;
+            }
+
+            .upload-text {
+                font-size: 0.9rem;
+            }
+
+            .upload-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
             }
         }
     </style>
@@ -321,43 +334,36 @@
 <body>
     <nav class="navbar">
         <div class="navbar-container">
-            <a href="{{ url_for('homepage') }}">
+            <button class="menu-toggle" onclick="toggleMenu()" aria-label="Toggle menu">
+                <i data-lucide="menu"></i>
+            </button>
+            <a href="{{ url_for('homepage') }}" aria-label="Home">
                 <i data-lucide="home"></i>
+                <span>Home</span>
             </a>
-            <div>
-                <a href="#" id="menu-toggle">
-                    <i data-lucide="menu"></i>
-                </a>
-            </div>
+            <button onclick="toggleDarkMode()" aria-label="Toggle dark mode">
+                <i data-lucide="moon" id="darkModeIcon"></i>
+                <span id="darkModeText">Dark Mode</span>
+            </button>
         </div>
     </nav>
 
-    <div class="offcanvas-menu" id="offcanvas-menu">
-        <button class="offcanvas-close" id="offcanvas-close">
-            <i data-lucide="x"></i>
-        </button>
+    <div class="offcanvas-menu" id="offcanvasMenu">
         <ul>
+            <li><a href="{{ url_for('homepage') }}"><i data-lucide="home"></i> Home</a></li>
             <li><a href="/upload-history"><i data-lucide="upload"></i> Upload History</a></li>
             <li><a href="/download-history"><i data-lucide="download"></i> Download History</a></li>
-            <li><a href="#" id="help-toggle"><i data-lucide="help-circle"></i> Help</a></li>
         </ul>
-        <div class="help-content" id="help-content" style="display: none;">
-            <h3>How to Use File Upload</h3>
-            <p>1. Click "Choose File" or drag and drop your file into the upload area.</p>
-            <p>2. Select the file type using the buttons below the upload area.</p>
-            <p>3. Click "Upload File" to start the upload process.</p>
-            <p>4. You can view your upload history in the "Upload History" section.</p>
-        </div>
     </div>
 
-    <div class="overlay" id="overlay"></div>
+    <div class="overlay" id="overlay" onclick="toggleMenu()"></div>
 
     <div class="main-container">
-        <h1 class="header">File Upload</h1>
+        <h1 class="header">Advanced File Upload</h1>
         <div class="upload-section">
             <div class="upload-area" id="file-drop-area">
                 <i data-lucide="upload-cloud" class="upload-icon"></i>
-                <p class="upload-text">Drag &amp; drop your file here or click to select</p>
+                <p class="upload-text">Drag & drop your file here or click to select</p>
                 <form method="POST" enctype="multipart/form-data" id="upload-form">
                     <input type="file" name="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.pdf" required hidden />
                     <button type="button" class="upload-button" onclick="document.getElementById('file-input').click()">
@@ -370,155 +376,174 @@
                     </button>
                 </form>
             </div>
-            <div class="file-name" id="file-name">No file chosen</div>
-            <div class="file-type-selector">
-                <button class="file-type-button active" data-type="image">Image</button>
-                <button class="file-type-button" data-type="document">Document</button>
-                <button class="file-type-button" data-type="audio">Audio</button>
-                <button class="file-type-button" data-type="video">Video</button>
-            </div>
-            <div class="progress-bar" id="progress-bar">
-                <div class="progress" id="progress"></div>
+            <div class="file-info" id="file-info">
+                <h3>File Information</h3>
+                <div class="file-details">
+                    <span id="file-name"></span>
+                    <span id="file-size"></span>
+                </div>
+                <div class="file-details">
+                    <span id="file-type"></span>
+                    <span id="file-last-modified"></span>
+                </div>
             </div>
         </div>
     </div>
 
     <footer>
-        <div>© 2024 File Upload - Tanbaycu</div>
+        <div>© 2024 Advanced File Upload - Tanbaycu. All rights reserved.</div>
     </footer>
 
     <script>
-        // Initialize Lucide icons
         lucide.createIcons();
 
         const dropArea = document.getElementById("file-drop-area");
         const fileInput = document.getElementById("file-input");
-        const fileNameDisplay = document.getElementById("file-name");
-        const menuToggle = document.getElementById("menu-toggle");
-        const offcanvasMenu = document.getElementById("offcanvas-menu");
-        const offcanvasClose = document.getElementById("offcanvas-close");
-        const overlay = document.getElementById("overlay");
-        const helpToggle = document.getElementById("help-toggle");
-        const helpContent = document.getElementById("help-content");
-        const fileTypeButtons = document.querySelectorAll(".file-type-button");
-        const progressBar = document.getElementById("progress-bar");
-        const progress = document.getElementById("progress");
+        const fileInfo = document.getElementById("file-info");
+        const fileName = document.getElementById("file-name");
+        const fileSize = document.getElementById("file-size");
+        const fileType = document.getElementById("file-type");
+        const fileLastModified = document.getElementById("file-last-modified");
         const uploadForm = document.getElementById("upload-form");
+        const darkModeIcon = document.getElementById("darkModeIcon");
+        const darkModeText = document.getElementById("darkModeText");
 
-        fileInput.addEventListener("change", () => {
-            const fileName = fileInput.files[0] ? fileInput.files[0].name : "No file chosen";
-            fileNameDisplay.textContent = fileName;
-            animateFileName();
-        });
+        fileInput.addEventListener("change", handleFileSelect);
 
         dropArea.addEventListener("dragover", (event) => {
             event.preventDefault();
             dropArea.style.backgroundColor = "rgba(99, 102, 241, 0.1)";
+            dropArea.style.borderColor = "var(--primary-hover)";
         });
 
         dropArea.addEventListener("dragleave", () => {
             dropArea.style.backgroundColor = "transparent";
+            dropArea.style.borderColor = "var(--primary-color)";
         });
 
         dropArea.addEventListener("drop", (event) => {
             event.preventDefault();
             dropArea.style.backgroundColor = "transparent";
-            const files = event.dataTransfer.files;
-            if (files.length) {
-                fileInput.files = files;
-                fileNameDisplay.textContent = files[0].name;
-                animateFileName();
+            dropArea.style.borderColor = "var(--primary-color)";
+            handleFileSelect({ target: { files: event.dataTransfer.files } });
+        });
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            if (file) {
+                displayFileInfo(file);
+                fileInfo.style.display = "block";
+            } else {
+                fileInfo.style.display = "none";
+                fileName.innerHTML = '';
+                fileSize.innerHTML = '';
+                fileType.innerHTML = '';
+                fileLastModified.innerHTML = '';
             }
-        });
-
-        function animateFileName() {
-            fileNameDisplay.style.opacity = "0";
-            setTimeout(() => {
-                fileNameDisplay.style.transition = "opacity 0.5s ease";
-                fileNameDisplay.style.opacity = "1";
-            }, 50);
         }
 
-        // Offcanvas menu functionality
-        menuToggle.addEventListener("click", () => {
-            offcanvasMenu.classList.add("active");
-            overlay.style.display = "block";
-        });
-
-        offcanvasClose.addEventListener("click", closeOffcanvasMenu);
-        overlay.addEventListener("click", closeOffcanvasMenu);
-
-        function closeOffcanvasMenu() {
-            offcanvasMenu.classList.remove("active");
-            overlay.style.display = "none";
+        function displayFileInfo(file) {
+            fileName.innerHTML = `<i data-lucide="file"></i> ${file.name}`;
+            fileSize.innerHTML = `<i data-lucide="hard-drive"></i> ${formatFileSize(file.size)}`;
+            fileType.innerHTML = `<i data-lucide="file-type"></i> ${file.type || 'Unknown'}`;
+            fileLastModified.innerHTML = `<i data-lucide="calendar"></i> ${formatDate(file.lastModified)}`;
+            lucide.createIcons();
         }
 
-        // Help toggle functionality
-        helpToggle.addEventListener("click", (e) => {
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function formatDate(timestamp) {
+            const date = new Date(timestamp);
+            return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+        }
+
+        function toggleMenu() {
+            const menu = document.getElementById('offcanvasMenu');
+            const overlay = document.getElementById('overlay');
+            menu.classList.toggle('active');
+            if (menu.classList.contains('active')) {
+                overlay.style.display = 'block';
+            } else {
+                overlay.style.display = 'none';
+            }
+        }
+
+        function toggleDarkMode() {
+            document.body.classList.toggle('dark-mode');
+            if (document.body.classList.contains('dark-mode')) {
+                darkModeIcon.setAttribute('data-lucide', 'sun');
+                darkModeText.textContent = 'Light Mode';
+            } else {
+                darkModeIcon.setAttribute('data-lucide', 'moon');
+                darkModeText.textContent = 'Dark Mode';
+            }
+            lucide.createIcons();
+            localStorage.setItem('darkMode', document.body.classList.contains('dark-mode'));
+        }
+
+        // Check for saved dark mode preference
+        if (localStorage.getItem('darkMode') === 'true') {
+            document.body.classList.add('dark-mode');
+            darkModeIcon.setAttribute('data-lucide', 'sun');
+            darkModeText.textContent = 'Light Mode';
+            lucide.createIcons();
+        }
+
+        // Handle form submission
+        uploadForm.addEventListener('submit', function(e) {
             e.preventDefault();
-            helpContent.style.display = helpContent.style.display === "none" ? "block" : "none";
-        });
+            const formData = new FormData(this);
+            
+            // Disable submit button and show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<i data-lucide="loader"></i> Uploading...';
+            lucide.createIcons();
 
-        // File type selector functionality
-        fileTypeButtons.forEach(button => {
-            button.addEventListener("click", () => {
-                fileTypeButtons.forEach(btn => btn.classList.remove("active"));
-                button.classList.add("active");
-                const fileType = button.dataset.type;
-                fileInput.accept = getAcceptedFileTypes(fileType);
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.success) {
+                    // Show success message
+                    alert('File uploaded successfully!');
+                    // Redirect to the provided URL
+                    window.location.href = data.redirect_url;
+                } else {
+                    // Handle error
+                    throw new Error(data.message || 'Upload failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('An error occurred during upload: ' + error.message);
+            })
+            .finally(() => {
+                // Re-enable submit button and restore original text
+                submitButton.disabled = false;
+                submitButton.innerHTML = originalButtonText;
+                lucide.createIcons();
             });
         });
 
-        function getAcceptedFileTypes(type) {
-            switch (type) {
-                case "image":
-                    return ".jpg,.jpeg,.png,.gif";
-                case "document":
-                    return ".pdf,.doc,.docx,.txt";
-                case "audio":
-                    return ".mp3,.wav,.ogg";
-                case "video":
-                    return ".mp4,.avi,.mov";
-                default:
-                    return "";
-            }
-        }
-
-        // File upload with progress bar
-        uploadForm.addEventListener("submit", (e) => {
-            e.preventDefault();
-            if (fileInput.files.length === 0) {
-                alert("Please select a file to upload.");
-                return;
-            }
-            progressBar.style.display = "block";
-            uploadFile();
+        // Ensure Lucide icons are created after DOM updates
+        document.addEventListener('DOMContentLoaded', () => {
+            lucide.createIcons();
         });
-
-        function uploadFile() {
-            const xhr = new XMLHttpRequest();
-            const formData = new FormData(uploadForm);
-
-            xhr.open("POST", uploadForm.action, true);
-            xhr.upload.onprogress = (e) => {
-                if (e.lengthComputable) {
-                    const percentComplete = (e.loaded / e.total) * 100;
-                    progress.style.width = percentComplete + "%";
-                }
-            };
-
-            xhr.onload = function() {
-                if (xhr.status === 200) {
-                    alert("File uploaded successfully!");
-                } else {
-                    alert("Error uploading file. Please try again.");
-                }
-                progressBar.style.display = "none";
-                progress.style.width = "0%";
-            };
-
-            xhr.send(formData);
-        }
     </script>
 </body>
 

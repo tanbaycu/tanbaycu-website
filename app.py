@@ -31,19 +31,7 @@ from flask import (
 
 # kv = VercelKV()
 app = Flask(__name__)
-UPLOAD_FOLDER = "/tmp/uploads"
-if not os.path.exists(UPLOAD_FOLDER):
-    os.makedirs(UPLOAD_FOLDER)
 
-app.secret_key = "28a03d4e9561e85914da8e57f55f5bbe"
-app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100MB
-
-
-PIXELDRAIN_API_KEY = "fba3e1f5-269b-4758-8e44-78326d0d7d95"
-RETRY_LIMIT = 3
-
-upload_history = []
-download_history = []
 
 
 # Hàm xác thực URL
@@ -161,6 +149,18 @@ def shorten_link():
 
     return render_template("shorten_link.html")  # Trả về trang rút gọn URL
 
+UPLOAD_FOLDER = "/tmp/uploads"
+if not os.path.exists(UPLOAD_FOLDER):
+    os.makedirs(UPLOAD_FOLDER)
+
+app.secret_key = "28a03d4e9561e85914da8e57f55f5bbe"
+app.config["MAX_CONTENT_LENGTH"] = 100 * 1024 * 1024  # 100MB
+
+PIXELDRAIN_API_KEY = "fba3e1f5-269b-4758-8e44-78326d0d7d95"
+RETRY_LIMIT = 3
+
+upload_history = []
+download_history = []
 
 def upload_to_gofile(file_path):
     url = "https://store1.gofile.io/uploadFile"
@@ -178,16 +178,14 @@ def upload_to_gofile(file_path):
                     "message": f"Failed to upload file. Error: {response_json.get('message')}"
                 }
         except requests.exceptions.RequestException as e:
-            return f"Request error: {e}"
+            return {"message": f"Request error: {e}"}
         except ValueError as e:
-            return f"Error decoding JSON response: {e}"
-
+            return {"message": f"Error decoding JSON response: {e}"}
 
 def upload_to_pixeldrain(file_path):
     url = "https://pixeldrain.com/api/file"
     headers = {
-        "Authorization": "Basic "
-        + base64.b64encode(f":{PIXELDRAIN_API_KEY}".encode()).decode()
+        "Authorization": "Basic " + base64.b64encode(f":{PIXELDRAIN_API_KEY}".encode()).decode()
     }
     with open(file_path, "rb") as file:
         files = {"file": file}
@@ -202,38 +200,34 @@ def upload_to_pixeldrain(file_path):
             else:
                 return {"message": "Failed to upload file. No file ID returned."}
         except requests.exceptions.RequestException as e:
-            return f"Request error: {e}"
+            return {"message": f"Request error: {e}"}
         except ValueError as e:
-            return f"Error decoding JSON response: {e}"
+            return {"message": f"Error decoding JSON response: {e}"}
 
-
-@app.route("/")
+@app.route('/')
 def homepage():
-    return send_file("index.html")
-
+    return render_template('index.html')
 
 @app.route("/upload_file", methods=["GET", "POST"])
 def upload_file():
     if request.method == "POST":
         if "file" not in request.files:
-            flash("No file part")
-            return redirect(request.url)
-
+            return jsonify({"success": False, "message": "No file part"}), 400
+        
         file = request.files["file"]
         if file.filename == "":
-            flash("No selected file")
-            return redirect(request.url)
+            return jsonify({"success": False, "message": "No selected file"}), 400
 
         if file:
-            file_path = os.path.join(UPLOAD_FOLDER, file.filename)
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(UPLOAD_FOLDER, filename)
             try:
                 file.save(file_path)
             except Exception as e:
-                flash(f"Error saving file: {e}")
-                return redirect(request.url)
+                return jsonify({"success": False, "message": f"Error saving file: {e}"}), 500
 
             # Update upload history
-            upload_history.append(file.filename)
+            upload_history.append(filename)
 
             # Upload to a random service
             upload_service = random.choice(["gofile", "pixeldrain"])
@@ -242,43 +236,36 @@ def upload_file():
             else:
                 response = upload_to_pixeldrain(file_path)
 
-            # Combine message and download link
-            if "link" in response:
-                download_link = response["link"]
-                response_message = f"{response['message']} Download link: <a href='{download_link}' target='_blank' style='color: #50fa7b;'>Click here</a>."
-                download_history.append(download_link)
-            else:
-                response_message = response["message"]
-
             # Clean up the uploaded file
             os.remove(file_path)
 
-            # Flash the response message and redirect
-            flash(
-                response_message
-            )  # Flash the response message for display on the next page
-            return redirect(
-                url_for("upload_result")
-            )  # Redirect to a new route to display the result
+            if "link" in response:
+                download_link = response["link"]
+                download_history.append(download_link)
+                flash(response['message']) #Flash the message for later use
+                return jsonify({
+                    "success": True,
+                    "message": response['message'],
+                    "redirect_url": url_for('upload_result', filename=filename, link=download_link)
+                })
+            else:
+                return jsonify({"success": False, "message": response['message']}), 500
 
     return render_template("chat.html")
 
+@app.route("/upload-result")
+def upload_result():
+    filename = request.args.get('filename')
+    link = request.args.get('link')
+    response_message = get_flashed_messages()
+    return render_template("upload_result.html", filename=filename, download_link=link, response=response_message)
 
-# Upload history route (Lịch sử tải lên)
 @app.route("/upload-history")
 def upload_history_page():
     return render_template(
         "history.html", history=upload_history, title="Lịch sử tải lên"
     )
 
-
-@app.route("/upload-result")
-def upload_result():
-    response_message = get_flashed_messages()  # Get the flashed message
-    return render_template("upload_result.html", response=response_message)
-
-
-# Download history route (Lịch sử tải xuống)
 @app.route("/download-history")
 def download_history_page():
     return render_template(

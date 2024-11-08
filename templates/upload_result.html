@@ -55,7 +55,20 @@
         line-height: 1.6;
       }
 
-      a {
+      .download-link {
+        display: block;
+        margin-bottom: 20px;
+        color: var(--primary-color);
+        text-decoration: none;
+        font-weight: 500;
+        transition: color 0.3s ease;
+      }
+
+      .download-link:hover {
+        color: var(--secondary-color);
+      }
+
+      .button {
         background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
         color: #fff;
         text-decoration: none;
@@ -67,7 +80,7 @@
         display: inline-block;
       }
 
-      a:hover {
+      .button:hover {
         transform: translateY(-2px);
         box-shadow: 0 5px 15px rgba(99, 102, 241, 0.4);
       }
@@ -81,7 +94,7 @@
           font-size: 1rem;
         }
 
-        a {
+        .button {
           font-size: 0.9rem;
           padding: 10px 20px;
         }
@@ -94,10 +107,13 @@
         {% if response %}
           {{ response[0] | safe }}
         {% else %}
-          <p>No response available.</p>
+          <p>File uploaded successfully!</p>
         {% endif %}
       </div>
-      <a href="/upload_file">Go back to upload another file</a>
+      {% if download_link %}
+        <a href="{{ download_link }}" class="download-link" target="_blank" rel="noopener noreferrer">Download your file</a>
+      {% endif %}
+      <a href="/upload_file" class="button">Go back to upload another file</a>
     </div>
   </body>
 </html>
