@@ -5,19 +5,28 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>URL Shortener - Tanbaycu</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
   <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
     :root {
       --primary-color: #6366F1;
       --secondary-color: #10B981;
-      --background-color: #0F172A;
-      --text-color: #F1F5F9;
-      --card-background: #1E293B;
-      --input-background: #334155;
+      --background-color: #F3F4F6;
+      --text-color: #1F2937;
+      --card-background: #FFFFFF;
+      --input-background: #E5E7EB;
       --button-hover: #4F46E5;
       --accent-color: #F59E0B;
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background-color: #111827;
+        --text-color: #F9FAFB;
+        --card-background: #1F2937;
+        --input-background: #374151;
+      }
     }
 
     * {
@@ -27,280 +36,165 @@
     }
 
     body {
-      font-family: 'Outfit', sans-serif;
+      font-family: 'Inter', sans-serif;
       background-color: var(--background-color);
       color: var(--text-color);
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      overflow-x: hidden;
-      background-image:
-        radial-gradient(circle at 10% 20%, rgba(99, 102, 241, 0.1) 0%, transparent 20%),
-        radial-gradient(circle at 90% 80%, rgba(16, 185, 129, 0.1) 0%, transparent 20%);
-      background-attachment: fixed;
+      line-height: 1.6;
     }
 
     .container {
-      max-width: 800px;
-      margin: 3rem auto;
-      padding: 3rem;
+      max-width: 600px;
+      margin: 2rem auto;
+      padding: 2rem;
       background-color: var(--card-background);
-      border-radius: 2rem;
-      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-      transition: all 0.5s ease;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .container::before {
-      content: "";
-      position: absolute;
-      top: -50%;
-      left: -50%;
-      width: 200%;
-      height: 200%;
-      background: conic-gradient(from 0deg at 50% 50%, var(--primary-color) 0deg, transparent 60deg, var(--secondary-color) 120deg, transparent 180deg, var(--accent-color) 240deg, transparent 300deg);
-      animation: rotate 20s linear infinite;
-      opacity: 0.1;
-      z-index: -1;
-    }
-
-    @keyframes rotate {
-      100% {
-        transform: rotate(360deg);
-      }
+      border-radius: 1rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
     }
 
     h1 {
       text-align: center;
-      font-size: 3.5rem;
-      margin-bottom: 2.5rem;
-      color: var(--text-color);
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-      letter-spacing: 2px;
-      position: relative;
-      display: inline-block;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    h1::after {
-      content: "";
-      position: absolute;
-      bottom: -10px;
-      left: 0;
-      width: 100%;
-      height: 3px;
-      background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
-      transform: scaleX(0);
-      transition: transform 0.3s ease;
-    }
-
-    h1:hover::after {
-      transform: scaleX(1);
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+      color: var(--primary-color);
     }
 
     form {
       display: flex;
       flex-direction: column;
-      gap: 1.5rem;
+      gap: 1rem;
     }
 
     label {
-      font-size: 1.2rem;
-      margin-bottom: 0.5rem;
-      color: var(--accent-color);
+      font-size: 1rem;
       font-weight: 600;
+      color: var(--text-color);
+    }
+
+    .input-group {
+      position: relative;
     }
 
     input[type="url"] {
-      padding: 1.2rem;
-      font-size: 1.1rem;
-      border: none;
-      border-radius: 1rem;
+      width: 100%;
+      padding: 0.75rem 1rem 0.75rem 2.5rem;
+      font-size: 1rem;
+      border: 1px solid var(--input-background);
+      border-radius: 0.5rem;
       background-color: var(--input-background);
       color: var(--text-color);
       transition: all 0.3s ease;
-      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
     }
 
     input[type="url"]:focus {
       outline: none;
-      box-shadow: 0 0 0 3px var(--primary-color), inset 0 2px 4px rgba(0, 0, 0, 0.1);
-      transform: translateY(-2px);
+      border-color: var(--primary-color);
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .input-icon {
+      position: absolute;
+      top: 50%;
+      left: 0.75rem;
+      transform: translateY(-50%);
+      color: var(--text-color);
     }
 
     button {
-      padding: 1.2rem;
-      font-size: 1.2rem;
+      padding: 0.75rem 1rem;
+      font-size: 1rem;
       border: none;
-      border-radius: 1rem;
-      background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
-      color: var(--text-color);
+      border-radius: 0.5rem;
+      background-color: var(--primary-color);
+      color: #FFFFFF;
       cursor: pointer;
       transition: all 0.3s ease;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      font-weight: 600;
-      text-transform: uppercase;
-      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
     button:hover {
-      transform: translateY(-3px) scale(1.02);
-      box-shadow: 0 6px 8px rgba(0, 0, 0, 0.2);
-      background: linear-gradient(45deg, var(--secondary-color), var(--primary-color));
+      background-color: var(--button-hover);
     }
 
     .short-url {
-      margin-top: 2.5rem;
+      margin-top: 2rem;
       text-align: center;
-      padding: 2rem;
-      background-color: rgba(255, 255, 255, 0.05);
-      border-radius: 1.5rem;
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
-    }
-
-    .short-url:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+      padding: 1.5rem;
+      background-color: var(--input-background);
+      border-radius: 0.5rem;
     }
 
     .short-url h4 {
-      margin-bottom: 1rem;
-      color: var(--secondary-color);
-      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+      color: var(--text-color);
     }
 
     .short-url a {
-      color: var(--accent-color);
-      font-weight: bold;
+      color: var(--primary-color);
+      font-weight: 600;
       text-decoration: none;
-      font-size: 1.2rem;
-      transition: all 0.3s ease;
-      padding: 0.7rem 1.5rem;
-      background-color: rgba(255, 255, 255, 0.1);
-      border-radius: 0.8rem;
-      display: inline-block;
-    }
-
-    .short-url a:hover {
-      background-color: var(--accent-color);
-      color: var(--text-color);
-      transform: translateY(-2px);
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      word-break: break-all;
     }
 
     .qr-code {
-      margin-top: 2.5rem;
+      margin-top: 2rem;
       display: flex;
       justify-content: center;
     }
 
     .qr-code img {
       max-width: 200px;
-      border-radius: 1rem;
-      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
-      transition: all 0.3s ease;
-      border: 3px solid var(--accent-color);
-    }
-
-    .qr-code img:hover {
-      transform: scale(1.05) rotate(2deg);
-      box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
+      border-radius: 0.5rem;
     }
 
     footer {
       margin-top: auto;
       text-align: center;
-      padding: 1.5rem;
-      background-color: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(10px);
+      padding: 1rem;
+      background-color: var(--card-background);
     }
 
     footer a {
-      color: var(--accent-color);
+      color: var(--primary-color);
       text-decoration: none;
       transition: all 0.3s ease;
-      font-weight: 600;
-      font-size: 1rem;
-      padding: 0.5rem 1rem;
-      border-radius: 0.5rem;
     }
 
     footer a:hover {
-      color: var(--text-color);
-      background-color: var(--accent-color);
+      text-decoration: underline;
     }
 
     .alert {
-      background-color: rgba(239, 68, 68, 0.1);
-      color: #EF4444;
+      background-color: #FEE2E2;
+      color: #DC2626;
       padding: 1rem;
-      border-radius: 1rem;
-      margin-top: 1.5rem;
+      border-radius: 0.5rem;
+      margin-top: 1rem;
       text-align: center;
-      border: 1px solid rgba(239, 68, 68, 0.2);
-      animation: shake 0.82s cubic-bezier(.36, .07, .19, .97) both;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
     }
 
-    @keyframes shake {
-
-      10%,
-      90% {
-        transform: translate3d(-1px, 0, 0);
-      }
-
-      20%,
-      80% {
-        transform: translate3d(2px, 0, 0);
-      }
-
-      30%,
-      50%,
-      70% {
-        transform: translate3d(-4px, 0, 0);
-      }
-
-      40%,
-      60% {
-        transform: translate3d(4px, 0, 0);
-      }
-    }
-
-    @keyframes fadeInUp {
-      from {
-        opacity: 0;
-        transform: translateY(20px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-
-    .container,
-    .short-url,
-    .qr-code {
-      animation: fadeInUp 0.8s ease-out;
-    }
-
-    @media (max-width: 768px) {
+    @media (max-width: 640px) {
       .container {
-        margin: 2rem;
-        padding: 2rem;
+        margin: 1rem;
+        padding: 1.5rem;
       }
 
       h1 {
-        font-size: 2.5rem;
+        font-size: 2rem;
       }
 
       input[type="url"],
       button {
-        font-size: 1rem;
-        padding: 1rem;
+        font-size: 0.875rem;
       }
     }
   </style>
@@ -308,17 +202,29 @@
 
 <body>
   <div class="container">
-    <h1>Short URL</h1>
+    <h1>
+      <i data-lucide="link" style="display: inline; vertical-align: middle; margin-right: 0.5rem;"></i>
+      Short URL
+    </h1>
     <form id="urlForm" method="POST" onsubmit="return validateForm()">
       <label for="long_url">Nhập URL dài của bạn:</label>
-      <input type="url" id="long_url" name="long_url" placeholder="Ví dụ: https://example.com" required>
-      <button type="submit">Rút gọn <i class="fas fa-link"></i></button>
+      <div class="input-group">
+        <i data-lucide="globe" class="input-icon"></i>
+        <input type="url" id="long_url" name="long_url" placeholder="Ví dụ: https://example.com" required>
+      </div>
+      <button type="submit">
+        <i data-lucide="scissors"></i>
+        Rút gọn
+      </button>
     </form>
 
     {% if short_url %}
     <div class="short-url">
       <h4>URL rút gọn của bạn:</h4>
-      <a href="{{ short_url }}" target="_blank">{{ short_url }}</a>
+      <a href="{{ short_url }}" target="_blank">
+        <i data-lucide="external-link" style="display: inline; vertical-align: middle; margin-right: 0.25rem;"></i>
+        {{ short_url }}
+      </a>
     </div>
     <div class="qr-code">
       <img src="https://api.stakdek.de/api/qr/gen?data={{ short_url }}" alt="QR Code">
@@ -328,6 +234,7 @@
     {% with messages = get_flashed_messages() %}
     {% if messages %}
     <div class="alert" role="alert">
+      <i data-lucide="alert-triangle"></i>
       {{ messages[0] }}
     </div>
     {% endif %}
@@ -339,6 +246,9 @@
   </footer>
 
   <script>
+    // Initialize Lucide icons
+    lucide.createIcons();
+
     function validateForm() {
       const longUrlInput = document.getElementById("long_url").value;
       if (!longUrlInput) {
