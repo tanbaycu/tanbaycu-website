@@ -14,7 +14,6 @@ import re
 import subprocess
 from deep_translator import GoogleTranslator
 
-
 # from vercel_kv import VercelKV
 from flask import (
     Flask,
@@ -34,7 +33,9 @@ from flask import (
 app = Flask(__name__)
 
 
-
+@app.route('/')
+def homepage():
+    return send_file('index.html')
 # Hàm xác thực URL
 def validate_url(url):
     regex = re.compile(
@@ -247,10 +248,6 @@ def upload_file():
                 return jsonify({"success": False, "message": response['message']}), 500
 
     return render_template("chat.html")
-
-@app.route('/')
-def homepage():
-    return render_template('index.html')
 
 @app.route("/upload-result")
 def upload_result():
