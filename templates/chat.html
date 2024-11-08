@@ -7,14 +7,26 @@
     <title>File Upload - Tanbaycu</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet" />
     <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+    <script src="https://unpkg.com/lucide@latest"></script>
     <style>
         :root {
             --primary-color: #6366f1;
             --secondary-color: #8b5cf6;
-            --background-color: #111827;
-            --surface-color: #1f2937;
-            --text-color: #f3f4f6;
-            --text-muted: #9ca3af;
+            --background-color: #f3f4f6;
+            --surface-color: #ffffff;
+            --text-color: #1f2937;
+            --text-muted: #6b7280;
+            --border-color: #e5e7eb;
+        }
+
+        @media (prefers-color-scheme: dark) {
+            :root {
+                --background-color: #111827;
+                --surface-color: #1f2937;
+                --text-color: #f3f4f6;
+                --text-muted: #9ca3af;
+                --border-color: #374151;
+            }
         }
 
         * {
@@ -35,10 +47,11 @@
 
         .navbar {
             background-color: var(--surface-color);
-            padding: 15px 0;
+            padding: 1rem;
             position: sticky;
             top: 0;
             z-index: 1000;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .navbar-container {
@@ -47,7 +60,6 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            padding: 0 20px;
         }
 
         .navbar a {
@@ -67,22 +79,22 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            padding: 40px 20px;
+            padding: 2rem 1rem;
         }
 
         .header {
             font-size: 2.5rem;
             font-weight: 600;
             color: var(--primary-color);
-            margin-bottom: 30px;
+            margin-bottom: 2rem;
             text-align: center;
         }
 
         .upload-section {
             background-color: var(--surface-color);
-            border-radius: 10px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
-            padding: 40px;
+            border-radius: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 2rem;
             width: 100%;
             max-width: 500px;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -90,13 +102,13 @@
 
         .upload-section:hover {
             transform: translateY(-5px);
-            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
         }
 
         .upload-area {
             border: 2px dashed var(--primary-color);
-            border-radius: 10px;
-            padding: 40px;
+            border-radius: 1rem;
+            padding: 2rem;
             text-align: center;
             cursor: pointer;
             transition: background-color 0.3s ease;
@@ -109,32 +121,33 @@
         .upload-icon {
             width: 64px;
             height: 64px;
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
         }
 
         .upload-text {
             color: var(--text-muted);
-            margin-bottom: 20px;
+            margin-bottom: 1rem;
         }
 
         .upload-button {
             background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
             color: #fff;
             border: none;
-            padding: 12px 25px;
+            padding: 0.75rem 1.5rem;
             font-size: 1rem;
             font-weight: 500;
-            border-radius: 25px;
+            border-radius: 2rem;
             cursor: pointer;
             transition: transform 0.3s ease, box-shadow 0.3s ease;
-            margin-top: 20px;
+            margin-top: 1rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
         }
 
         .upload-button svg {
-            margin-right: 8px;
+            margin-right: 0.5rem;
         }
 
         .upload-button:hover {
@@ -143,16 +156,142 @@
         }
 
         .file-name {
-            margin-top: 20px;
+            margin-top: 1rem;
             font-size: 0.9rem;
             color: var(--text-muted);
         }
 
         footer {
             text-align: center;
-            padding: 20px;
+            padding: 1rem;
             background-color: var(--surface-color);
             color: var(--text-muted);
+            margin-top: 2rem;
+        }
+
+        .offcanvas-menu {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 300px;
+            height: 100%;
+            background-color: var(--surface-color);
+            transition: left 0.3s ease;
+            z-index: 1001;
+            padding: 2rem;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .offcanvas-menu.active {
+            left: 0;
+        }
+
+        .offcanvas-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: none;
+            border: none;
+            color: var(--text-color);
+            cursor: pointer;
+            font-size: 1.5rem;
+        }
+
+        .offcanvas-menu ul {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .offcanvas-menu ul li {
+            margin-bottom: 1rem;
+        }
+
+        .offcanvas-menu ul li a {
+            color: var(--text-color);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            transition: background-color 0.3s ease;
+        }
+
+        .offcanvas-menu ul li a:hover {
+            background-color: rgba(99, 102, 241, 0.1);
+        }
+
+        .offcanvas-menu ul li a i {
+            margin-right: 0.5rem;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            display: none;
+            z-index: 1000;
+        }
+
+        .help-content {
+            margin-top: 1.5rem;
+            padding: 1rem;
+            background-color: rgba(99, 102, 241, 0.1);
+            border-radius: 0.5rem;
+        }
+
+        .help-content h3 {
+            margin-bottom: 0.5rem;
+            color: var(--primary-color);
+        }
+
+        .help-content p {
+            margin-bottom: 0.5rem;
+        }
+
+        .file-type-selector {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .file-type-button {
+            background-color: var(--surface-color);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            padding: 0.5rem 1rem;
+            border-radius: 2rem;
+            cursor: pointer;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .file-type-button:hover,
+        .file-type-button.active {
+            background-color: var(--primary-color);
+            color: #fff;
+            border-color: var(--primary-color);
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 0.5rem;
+            background-color: var(--border-color);
+            border-radius: 1rem;
+            margin-top: 1.5rem;
+            overflow: hidden;
+            display: none;
+        }
+
+        .progress {
+            width: 0%;
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
         }
 
         @media (max-width: 768px) {
@@ -161,11 +300,19 @@
             }
 
             .upload-section {
-                padding: 30px;
+                padding: 1.5rem;
             }
 
             .upload-area {
-                padding: 30px;
+                padding: 1.5rem;
+            }
+
+            .file-type-selector {
+                flex-direction: column;
+            }
+
+            .file-type-button {
+                width: 100%;
             }
         }
     </style>
@@ -175,71 +322,88 @@
     <nav class="navbar">
         <div class="navbar-container">
             <a href="{{ url_for('homepage') }}">
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
-                    <polyline points="9 22 9 12 15 12 15 22"></polyline>
-                </svg>
+                <i data-lucide="home"></i>
             </a>
             <div>
-                <a href="/upload-history">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M12 5v14"></path>
-                        <path d="M5 12h14"></path>
-                    </svg>
-                </a>
-                <a href="/download-history" style="margin-left: 20px;">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>
+                <a href="#" id="menu-toggle">
+                    <i data-lucide="menu"></i>
                 </a>
             </div>
         </div>
     </nav>
 
+    <div class="offcanvas-menu" id="offcanvas-menu">
+        <button class="offcanvas-close" id="offcanvas-close">
+            <i data-lucide="x"></i>
+        </button>
+        <ul>
+            <li><a href="/upload-history"><i data-lucide="upload"></i> Upload History</a></li>
+            <li><a href="/download-history"><i data-lucide="download"></i> Download History</a></li>
+            <li><a href="#" id="help-toggle"><i data-lucide="help-circle"></i> Help</a></li>
+        </ul>
+        <div class="help-content" id="help-content" style="display: none;">
+            <h3>How to Use File Upload</h3>
+            <p>1. Click "Choose File" or drag and drop your file into the upload area.</p>
+            <p>2. Select the file type using the buttons below the upload area.</p>
+            <p>3. Click "Upload File" to start the upload process.</p>
+            <p>4. You can view your upload history in the "Upload History" section.</p>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+
     <div class="main-container">
         <h1 class="header">File Upload</h1>
         <div class="upload-section">
             <div class="upload-area" id="file-drop-area">
-                <svg class="upload-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="17 8 12 3 7 8"></polyline>
-                    <line x1="12" y1="3" x2="12" y2="15"></line>
-                </svg>
-                <p class="upload-text">Drag & drop your file here or click to select</p>
+                <i data-lucide="upload-cloud" class="upload-icon"></i>
+                <p class="upload-text">Drag &amp; drop your file here or click to select</p>
                 <form method="POST" enctype="multipart/form-data" id="upload-form">
-                    <input type="file" name="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.pdf" required hidden />
+                    <input type="file" name="file" id="file-input" required hidden />
                     <button type="button" class="upload-button" onclick="document.getElementById('file-input').click()">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
+                        <i data-lucide="file-plus"></i>
                         Choose File
                     </button>
                     <button type="submit" class="upload-button">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                            <polyline points="17 8 12 3 7 8"></polyline>
-                            <line x1="12" y1="3" x2="12" y2="15"></line>
-                        </svg>
+                        <i data-lucide="upload"></i>
                         Upload File
                     </button>
                 </form>
             </div>
             <div class="file-name" id="file-name">No file chosen</div>
+            <div class="file-type-selector">
+                <button class="file-type-button active" data-type="image">Image</button>
+                <button class="file-type-button" data-type="document">Document</button>
+                <button class="file-type-button" data-type="audio">Audio</button>
+                <button class="file-type-button" data-type="video">Video</button>
+            </div>
+            <div class="progress-bar" id="progress-bar">
+                <div class="progress" id="progress"></div>
+            </div>
         </div>
     </div>
 
     <footer>
-        <div>© 2024 File Upload </div>
+        <div>© 2024 File Upload - Tanbaycu</div>
     </footer>
 
     <script>
+        // Initialize Lucide icons
+        lucide.createIcons();
+
         const dropArea = document.getElementById("file-drop-area");
         const fileInput = document.getElementById("file-input");
         const fileNameDisplay = document.getElementById("file-name");
+        const menuToggle = document.getElementById("menu-toggle");
+        const offcanvasMenu = document.getElementById("offcanvas-menu");
+        const offcanvasClose = document.getElementById("offcanvas-close");
+        const overlay = document.getElementById("overlay");
+        const helpToggle = document.getElementById("help-toggle");
+        const helpContent = document.getElementById("help-content");
+        const fileTypeButtons = document.querySelectorAll(".file-type-button");
+        const progressBar = document.getElementById("progress-bar");
+        const progress = document.getElementById("progress");
+        const uploadForm = document.getElementById("upload-form");
 
         fileInput.addEventListener("change", () => {
             const fileName = fileInput.files[0] ? fileInput.files[0].name : "No file chosen";
@@ -272,6 +436,77 @@
             setTimeout(() => {
                 fileNameDisplay.style.transition = "opacity 0.5s ease";
                 fileNameDisplay.style.opacity = "1";
+            }, 50);
+        }
+
+        // Offcanvas menu functionality
+        menuToggle.addEventListener("click", () => {
+            offcanvasMenu.classList.add("active");
+            overlay.style.display = "block";
+        });
+
+        offcanvasClose.addEventListener("click", closeOffcanvasMenu);
+        overlay.addEventListener("click", closeOffcanvasMenu);
+
+        function closeOffcanvasMenu() {
+            offcanvasMenu.classList.remove("active");
+            overlay.style.display = "none";
+        }
+
+        // Help toggle functionality
+        helpToggle.addEventListener("click", (e) => {
+            e.preventDefault();
+            helpContent.style.display = helpContent.style.display === "none" ? "block" : "none";
+        });
+
+        // File type selector functionality
+        fileTypeButtons.forEach(button => {
+            button.addEventListener("click", () => {
+                fileTypeButtons.forEach(btn => btn.classList.remove("active"));
+                button.classList.add("active");
+                const fileType = button.dataset.type;
+                fileInput.accept = getAcceptedFileTypes(fileType);
+            });
+        });
+
+        function getAcceptedFileTypes(type) {
+            switch (type) {
+                case "image":
+                    return ".jpg,.jpeg,.png,.gif";
+                case "document":
+                    return ".pdf,.doc,.docx,.txt";
+                case "audio":
+                    return ".mp3,.wav,.ogg";
+                case "video":
+                    return ".mp4,.avi,.mov";
+                default:
+                    return "";
+            }
+        }
+
+        // Simulated file upload with progress bar
+        uploadForm.addEventListener("submit", (e) => {
+            e.preventDefault();
+            if (fileInput.files.length === 0) {
+                alert("Please select a file to upload.");
+                return;
+            }
+            progressBar.style.display = "block";
+            simulateFileUpload();
+        });
+
+        function simulateFileUpload() {
+            let width = 0;
+            const interval = setInterval(() => {
+                if (width >= 100) {
+                    clearInterval(interval);
+                    alert("File uploaded successfully!");
+                    progressBar.style.display = "none";
+                    progress.style.width = "0%";
+                } else {
+                    width++;
+                    progress.style.width = width + "%";
+                }
             }, 50);
         }
     </script>
