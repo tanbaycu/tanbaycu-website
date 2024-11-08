@@ -359,7 +359,7 @@
                 <i data-lucide="upload-cloud" class="upload-icon"></i>
                 <p class="upload-text">Drag &amp; drop your file here or click to select</p>
                 <form method="POST" enctype="multipart/form-data" id="upload-form">
-                    <input type="file" name="file" id="file-input" required hidden />
+                    <input type="file" name="file" id="file-input" accept=".jpg,.jpeg,.png,.gif,.pdf" required hidden />
                     <button type="button" class="upload-button" onclick="document.getElementById('file-input').click()">
                         <i data-lucide="file-plus"></i>
                         Choose File
@@ -484,7 +484,7 @@
             }
         }
 
-        // Simulated file upload with progress bar
+        // File upload with progress bar
         uploadForm.addEventListener("submit", (e) => {
             e.preventDefault();
             if (fileInput.files.length === 0) {
@@ -492,22 +492,32 @@
                 return;
             }
             progressBar.style.display = "block";
-            simulateFileUpload();
+            uploadFile();
         });
 
-        function simulateFileUpload() {
-            let width = 0;
-            const interval = setInterval(() => {
-                if (width >= 100) {
-                    clearInterval(interval);
-                    alert("File uploaded successfully!");
-                    progressBar.style.display = "none";
-                    progress.style.width = "0%";
-                } else {
-                    width++;
-                    progress.style.width = width + "%";
+        function uploadFile() {
+            const xhr = new XMLHttpRequest();
+            const formData = new FormData(uploadForm);
+
+            xhr.open("POST", uploadForm.action, true);
+            xhr.upload.onprogress = (e) => {
+                if (e.lengthComputable) {
+                    const percentComplete = (e.loaded / e.total) * 100;
+                    progress.style.width = percentComplete + "%";
                 }
-            }, 50);
+            };
+
+            xhr.onload = function() {
+                if (xhr.status === 200) {
+                    alert("File uploaded successfully!");
+                } else {
+                    alert("Error uploading file. Please try again.");
+                }
+                progressBar.style.display = "none";
+                progress.style.width = "0%";
+            };
+
+            xhr.send(formData);
         }
     </script>
 </body>
