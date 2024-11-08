@@ -13,7 +13,6 @@ from datetime import datetime
 import re
 import subprocess
 from deep_translator import GoogleTranslator
-from werkzeug.utils import secure_filename
 
 
 # from vercel_kv import VercelKV
@@ -164,51 +163,52 @@ RETRY_LIMIT = 3
 upload_history = []
 download_history = []
 
-def upload_to_gofile(file_path):
-    url = "https://store1.gofile.io/uploadFile"
-    with open(file_path, "rb") as file:
-        files = {"file": file}
-        try:
-            response = requests.post(url, files=files, timeout=600)
-            response.raise_for_status()
-            response_json = response.json()
-            if response_json.get("status") == "ok":
-                download_link = response_json.get("data", {}).get("downloadPage")
-                return {"message": "Upload successful!", "link": download_link}
-            else:
-                return {
-                    "message": f"Failed to upload file. Error: {response_json.get('message')}"
-                }
-        except requests.exceptions.RequestException as e:
-            return {"message": f"Request error: {e}"}
-        except ValueError as e:
-            return {"message": f"Error decoding JSON response: {e}"}
+def clean_filename(filename):
+    # Remove any non-word (non-alphanumeric + underscore) characters
+    filename = re.sub(r'[^\w\.-]', '', filename)
+    # Remove any runs of periods (as they're redundant)
+    filename = re.sub(r'\.+', '.', filename)
+    return filename
 
-def upload_to_pixeldrain(file_path):
+def upload_to_gofile(file_data, filename):
+    url = "https://store1.gofile.io/uploadFile"
+    files = {"file": (filename, file_data)}
+    try:
+        response = requests.post(url, files=files, timeout=600)
+        response.raise_for_status()
+        response_json = response.json()
+        if response_json.get("status") == "ok":
+            download_link = response_json.get("data", {}).get("downloadPage")
+            return {"message": "Upload successful!", "link": download_link}
+        else:
+            return {
+                "message": f"Failed to upload file. Error: {response_json.get('message')}"
+            }
+    except requests.exceptions.RequestException as e:
+        return {"message": f"Request error: {e}"}
+    except ValueError as e:
+        return {"message": f"Error decoding JSON response: {e}"}
+
+def upload_to_pixeldrain(file_data, filename):
     url = "https://pixeldrain.com/api/file"
     headers = {
         "Authorization": "Basic " + base64.b64encode(f":{PIXELDRAIN_API_KEY}".encode()).decode()
     }
-    with open(file_path, "rb") as file:
-        files = {"file": file}
-        try:
-            response = requests.post(url, files=files, headers=headers, timeout=600)
-            response.raise_for_status()
-            response_json = response.json()
-            file_id = response_json.get("id")
-            if file_id:
-                download_link = f"https://pixeldrain.com/u/{file_id}"
-                return {"message": "Upload successful!", "link": download_link}
-            else:
-                return {"message": "Failed to upload file. No file ID returned."}
-        except requests.exceptions.RequestException as e:
-            return {"message": f"Request error: {e}"}
-        except ValueError as e:
-            return {"message": f"Error decoding JSON response: {e}"}
-
-@app.route('/')
-def homepage():
-    return render_template('index.html')
+    files = {"file": (filename, file_data)}
+    try:
+        response = requests.post(url, files=files, headers=headers, timeout=600)
+        response.raise_for_status()
+        response_json = response.json()
+        file_id = response_json.get("id")
+        if file_id:
+            download_link = f"https://pixeldrain.com/u/{file_id}"
+            return {"message": "Upload successful!", "link": download_link}
+        else:
+            return {"message": "Failed to upload file. No file ID returned."}
+    except requests.exceptions.RequestException as e:
+        return {"message": f"Request error: {e}"}
+    except ValueError as e:
+        return {"message": f"Error decoding JSON response: {e}"}
 
 @app.route("/upload_file", methods=["GET", "POST"])
 def upload_file():
@@ -221,12 +221,8 @@ def upload_file():
             return jsonify({"success": False, "message": "No selected file"}), 400
 
         if file:
-            filename = secure_filename(file.filename)
-            file_path = os.path.join(UPLOAD_FOLDER, filename)
-            try:
-                file.save(file_path)
-            except Exception as e:
-                return jsonify({"success": False, "message": f"Error saving file: {e}"}), 500
+            filename = clean_filename(file.filename)
+            file_data = file.read()
 
             # Update upload history
             upload_history.append(filename)
@@ -234,12 +230,9 @@ def upload_file():
             # Upload to a random service
             upload_service = random.choice(["gofile", "pixeldrain"])
             if upload_service == "gofile":
-                response = upload_to_gofile(file_path)
+                response = upload_to_gofile(file_data, filename)
             else:
-                response = upload_to_pixeldrain(file_path)
-
-            # Clean up the uploaded file
-            os.remove(file_path)
+                response = upload_to_pixeldrain(file_data, filename)
 
             if "link" in response:
                 download_link = response["link"]
@@ -254,6 +247,10 @@ def upload_file():
                 return jsonify({"success": False, "message": response['message']}), 500
 
     return render_template("chat.html")
+
+@app.route('/')
+def homepage():
+    return render_template('index.html')
 
 @app.route("/upload-result")
 def upload_result():
