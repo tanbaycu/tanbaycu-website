@@ -13,6 +13,8 @@ from datetime import datetime
 import re
 import subprocess
 from deep_translator import GoogleTranslator
+from werkzeug.utils import secure_filename
+
 
 # from vercel_kv import VercelKV
 from flask import (
