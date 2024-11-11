@@ -1,7 +1,9 @@
 import os
 import random
 import base64
-
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
 # import google.generativeai as genai
 import json
 import requests
@@ -1316,8 +1318,8 @@ def send_email(to_email, subject, body, is_html=False):
         server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.send_message(message)
-        
-            
+
+
 if __name__ == "__main__":
     if not os.path.exists("uploads"):
         os.makedirs("uploads")
