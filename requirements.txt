@@ -1,7 +1,4 @@
 Flask
 deep-translator
-yt-dlp
-numpy
 requests
 pandas
-smtplib
