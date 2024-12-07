@@ -1,4 +1,6 @@
 Flask
 deep-translator
+yt-dlp
 requests
 pandas
+
