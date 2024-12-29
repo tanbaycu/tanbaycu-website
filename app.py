@@ -1264,7 +1264,7 @@ def send_notification_email(subscriber_email):
     send_email(RECEIVER_EMAIL, subject, body)
 
 def send_confirmation_email(subscriber_email):
-    subject = "Chào mừng bạn đến với Tân 7 Cú - Xác nhận đăng ký bản tin"
+    subject = "Chào mừng bạn đến với Tân 7 Cú - Bắt đầu hành trình số hóa của bạn! 🚀"
     body = f"""
     <html>
     <head>
@@ -1272,31 +1272,39 @@ def send_confirmation_email(subscriber_email):
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Chào mừng đến với Tân 7 Cú</title>
     </head>
-    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #4a90e2;">Chào mừng bạn đến với Tân 7 Cú!</h1>
-        <p>Xin chào,</p>
-        <p>Cảm ơn bạn đã đăng ký nhận bản tin từ Tân 7 Cú. Chúng tôi rất vui mừng được chào đón bạn vào cộng đồng của chúng tôi!</p>
-        <h2 style="color: #4a90e2;">Điều gì đang chờ đợi bạn?</h2>
-        <ul>
-            <li>Các mẹo và thủ thuật hàng tuần để tối ưu hóa việc sử dụng công cụ của chúng tôi</li>
-            <li>Thông báo về các tính năng mới và cập nhật</li>
-            <li>Nội dung độc quyền chỉ dành cho người đăng ký</li>
-            <li>Cơ hội tham gia các sự kiện và webinar đặc biệt</li>
-        </ul>
-        <h2 style="color: #4a90e2;">Khám phá thêm</h2>
-        <p>Bạn đã sẵn sàng để khám phá thêm không? Hãy ghé thăm các dự án khác của chúng tôi:</p>
-        <ul>
-            <li><a href="https://rubik3d.vercel.app" style="color: #4a90e2;">Rubik3d</a> - Mô hình tương tác solo với rubik dựa trên thiết kế thuần túy.</li>
-            <li><a href="https://bl0ck-menja.vercel.app" style="color: #4a90e2;">Block_Menja</a> - Giao diện tương tác với các khối vuông tương tự trò chơi chém hoa quả.</li>
-            <li><a href="https://vuonmaichinteo.vercel.app" style="color: #4a90e2;">Vườn mai Chín Tèo</a> - Web đơn thuần hiển thị 1 số hình ảnh về những cây mai trong vườn nhà tôi.</li>
-        </ul>
-        <h2 style="color: #4a90e2;">Hợp tác cùng chúng tôi</h2>
-        <p>Bạn có ý tưởng về cách chúng ta có thể cùng nhau tạo ra điều gì đó tuyệt vời? Chúng tôi luôn mở cửa cho các cơ hội hợp tác. Hãy liên hệ với chúng tôi tại <a href="mailto:tanbaycu@gamil.com" style="color: #4a90e2;">tanbaycu@gmail.com</a> để thảo luận thêm!</p>
-        <p>Một lần nữa, chào mừng bạn đến với Tân 7 Cú. Chúng tôi rất mong được kết nối với bạn!</p>
-        <p>Trân trọng,<br>Đội ngũ Tân 7 Cú</p>
-        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #888;">
+    <body style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background-color: #f9f9f9;">
+        <div style="background-color: #6c63ff; color: #ffffff; padding: 20px; text-align: center; border-radius: 5px 5px 0 0;">
+            <h1 style="margin: 0;">Chào mừng bạn đến với Tân 7 Cú! 🎉</h1>
+        </div>
+        <div style="background-color: #ffffff; padding: 20px; border-radius: 0 0 5px 5px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);">
+            <p>Xin chào người bạn mới thân mến,</p>
+            <p>Chúng tôi vô cùng phấn khởi chào đón bạn vào đại gia đình Tân 7 Cú! 🚀 Cảm ơn bạn đã tin tưởng và đăng ký nhận bản tin của chúng tôi. Bạn đã sẵn sàng cho một hành trình tuyệt vời chưa?</p>
+            <h2 style="color: #6c63ff;">🌟 Khám phá thế giới số cùng chúng tôi</h2>
+            <ul style="list-style-type: none; padding-left: 0;">
+                <li style="margin-bottom: 10px;">🚀 Trải nghiệm công cụ trực tuyến đột phá và tiện lợi</li>
+                <li style="margin-bottom: 10px;">💡 Tiếp cận kho tàng kiến thức và kinh nghiệm từ các chuyên gia hàng đầu</li>
+                <li style="margin-bottom: 10px;">🌐 Luôn cập nhật với những xu hướng công nghệ mới nhất và hot nhất</li>
+                <li style="margin-bottom: 10px;">🤝 Kết nối với cộng đồng đam mê công nghệ sôi động</li>
+            </ul>
+            <h2 style="color: #6c63ff;">🎨 Bắt đầu hành trình sáng tạo của bạn</h2>
+            <p>Hãy khám phá ngay những tính năng tuyệt vời mà chúng tôi đã chuẩn bị dành riêng cho bạn:</p>
+            <ul>
+                <li><a href="https://tanbaycu.vercel.app/upload_file" style="color: #6c63ff;">📁 Tải lên và chia sẻ tệp - Lưu trữ an toàn, chia sẻ dễ dàng</a></li>
+                <li><a href="https://tanbaycu.vercel.app/aichat" style="color: #6c63ff;">🤖 Trò chuyện với AI thông minh - Khám phá trí tuệ nhân tạo tiên tiến</a></li>
+                <li><a href="https://tanbaycu.vercel.app/shorten-link" style="color: #6c63ff;">🔗 Rút gọn liên kết - Tạo URL ngắn gọn, ấn tượng</a></li>
+                <li><a href="https://tanbaycu.vercel.app/qrcode" style="color: #6c63ff;">📱 Tạo mã QR độc đáo - Kết nối thế giới thực và số</a></li>
+            </ul>
+            <p>Đừng bỏ lỡ những tin tức hấp dẫn và tính năng mới nhất! Hãy theo dõi chúng tôi trên mạng xã hội:</p>
+            <p>
+                <a href="https://github.com/tanbaycu" style="color: #6c63ff; margin-right: 10px;">GitHub</a>
+                <a href="https://www.facebook.com/tanbaycu.kaiser/" style="color: #6c63ff;">Facebook</a>
+            </p>
+            <p>Chúc bạn có những trải nghiệm tuyệt vời và đầy cảm hứng cùng Tân 7 Cú! Hãy sẵn sàng để khám phá, học hỏi và sáng tạo!</p>
+            <p>Trân trọng,<br>Đội ngũ Tân 7 Cú</p>
+        </div>
+        <div style="margin-top: 20px; text-align: center; font-size: 12px; color: #888;">
             <p>Email này được gửi đến {subscriber_email}. Nếu bạn không yêu cầu email này, vui lòng bỏ qua nó.</p>
-            <p>Tân 7 Cú - My Tho - Tien Giang - Viet Nam</p>
+            <p>Tân 7 Cú - Nơi đổi mới sáng tạo gặp gỡ, Cộng đồng kết nối không ngừng</p>
         </div>
     </body>
     </html>
@@ -1318,6 +1326,8 @@ def send_email(to_email, subject, body, is_html=False):
         server.starttls()
         server.login(SENDER_EMAIL, SENDER_PASSWORD)
         server.send_message(message)
+
+
 
 
 if __name__ == "__main__":
