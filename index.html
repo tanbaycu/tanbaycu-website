@@ -1553,6 +1553,49 @@
     window.si = window.si || function () { (window.siq = window.siq || []).push(arguments); };
   </script>
   <script defer src="/_vercel/speed-insights/script.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('newsletter-form');
+      const message = document.getElementById('subscription-message');
+    
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        const email = document.getElementById('subscriber-email').value;
+    
+        // Disable the submit button and show loading state
+        const submitButton = form.querySelector('button[type="submit"]');
+        const originalButtonText = submitButton.textContent;
+        submitButton.disabled = true;
+        submitButton.textContent = 'Đang xử lý...';
+    
+        fetch('https://script.google.com/macros/s/AKfycbxJqrJU6MlCjHAkPMO9dZohjM2TAvrbTzFZZRie7kg5gKXSlrKjE-TlL5-Vy7xyFrXdww/exec', {
+          method: 'POST',
+          mode: 'no-cors',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email: email })
+        })
+        .then(() => {
+          // Since we're using no-cors, we can't access the response
+          // We'll assume success if there's no error
+          message.textContent = 'Đăng ký thành công!';
+          message.style.color = 'green';
+          form.reset();
+        })
+        .catch((error) => {
+          console.error('Error:', error);
+          message.textContent = 'Có lỗi xảy ra. Vui lòng thử lại sau.';
+          message.style.color = 'red';
+        })
+        .finally(() => {
+          // Re-enable the submit button and restore original text
+          submitButton.disabled = false;
+          submitButton.textContent = originalButtonText;
+        });
+      });
+    });
+    </script>
 
 </body>
 
