@@ -1267,39 +1267,350 @@ def send_confirmation_email(subscriber_email):
     subject = "Chào mừng bạn đến với Tân 7 Cú - Xác nhận đăng ký bản tin"
     body = f"""
     <html>
-    <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Chào mừng đến với Tân 7 Cú</title>
-    </head>
-    <body style="font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
-        <h1 style="color: #4a90e2;">Chào mừng bạn đến với Tân 7 Cú!</h1>
-        <p>Xin chào,</p>
-        <p>Cảm ơn bạn đã đăng ký nhận bản tin từ Tân 7 Cú. Chúng tôi rất vui mừng được chào đón bạn vào cộng đồng của chúng tôi!</p>
-        <h2 style="color: #4a90e2;">Điều gì đang chờ đợi bạn?</h2>
-        <ul>
-            <li>Các mẹo và thủ thuật hàng tuần để tối ưu hóa việc sử dụng công cụ của chúng tôi</li>
-            <li>Thông báo về các tính năng mới và cập nhật</li>
-            <li>Nội dung độc quyền chỉ dành cho người đăng ký</li>
-            <li>Cơ hội tham gia các sự kiện và webinar đặc biệt</li>
-        </ul>
-        <h2 style="color: #4a90e2;">Khám phá thêm</h2>
-        <p>Bạn đã sẵn sàng để khám phá thêm không? Hãy ghé thăm các dự án khác của chúng tôi:</p>
-        <ul>
-            <li><a href="https://rubik3d.vercel.app" style="color: #4a90e2;">Rubik3d</a> - Mô hình tương tác solo với rubik dựa trên thiết kế thuần túy.</li>
-            <li><a href="https://bl0ck-menja.vercel.app" style="color: #4a90e2;">Block_Menja</a> - Giao diện tương tác với các khối vuông tương tự trò chơi chém hoa quả.</li>
-            <li><a href="https://vuonmaichinteo.vercel.app" style="color: #4a90e2;">Vườn mai Chín Tèo</a> - Web đơn thuần hiển thị 1 số hình ảnh về những cây mai trong vườn nhà tôi.</li>
-        </ul>
-        <h2 style="color: #4a90e2;">Hợp tác cùng chúng tôi</h2>
-        <p>Bạn có ý tưởng về cách chúng ta có thể cùng nhau tạo ra điều gì đó tuyệt vời? Chúng tôi luôn mở cửa cho các cơ hội hợp tác. Hãy liên hệ với chúng tôi tại <a href="mailto:tanbaycu@gamil.com" style="color: #4a90e2;">tanbaycu@gmail.com</a> để thảo luận thêm!</p>
-        <p>Một lần nữa, chào mừng bạn đến với Tân 7 Cú. Chúng tôi rất mong được kết nối với bạn!</p>
-        <p>Trân trọng,<br>Đội ngũ Tân 7 Cú</p>
-        <div style="margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #888;">
-            <p>Email này được gửi đến {subscriber_email}. Nếu bạn không yêu cầu email này, vui lòng bỏ qua nó.</p>
-            <p>Tân 7 Cú - My Tho - Tien Giang - Viet Nam</p>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chào mừng đến với Tân 7 Cú - Định hình Tương lai Công nghệ!</title>
+    <!--[if mso]>
+    <noscript>
+    <xml>
+        <o:OfficeDocumentSettings>
+            <o:PixelsPerInch>96</o:PixelsPerInch>
+        </o:OfficeDocumentSettings>
+    </xml>
+    </noscript>
+    <![endif]-->
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700&family=Orbitron:wght@400;700&display=swap');
+        
+        /* Reset styles */
+        body, table, td, a { -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%; }
+        table, td { mso-table-lspace: 0pt; mso-table-rspace: 0pt; }
+        img { -ms-interpolation-mode: bicubic; }
+
+        /* iOS BLUE LINKS */
+        a[x-apple-data-detectors] {
+            color: inherit !important;
+            text-decoration: none !important;
+            font-size: inherit !important;
+            font-family: inherit !important;
+            font-weight: inherit !important;
+            line-height: inherit !important;
+        }
+
+        /* General styles */
+        body {
+            margin: 0 !important;
+            padding: 0 !important;
+            width: 100% !important;
+            height: 100% !important;
+            font-family: 'Roboto', Arial, sans-serif !important;
+            line-height: 1.6;
+            background-color: #0a0a0a;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 600px !important;
+            margin: 0 auto !important;
+            background-color: #0f0f0f;
+        }
+
+        /* Typography */
+        h1, h2, h3, p {
+            margin: 0;
+            padding: 0;
+        }
+
+        h1 {
+            font-family: 'Orbitron', 'Roboto', Arial, sans-serif;
+            font-size: 36px;
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 10px rgba(108, 99, 255, 0.7);
+        }
+
+        h2 {
+            font-family: 'Orbitron', 'Roboto', Arial, sans-serif;
+            font-size: 28px;
+            font-weight: 600;
+            color: #6c63ff;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 16px;
+            font-weight: 400;
+            color: #e0e0e0;
+            margin-bottom: 20px;
+        }
+
+        /* Header */
+        .header {
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+            padding: 60px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                0deg,
+                transparent,
+                transparent 20px,
+                rgba(108, 99, 255, 0.1) 20px,
+                rgba(108, 99, 255, 0.1) 40px
+            );
+            animation: move-background 10s linear infinite;
+        }
+
+        @keyframes move-background {
+            0% {
+                transform: translateY(0);
+            }
+            100% {
+                transform: translateY(40px);
+            }
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 20px;
+        }
+
+        /* Feature */
+        .feature {
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: #1a1a1a;
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle,
+                rgba(108, 99, 255, 0.1) 0%,
+                transparent 70%
+            );
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.2);
+        }
+
+        .feature:hover::before {
+            opacity: 1;
+        }
+
+        .feature-icon {
+            font-size: 36px;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* CTA Button */
+        .cta-button {
+            display: inline-block;
+            padding: 15px 30px;
+            font-size: 18px;
+            font-weight: 600;
+            color: #ffffff !important;
+            background: linear-gradient(135deg, #6c63ff 0%, #4834d4 100%);
+            border-radius: 50px;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .cta-button::before {
+            content: "";
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(
+                circle,
+                rgba(255, 255, 255, 0.3) 0%,
+                transparent 70%
+            );
+            transition: all 0.5s ease;
+            opacity: 0;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(108, 99, 255, 0.4);
+        }
+
+        .cta-button:hover::before {
+            opacity: 1;
+            transform: translate(25%, 25%);
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #0a0a0a;
+            color: #6c6c6c;
+            padding: 30px 20px;
+            text-align: center;
+        }
+
+        .social-links a {
+            display: inline-block;
+            margin: 0 10px;
+            color: #6c63ff !important;
+            text-decoration: none;
+            transition: all 0.3s ease;
+        }
+
+        .social-links a:hover {
+            transform: scale(1.2);
+        }
+
+        /* Responsive */
+        @media screen and (max-width: 600px) {
+            .email-container {
+                width: 100% !important;
+            }
+            
+            .feature {
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            h2 {
+                font-size: 24px;
+            }
+
+            p {
+                font-size: 14px;
+            }
+
+            .cta-button {
+                display: block;
+                margin: 0 auto;
+            }
+        }
+
+        /* Light mode override */
+        @media (prefers-color-scheme: light) {
+            body {
+                background-color: #f4f4f4 !important;
+            }
+            .email-container {
+                background-color: #ffffff !important;
+            }
+            .header {
+                background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%) !important;
+            }
+            h1 {
+                color: #333333 !important;
+                text-shadow: 0 0 10px rgba(108, 99, 255, 0.3) !important;
+            }
+            p {
+                color: #333333 !important;
+            }
+            .feature {
+                background-color: #f9f9f9 !important;
+            }
+            .footer {
+                background-color: #e0e0e0 !important;
+                color: #333333 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header" role="banner">
+            <h1>Chào mừng đến với Tân 7 Cú</h1>
+            <p style="color: #6c63ff; font-size: 18px; margin-top: 10px; font-weight: 600;">Nơi Công Nghệ Định Hình Tương Lai</p>
         </div>
-    </body>
-    </html>
+
+        <div class="content" role="main">
+            <h2>Kính gửi Nhà Tiên Phong Công Nghệ,</h2>
+            <p>Chào mừng bạn đến với Tân 7 Cú - nơi hội tụ của những ý tưởng đột phá và công nghệ tiên tiến nhất. Hãy chuẩn bị để bước vào một hành trình khám phá đầy hứng khởi, nơi mỗi thao tác của bạn đều mở ra một chân trời mới của sáng tạo và đổi mới.</p>
+
+            <div class="feature">
+                <div class="feature-icon">🚀</div>
+                <h3 style="color: #6c63ff; font-family: 'Orbitron', 'Roboto', Arial, sans-serif;">Nền Tảng Upload Thông Minh</h3>
+                <p>Trải nghiệm quản lý dữ liệu tối ưu với công nghệ AI tiên tiến, nâng cao hiệu suất làm việc của bạn lên tầm cao mới.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🤖</div>
+                <h3 style="color: #6c63ff; font-family: 'Orbitron', 'Roboto', Arial, sans-serif;">Trí Tuệ Nhân Tạo Gemini</h3>
+                <p>Đắm chìm trong những cuộc đối thoại sâu sắc với AI tiên tiến, mở ra góc nhìn mới về thế giới xung quanh.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🔗</div>
+                <h3 style="color: #6c63ff; font-family: 'Orbitron', 'Roboto', Arial, sans-serif;">Công Nghệ Rút Gọn Link Siêu Tốc</h3>
+                <p>Biến những URL phức tạp thành các liên kết ngắn gọn, thân thiện và đầy sức mạnh chỉ trong tích tắc.</p>
+            </div>
+
+            <div class="feature">
+                <div class="feature-icon">🛠️</div>
+                <h3 style="color: #6c63ff; font-family: 'Orbitron', 'Roboto', Arial, sans-serif;">Hệ Thống Kiểm Tra API Đẳng Cấp</h3>
+                <p>Tối ưu hóa và debug API của bạn với công cụ phân tích chuyên sâu, nâng cao hiệu suất ứng dụng lên tầm cao mới.</p>
+            </div>
+
+            <p style="font-style: italic; text-align: center; font-size: 18px; color: #6c63ff; margin: 30px 0; font-family: 'Orbitron', 'Roboto', Arial, sans-serif;">
+                "Tại Tân 7 Cú, chúng tôi không chỉ đón đầu xu hướng công nghệ - chúng tôi định hình tương lai."
+            </p>
+
+            <p>Hãy sẵn sàng để bắt đầu hành trình khám phá đầy hứng khởi cùng Tân 7 Cú. Chúng tôi tự hào được đồng hành cùng bạn trên con đường chinh phục đỉnh cao công nghệ!</p>
+
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="https://tanbaycu.vercel.app" class="cta-button">Khám Phá Ngay</a>
+            </div>
+        </div>
+
+        <div class="footer" role="contentinfo">
+            <p style="font-weight: 600; font-size: 18px; margin-bottom: 20px; color: #6c63ff; font-family: 'Orbitron', 'Roboto', Arial, sans-serif;">Đội ngũ Tân 7 Cú</p>
+            <div class="social-links" style="margin-bottom: 20px;">
+                <a href="https://github.com/tanbaycu" aria-label="GitHub">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/github.svg" alt="GitHub" width="24" height="24" style="filter: invert(1);">
+                </a>
+                <a href="https://www.facebook.com/tanbaycu.404s/" aria-label="Facebook">
+                    <img src="https://cdn.jsdelivr.net/npm/simple-icons@v5/icons/facebook.svg" alt="Facebook" width="24" height="24" style="filter: invert(1);">
+                </a>
+            </div>
+            <p style="font-size: 14px; margin-bottom: 10px;">Email này được gửi đến {subscriber_email}.</p>
+            <p style="font-size: 14px; margin-bottom: 10px;">Tân 7 Cú - My Tho - Tien Giang - Viet Nam</p>
+            <p style="font-size: 12px;">&copy; 2024 Tân 7 Cú. Tất cả các quyền được bảo lưu.</p>
+        </div>
+    </div>
+</body>
+</html>
     """
     send_email(subscriber_email, subject, body, is_html=True)
 
