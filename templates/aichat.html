@@ -1,681 +1,671 @@
 <!DOCTYPE html>
-<html lang="vi" class="scroll-smooth">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Gemini AI - Tanbaycu</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css"
-    />
-    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
-    <script>
-      tailwind.config = {
-        darkMode: "class",
-        theme: {
-          extend: {
-            fontFamily: {
-              sans: ["Outfit", "sans-serif"]
-            },
-            colors: {
-              primary: {
-                50: "#eff6ff",
-                100: "#dbeafe",
-                200: "#bfdbfe",
-                300: "#93c5fd",
-                400: "#60a5fa",
-                500: "#3b82f6",
-                600: "#2563eb",
-                700: "#1d4ed8",
-                800: "#1e40af",
-                900: "#1e3a8a",
-                950: "#172554"
-              }
-            },
-            animation: {
-              "bounce-slow": "bounce 3s linear infinite",
-              "pulse-slow": "pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite",
-              "fade-in": "fadeIn 0.5s ease-out"
-            },
-            keyframes: {
-              fadeIn: {
-                "0%": { opacity: "0" },
-                "100%": { opacity: "1" }
-              }
-            }
-          }
-        }
-      };
-    </script>
-    <style>
-      @keyframes float {
-        0% {
-          transform: translateY(0px);
-        }
-        50% {
-          transform: translateY(-20px);
-        }
-        100% {
-          transform: translateY(0px);
-        }
+<html lang="en" class="light">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Web Chat Experience</title>
+  <meta name="description"
+    content="Experience AI-powered web chat with customizable prompts and seamless interactions.">
+  <meta name="keywords" content="AI, chat, web experience, customizable prompts">
+  <meta property="og:title" content="AI Web Chat Experience">
+  <meta property="og:description"
+    content="Engage with our AI-powered web chat for intelligent conversations and customizable interactions.">
+  <meta property="og:image" content="https://i.postimg.cc/3x01h7n1/Thi-t-k-ch-a-c-t-n-10.png">
+  <meta property="og:url" content="https://tanbaycu.vercel.app/aichat">
+  <link rel="canonical" href="https://tanbaycu.vercel.app/aichat">
+  <link rel="icon" href="https://i.postimg.cc/3x01h7n1/Thi-t-k-ch-a-c-t-n-10.png" type="image/png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github-dark.min.css">
+  <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/highlight.min.js"></script>
+  <script>hljs.highlightAll();</script>
+  <style>
+    @keyframes gradient {
+      0% {
+        background-position: 0% 50%;
       }
-      .float {
-        animation: float 6s ease-in-out infinite;
+
+      50% {
+        background-position: 100% 50%;
       }
-      .chat-bg {
-        background-image: radial-gradient(
-            circle at 10% 20%,
-            rgba(91, 33, 182, 0.1) 0%,
-            rgba(0, 0, 0, 0) 40%
-          ),
-          radial-gradient(
-            circle at 90% 80%,
-            rgba(14, 165, 233, 0.1) 0%,
-            rgba(0, 0, 0, 0) 40%
-          );
-        background-attachment: fixed;
+
+      100% {
+        background-position: 0% 50%;
       }
-      .message-appear {
-        animation: appearFromBottom 0.5s ease-out forwards;
+    }
+
+    .animate-gradient {
+      background: linear-gradient(270deg, #3b82f6, #8b5cf6, #ec4899);
+      background-size: 200% 200%;
+      animation: gradient 15s ease infinite;
+    }
+
+    .transition-transform {
+      transition: transform 0.3s ease-in-out;
+    }
+
+    /* Markdown Styles */
+    .markdown-content pre {
+      background: var(--bg-secondary);
+      padding: 1rem;
+      border-radius: 0.5rem;
+      overflow-x: auto;
+      margin: 1rem 0;
+      border: 1px solid var(--text-secondary);
+    }
+
+    .markdown-content code {
+      background: var(--bg-primary);
+      padding: 0.2rem 0.4rem;
+      border-radius: 0.25rem;
+      font-family: 'Courier New', Courier, monospace;
+      color: var(--text-primary);
+    }
+
+    .markdown-content p {
+      margin: 0.5rem 0;
+    }
+
+    .markdown-content ul,
+    .markdown-content ol {
+      margin-left: 1.5rem;
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .typing-indicator {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .typing-dot {
+      width: 4px;
+      height: 4px;
+      background: currentColor;
+      border-radius: 50%;
+      animation: typing 1.4s infinite;
+    }
+
+    .typing-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .typing-dot:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    @keyframes typing {
+
+      0%,
+      100% {
+        transform: scale(1);
       }
-      @keyframes appearFromBottom {
-        from {
-          opacity: 0;
-          transform: translateY(20px);
-        }
-        to {
-          opacity: 1;
-          transform: translateY(0);
-        }
+
+      50% {
+        transform: scale(1.5);
       }
-      .scrollbar-hide::-webkit-scrollbar {
-        display: none;
-      }
-      .scrollbar-hide {
-        -ms-overflow-style: none;
-        scrollbar-width: none;
-      }
-    </style>
-  </head>
-  <body
-    class="bg-gray-50 dark:bg-gray-900 min-h-screen font-sans chat-bg text-gray-800 dark:text-white transition-colors duration-300"
-  >
-    <div class="flex flex-col h-screen">
-      <header
-        class="bg-white dark:bg-gray-800 shadow-md z-10 transition-colors duration-300"
-      >
-        <nav
-          class="container mx-auto px-4 py-4 flex justify-between items-center"
-        >
-          <a
-            href="#"
-            class="text-2xl font-bold text-primary-600 dark:text-primary-400 flex items-center space-x-2"
-          >
-            <svg
-              class="w-8 h-8"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"
-              ></path>
-            </svg>
-            <span>Gemini AI</span>
-          </a>
-          <div class="flex items-center space-x-4">
-            <button
-              id="theme-toggle"
-              class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-300"
-            >
-              <svg
-                class="w-6 h-6 text-gray-800 dark:text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
-                ></path>
-              </svg>
-            </button>
-            <button
-              id="menu-toggle"
-              class="p-2 rounded-full bg-gray-200 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-300 lg:hidden"
-            >
-              <svg
-                class="w-6 h-6 text-gray-800 dark:text-white"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M4 6h16M4 12h16m-7 6h7"
-                ></path>
-              </svg>
-            </button>
-            <div class="hidden lg:flex space-x-4">
-              <a
-                href="/"
-                class="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-300"
-                >Trang chủ</a
-              >
-              <a
-                href="#"
-                class="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-300"
-                >Tính năng</a
-              >
-              <a
-                href="/aichat"
-                class="text-gray-600 dark:text-gray-300 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-300"
-                >Giới thiệu</a
-              >
+    }
+
+    :root {
+      --bg-primary: #f3f4f6;
+      --bg-secondary: #ffffff;
+      --text-primary: #1f2937;
+      --text-secondary: #4b5563;
+      --accent-color: #3b82f6;
+    }
+
+    .dark {
+      --bg-primary: #1f2937;
+      --bg-secondary: #111827;
+      --text-primary: #f3f4f6;
+      --text-secondary: #d1d5db;
+      --accent-color: #60a5fa;
+    }
+
+    #settings-panel {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+      z-index: 50;
+      opacity: 0;
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    #settings-panel.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    /* Improved scrollbar styles */
+    #chat-area::-webkit-scrollbar,
+    #settings-panel::-webkit-scrollbar {
+      width: 0.5rem;
+    }
+
+    #chat-area::-webkit-scrollbar-thumb,
+    #settings-panel::-webkit-scrollbar-thumb {
+      background-color: var(--text-secondary);
+      border-radius: 0.25rem;
+    }
+
+    #chat-area::-webkit-scrollbar-track,
+    #settings-panel::-webkit-scrollbar-track {
+      background-color: var(--bg-secondary);
+    }
+
+    #chat-area,
+    #settings-panel {
+      scrollbar-width: thin;
+      scrollbar-color: var(--text-secondary) var(--bg-secondary);
+    }
+
+    /* Dark mode specific styles */
+    .dark .markdown-content pre {
+      background: #1e1e1e;
+    }
+
+    .dark .markdown-content code {
+      background: #2d2d2d;
+      color: #d4d4d4;
+    }
+
+    /* Smooth transition for dark mode */
+    body,
+    #settings-panel,
+    .bg-primary,
+    .bg-secondary,
+    .text-primary,
+    .text-secondary {
+      transition: background-color 0.3s ease, color 0.3s ease;
+    }
+  </style>
+</head>
+
+<body class="bg-primary text-primary min-h-screen flex flex-col transition-colors duration-300">
+  <header
+    class="fixed top-0 left-0 right-0 bg-secondary bg-opacity-80 backdrop-blur-md z-20 transition-colors duration-300">
+    <div class="container mx-auto px-4 py-3 flex justify-between items-center">
+      <a href="/" class="flex items-center">
+        <img src="https://i.postimg.cc/3x01h7n1/Thi-t-k-ch-a-c-t-n-10.png" alt="AI Web Logo" class="h-8">
+      </a>
+      <button id="settings-btn"
+        class="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
+        title="Settings">
+        <i data-lucide="settings" class="w-6 h-6"></i>
+      </button>
+    </div>
+  </header>
+
+  <div id="settings-panel" class="bg-secondary bg-opacity-95">
+    <div class="container mx-auto px-4 py-8 h-full flex flex-col">
+      <div class="flex justify-between items-center mb-8">
+        <h2 class="text-3xl font-bold text-primary">Cài đặt</h2>
+        <button id="close-settings" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
+          <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
+        <div class="col-span-2">
+          <h3 class="text-lg font-medium mb-2">Chọn mô hình</h3>
+          <select id="model-select" class="w-full p-2 rounded-lg bg-primary text-primary border border-accent">
+            <option value="gemini-pro">Gemini Pro (Mặc định)</option>
+            <option value="gemini-2.0-flash-thinking-exp-1219">Gemini 2.0 Flash Thinking Exp 1219</option>
+            <option value="gemini-2.0-flash-exp">Gemini 2.0 Flash Exp</option>
+            <option value="gemini-1.5-flash-8b-001">Gemini 1.5 Flash 8b 001</option>
+            <option value="gemini-1.5-flash-8b">Gemini 1.5 Flash 8b</option>
+            <option value="gemini-1.5-flash">Gemini 1.5 Flash</option>
+          </select>
+        </div>
+        <button id="theme-toggle"
+          class="p-4 rounded-lg bg-primary hover:bg-opacity-90 transition-colors flex items-center justify-between text-primary border border-accent hover:shadow-md">
+          <span class="text-lg font-medium">Chế độ tối</span>
+          <i data-lucide="moon" class="w-8 h-8"></i>
+        </button>
+        <button id="save-chat"
+          class="p-4 rounded-lg bg-primary hover:bg-opacity-90 transition-colors flex items-center justify-between text-primary border border-accent hover:shadow-md">
+          <span class="text-lg font-medium">Lưu</span>
+          <i data-lucide="download" class="w-8 h-8"></i>
+        </button>
+        <button id="clear-chat"
+          class="p-4 rounded-lg bg-primary hover:bg-opacity-90 transition-colors flex items-center justify-between text-primary border border-accent hover:shadow-md">
+          <span class="text-lg font-medium">Xóa</span>
+          <i data-lucide="trash-2" class="w-8 h-8"></i>
+        </button>
+        <button id="help-btn"
+          class="p-4 rounded-lg bg-primary hover:bg-opacity-90 transition-colors flex items-center justify-between text-primary border border-accent hover:shadow-md">
+          <span class="text-lg font-medium">Trợ giúp</span>
+          <i data-lucide="help-circle" class="w-8 h-8"></i>
+        </button>
+        <div class="col-span-2">
+          <h3 class="text-lg font-medium mb-2">Tùy chỉnh prompt</h3>
+          <textarea id="custom-prompt" class="w-full p-2 rounded-lg bg-primary text-primary border border-accent"
+            rows="3" placeholder="Nhập prompt tùy chỉnh của bạn ở đây..."></textarea>
+        </div>
+        <div class="col-span-2">
+          <h3 class="text-lg font-medium mb-2">Nâng cao</h3>
+          <div class="grid grid-cols-2 gap-4">
+            <div>
+              <label for="temperature" class="block text-sm font-medium mb-1">Temperature</label>
+              <input type="number" id="temperature" min="0" max="1" step="0.1" value="1"
+                class="w-full p-2 rounded-lg bg-primary text-primary border border-accent">
+            </div>
+            <div>
+              <label for="top-p" class="block text-sm font-medium mb-1">Top P</label>
+              <input type="number" id="top-p" min="0" max="1" step="0.01" value="0.95"
+                class="w-full p-2 rounded-lg bg-primary text-primary border border-accent">
+            </div>
+            <div>
+              <label for="top-k" class="block text-sm font-medium mb-1">Top K</label>
+              <input type="number" id="top-k" min="1" max="100" step="1" value="64"
+                class="w-full p-2 rounded-lg bg-primary text-primary border border-accent">
+            </div>
+            <div>
+              <label for="max-tokens" class="block text-sm font-medium mb-1">Max Tokens</label>
+              <input type="number" id="max-tokens" min="1" max="8192" step="1" value="8192"
+                class="w-full p-2 rounded-lg bg-primary text-primary border border-accent">
             </div>
           </div>
-        </nav>
-      </header>
-
-      <main class="flex-grow overflow-hidden flex relative">
-        <div
-          id="chat-container"
-          class="flex-grow overflow-y-auto p-4 space-y-4 scroll-smooth scrollbar-hide"
-        >
-          <!-- Chat messages will be inserted here -->
         </div>
-
-        <div
-          id="side-panel"
-          class="hidden lg:block w-80 bg-white dark:bg-gray-800 p-4 overflow-y-auto border-l border-gray-200 dark:border-gray-700 transition-colors duration-300"
-        >
-          <h3 class="text-lg font-semibold mb-4">Lịch sử trò chuyện</h3>
-          <ul id="chat-history" class="space-y-2">
-            <!-- Chat history items will be inserted here -->
-          </ul>
-        </div>
-
-        <!-- Floating action button for mobile -->
-        <button
-          id="fab-menu"
-          class="lg:hidden fixed bottom-20 right-4 bg-primary-500 text-white p-4 rounded-full shadow-lg focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 z-10 transition-all duration-300 hover:bg-primary-600"
-        >
-          <svg
-            class="w-6 h-6"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
-              stroke-width="2"
-              d="M4 6h16M4 12h16m-7 6h7"
-            ></path>
-          </svg>
-        </button>
-
-        <!-- Mobile menu -->
-        <div
-          id="mobile-menu"
-          class="hidden fixed inset-0 bg-gray-800 bg-opacity-75 z-50"
-        >
-          <div class="flex justify-end p-4">
-            <button id="close-mobile-menu" class="text-white">
-              <svg
-                class="w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M6 18L18 6M6 6l12 12"
-                ></path>
-              </svg>
-            </button>
-          </div>
-          <div class="flex flex-col items-center justify-center h-full">
-            <a
-              href="/"
-              class="text-white text-xl mb-4 hover:text-primary-400 transition-colors duration-300"
-              >Trang chủ</a
-            >
-            <a
-              href="#"
-              class="text-white text-xl mb-4 hover:text-primary-400 transition-colors duration-300"
-              >Tính năng</a
-            >
-            <a
-              href="#"
-              class="text-white text-xl mb-4 hover:text-primary-400 transition-colors duration-300"
-              >Giới thiệu</a
-            >
-            <button
-              id="clear-chat-mobile"
-              class="text-white text-xl mb-4 hover:text-primary-400 transition-colors duration-300"
-            >
-              Xóa trò chuyện
-            </button>
-            <button
-              id="export-chat-mobile"
-              class="text-white text-xl mb-4 hover:text-primary-400 transition-colors duration-300"
-            >
-              Xuất trò chuyện
-            </button>
-            <button
-              id="toggle-autocomplete-mobile"
-              class="text-white text-xl mb-4 hover:text-primary-400 transition-colors duration-300"
-            >
-              Bật/tắt tự động hoàn thành
-            </button>
-          </div>
-        </div>
-      </main>
-
-      <footer
-        class="bg-white dark:bg-gray-800 shadow-md z-10 p-4 transition-colors duration-300"
-      >
-        <form
-          id="chat-form"
-          class="container mx-auto flex items-center space-x-2"
-        >
-          <input
-            type="text"
-            id="user-input"
-            class="flex-grow p-2 rounded-full border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-primary-500 transition-colors duration-300"
-            placeholder="Nhập câu hỏi của bạn..."
-          />
-          <button
-            type="submit"
-            class="p-2 rounded-full bg-primary-500 text-white hover:bg-primary-600 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 transition-colors duration-300"
-          >
-            <svg
-              class="w-6 h-6"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"
-              ></path>
-            </svg>
-          </button>
-        </form>
-        <div class="container mx-auto mt-2 flex justify-between text-sm">
-          <button
-            id="clear-chat"
-            class="text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-300"
-          >
-            Xóa trò chuyện
-          </button>
-          <button
-            id="export-chat"
-            class="text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-300"
-          >
-            Xuất trò chuyện
-          </button>
-          <button
-            id="toggle-autocomplete"
-            class="text-gray-600 dark:text-gray-400 hover:text-primary-500 dark:hover:text-primary-400 transition-colors duration-300"
-          >
-            Bật/tắt tự động hoàn thành
-          </button>
-        </div>
-      </footer>
+      </div>
     </div>
+  </div>
 
-    <script>
-      const API_URL =
-        "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent?key=AIzaSyCSz6oCSnlQnpFKVFjZc421IDWjoVRwQaM";
-      const chatContainer = document.getElementById("chat-container");
-      const userInput = document.getElementById("user-input");
-      const chatForm = document.getElementById("chat-form");
-      const clearChatButton = document.getElementById("clear-chat");
-      const exportChatButton = document.getElementById("export-chat");
-      const toggleAutocompleteButton = document.getElementById(
-        "toggle-autocomplete"
-      );
-      const themeToggle = document.getElementById("theme-toggle");
-      const menuToggle = document.getElementById("menu-toggle");
-      const sidePanel = document.getElementById("side-panel");
-      const chatHistory = document.getElementById("chat-history");
-      const fabMenu = document.getElementById("fab-menu");
-      const mobileMenu = document.getElementById("mobile-menu");
-      const closeMobileMenu = document.getElementById("close-mobile-menu");
-      const clearChatMobile = document.getElementById("clear-chat-mobile");
-      const exportChatMobile = document.getElementById("export-chat-mobile");
-      const toggleAutocompleteMobile = document.getElementById(
-        "toggle-autocomplete-mobile"
-      );
+  <main class="flex-grow pt-16 pb-20">
+    <div id="chat-area" class="container mx-auto px-4 space-y-6 overflow-y-auto max-h-[calc(100vh-9rem)]">
+      <!-- Chat messages will be added here -->
+    </div>
+  </main>
 
-      let conversationHistory = [];
-      let autocompleteEnabled = false;
+  <footer
+    class="fixed bottom-0 left-0 right-0 bg-secondary bg-opacity-80 backdrop-blur-md z-10 transition-colors duration-300">
+    <div class="container mx-auto px-4 py-3">
+      <div class="flex items-center bg-primary rounded-full shadow-lg transition-colors duration-300">
+        <input type="text" id="user-input"
+          class="flex-grow px-6 py-3 bg-transparent border-none focus:outline-none focus:ring-0 text-primary placeholder-secondary transition-colors duration-300"
+          placeholder="Hỏi điều gì đó...">
+        <button id="send-btn"
+          class="p-3 hover:bg-opacity-10 hover:bg-gray-600 rounded-full transition-colors focus:outline-none mr-2"
+          title="Gửi tin nhắn">
+          <i data-lucide="send" class="w-5 h-5 text-secondary transition-colors duration-300"></i>
+        </button>
+      </div>
+    </div>
+  </footer>
 
-      function addMessage(content, isUser = false) {
-        const messageDiv = document.createElement("div");
-        messageDiv.classList.add(
-          "message-appear",
-          "p-4",
-          "rounded-lg",
-          "shadow-md",
-          "max-w-3xl",
-          "mx-auto",
-          "transition-all",
-          "duration-300"
-        );
+  <div id="help-modal" class="fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center hidden">
+    <div class="bg-secondary p-6 rounded-lg max-w-2xl w-full max-h-[80vh] overflow-y-auto">
+      <h2 class="text-2xl font-bold mb-4">Hướng dẫn sử dụng</h2>
+      <ul class="list-disc pl-5 space-y-2">
+        <li>Nhập câu hỏi hoặc yêu cầu của bạn vào ô nhập liệu ở cuối màn hình.</li>
+        <li>Nhấn nút gửi hoặc nhấn Enter để gửi tin nhắn.</li>
+        <li>Sử dụng nút cài đặt (biểu tượng bánh răng) để mở bảng điều khiển cài đặt.</li>
+        <li>Trong bảng cài đặt, bạn có thể:
+          <ul class="list-circle pl-5 mt-2">
+            <li>Chuyển đổi giữa chế độ sáng và tối</li>
+            <li>Lưu cuộc trò chuyện hiện tại</li>
+            <li>Xóa toàn bộ cuộc trò chuyện</li>
+            <li>Tùy chỉnh prompt để điều chỉnh cách AI phản hồi</li>
+          </ul>
+        </li>
+        <li>Để sử dụng prompt tùy chỉnh, nhập prompt của bạn vào ô văn bản trong phần cài đặt và sử dụng nó trong các
+          cuộc trò chuyện tiếp theo.</li>
+        <li>Cuộn lên để xem lịch sử trò chuyện.</li>
+        <li>Chọn mô hình AI phù hợp với nhu cầu của bạn trong phần cài đặt.</li>
+        <li>Trong phần cài đặt nâng cao, bạn có thể điều chỉnh các tham số như Temperature, Top P, Top K, và Max Tokens
+          để tối ưu hóa phản hồi của AI.</li>
+      </ul>
+      <button id="close-help" class="mt-4 px-4 py-2 bg-accent text-white rounded hover:bg-opacity-90">Đóng</button>
+    </div>
+  </div>
 
-        if (isUser) {
-          messageDiv.classList.add(
-            "bg-primary-100",
-            "dark:bg-primary-900",
-            "ml-auto"
-          );
-        } else {
-          messageDiv.classList.add("bg-white", "dark:bg-gray-800");
-        }
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Lucide icons
+      lucide.createIcons();
 
-        const roleSpan = document.createElement("span");
-        roleSpan.classList.add("font-semibold", "block", "mb-1");
-        roleSpan.textContent = isUser ? "Bạn" : "Gemini AI";
-        messageDiv.appendChild(roleSpan);
+      const API_KEY = 'AIzaSyD8Zc-j7kc_FkSF_WXQdxQpc4bGBD5KElU';
+      const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
-        const contentDiv = document.createElement("div");
-        contentDiv.innerHTML = isUser
-          ? marked.parse(content)
-          : formatMessage(content);
-        messageDiv.appendChild(contentDiv);
+      const chatArea = document.getElementById('chat-area');
+      const userInput = document.getElementById('user-input');
+      const sendBtn = document.getElementById('send-btn');
+      const settingsBtn = document.getElementById('settings-btn');
+      const settingsPanel = document.getElementById('settings-panel');
+      const closeSettingsBtn = document.getElementById('close-settings');
+      const themeToggle = document.getElementById('theme-toggle');
+      const saveChat = document.getElementById('save-chat');
+      const clearChat = document.getElementById('clear-chat');
+      const modelSelect = document.getElementById('model-select');
 
-        chatContainer.appendChild(messageDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+      const temperatureInput = document.getElementById('temperature');
+      const topPInput = document.getElementById('top-p');
+      const topKInput = document.getElementById('top-k');
+      const maxTokensInput = document.getElementById('max-tokens');
 
-        conversationHistory.push({
-          role: isUser ? "user" : "model",
-          content: content
-        });
+      let chatHistory = [];
+      let isScrolledToBottom = true;
+      let isLoading = false;
 
-        updateChatHistory();
-      }
-
-      function formatMessage(content) {
-        const formattedContent = marked.parse(content);
-        return formattedContent.replace(
-          /<pre><code class="language-(\w+)">([\s\S]*?)<\/code><\/pre>/g,
-          (match, language, code) => {
-            return `<pre><code class="hljs ${language}">${
-              hljs.highlight(code, { language }).value
-            }</code></pre>`;
-          }
-        );
-      }
-
-      async function sendMessage() {
-        const message = userInput.value.trim();
-        if (message === "") return;
-
-        addMessage(message, true);
-        userInput.value = "";
-        showTypingIndicator();
-
-        try {
-          const response = await fetch(API_URL, {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              contents: [
-                {
-                  parts: [
-                    {
-                      text:
-                        conversationHistory
-                          .map((msg) => `${msg.role}: ${msg.content}`)
-                          .join("\n") + `\nuser: ${message}\nmodel:`
-                    }
-                  ]
-                }
-              ]
-            })
-          });
-
-          const data = await response.json();
-          hideTypingIndicator();
-
-          if (
-            data.candidates &&
-            data.candidates[0] &&
-            data.candidates[0].content
-          ) {
-            const aiResponse = data.candidates[0].content.parts[0].text;
-            addMessage(aiResponse);
-            hljs.highlightAll();
-          } else {
-            addMessage(
-              "Xin lỗi, tôi không thể tạo ra câu trả lời. Vui lòng thử lại."
-            );
-          }
-        } catch (error) {
-          console.error("Error:", error);
-          hideTypingIndicator();
-          addMessage("Có lỗi xảy ra. Vui lòng thử lại sau.");
-        }
-      }
+      // Set default values
+      const defaultPrompt = "Bạn là một trợ lý AI thông minh và hữu ích được tanbaycu phát triển. Hãy trả lời câu hỏi của người dùng một cách chính xác và đầy đủ.";
+      document.getElementById('custom-prompt').value = defaultPrompt;
+      localStorage.setItem('customPrompt', defaultPrompt);
 
       function showTypingIndicator() {
-        const typingDiv = document.createElement("div");
-        typingDiv.id = "typing-indicator";
-        typingDiv.classList.add(
-          "flex",
-          "space-x-2",
-          "items-center",
-          "p-4",
-          "rounded-lg",
-          "bg-white",
-          "dark:bg-gray-800",
-          "shadow-md",
-          "max-w-3xl",
-          "mx-auto",
-          "animate-fade-in"
-        );
+        const typingDiv = document.createElement('div');
+        typingDiv.id = 'typing-indicator';
+        typingDiv.className = 'flex justify-start items-end space-x-2';
         typingDiv.innerHTML = `
-                <span class="text-gray-600 dark:text-gray-400">Gemini AI đang nhập</span>
-                <div class="flex space-x-1">
-                    <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce"></div>
-                    <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0.2s"></div>
-                    <div class="w-2 h-2 bg-primary-400 rounded-full animate-bounce" style="animation-delay: 0.4s"></div>
-                </div>
-            `;
-        chatContainer.appendChild(typingDiv);
-        chatContainer.scrollTop = chatContainer.scrollHeight;
+                    <div class="w-8 h-8 rounded-full flex items-center justify-center bg-accent">
+                        <i data-lucide="bot" class="w-5 h-5"></i>
+                    </div>
+                    <div class="typing-indicator">
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                        <div class="typing-dot"></div>
+                    </div>
+                `;
+        chatArea.appendChild(typingDiv);
+        lucide.createIcons();
+        scrollToBottom();
       }
 
-      function hideTypingIndicator() {
-        const typingIndicator = document.getElementById("typing-indicator");
+      function removeTypingIndicator() {
+        const typingIndicator = document.getElementById('typing-indicator');
         if (typingIndicator) {
           typingIndicator.remove();
         }
       }
 
-      function clearChat() {
-        chatContainer.innerHTML = "";
-        conversationHistory = [];
-        addMessage("Xin chào! Tôi có thể giúp gì cho bạn?", false);
-        updateChatHistory();
+      function scrollToBottom() {
+        chatArea.scrollTop = chatArea.scrollHeight;
+        isScrolledToBottom = true;
       }
 
-      function exportChat() {
-        const chatContent = conversationHistory
-          .map((msg) => `${msg.role}: ${msg.content}`)
-          .join("\n");
-        const blob = new Blob([chatContent], { type: "text/plain" });
+      function isNearBottom() {
+        const threshold = 100; // pixels
+        return chatArea.scrollHeight - chatArea.scrollTop - chatArea.clientHeight < threshold;
+      }
+
+      chatArea.addEventListener('scroll', () => {
+        isScrolledToBottom = isNearBottom();
+      });
+
+      function addMessage(content, isUser = false, isError = false) {
+        const messageDiv = document.createElement('div');
+        messageDiv.className = `flex ${isUser ? 'justify-end' : 'justify-start'} items-end space-x-2 mb-4`;
+
+        const avatarDiv = document.createElement('div');
+        avatarDiv.className = `w-8 h-8 rounded-full flex items-center justify-center ${isUser ? 'bg-accent order-2' : 'bg-accent'}`;
+        avatarDiv.innerHTML = `<i data-lucide="${isUser ? 'user' : 'bot'}" class="w-5 h-5"></i>`;
+
+        const messageBubble = document.createElement('div');
+        messageBubble.className = `max-w-[75%] ${isUser ? 'text-right' : ''} markdown-content`;
+
+        if (!isUser && !isError) {
+          const sanitizedContent = DOMPurify.sanitize(marked.parse(content));
+          messageBubble.innerHTML = sanitizedContent;
+          setTimeout(() => {
+            messageBubble.querySelectorAll('pre code').forEach((block) => {
+              hljs.highlightElement(block);
+            });
+          }, 0);
+        } else {
+          messageBubble.textContent = content;
+        }
+
+        messageDiv.appendChild(avatarDiv);
+        messageDiv.appendChild(messageBubble);
+        chatArea.appendChild(messageDiv);
+
+        if (isScrolledToBottom) {
+          scrollToBottom();
+        } else {
+          showNewMessageIndicator();
+        }
+
+        lucide.createIcons();
+
+        chatHistory.push({ content, isUser, timestamp: new Date().toISOString() });
+      }
+
+      function showNewMessageIndicator() {
+        let indicator = document.getElementById('new-message-indicator');
+        if (!indicator) {
+          indicator = document.createElement('div');
+          indicator.id = 'new-message-indicator';
+          indicator.className = 'fixed bottom-20 right-4 bg-accent text-white px-4 py-2 rounded-full cursor-pointer shadow-lg';
+          indicator.textContent = 'Tin nhắn mới';
+          indicator.onclick = () => {
+            scrollToBottom();
+            indicator.remove();
+          };
+          document.body.appendChild(indicator);
+        }
+      }
+
+      async function sendMessageWithRetry(message, retryCount = 0) {
+        if (retryCount > 3) {
+          throw new Error('Đã vượt quá số lần thử lại. Vui lòng thử lại sau.');
+        }
+
+        try {
+          const customPrompt = localStorage.getItem('customPrompt') || defaultPrompt;
+          const fullMessage = `${customPrompt}\n\nUser: ${message}`;
+          const selectedModel = modelSelect.value;
+          const response = await fetch(`${API_URL}${selectedModel}:generateContent?key=${API_KEY}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              contents: [{
+                parts: [{
+                  text: fullMessage
+                }]
+              }],
+              generationConfig: {
+                temperature: parseFloat(localStorage.getItem('temperature') || 1),
+                topP: parseFloat(localStorage.getItem('topP') || 0.95),
+                topK: parseInt(localStorage.getItem('topK') || 64),
+                maxOutputTokens: parseInt(localStorage.getItem('maxTokens') || 8192)
+              }
+            })
+          });
+
+          if (!response.ok) {
+            if (response.status === 429) {
+              const retryAfter = response.headers.get('Retry-After') || 5;
+              await new Promise(resolve => setTimeout(resolve, retryAfter * 1000));
+              return sendMessageWithRetry(message, retryCount + 1);
+            }
+            throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const data = await response.json();
+
+          if (data.candidates && data.candidates[0].content.parts[0].text) {
+            return data.candidates[0].content.parts[0].text;
+          } else {
+            throw new Error('Invalid response format');
+          }
+        } catch (error) {
+          console.error('Error:', error);
+          if (error.message.includes('HTTP error!')) {
+            await new Promise(resolve => setTimeout(resolve, Math.pow(2, retryCount) * 1000));
+            return sendMessageWithRetry(message, retryCount + 1);
+          }
+          throw error;
+        }
+      }
+
+      async function handleSendMessage() {
+        const message = userInput.value.trim();
+        if (message && !isLoading) {
+          isLoading = true;
+          sendBtn.disabled = true;
+          userInput.disabled = true;
+          addMessage(message, true);
+          userInput.value = '';
+          showTypingIndicator();
+
+          try {
+            const botResponse = await sendMessageWithRetry(message);
+            removeTypingIndicator();
+
+            let formattedResponse = botResponse.replace(/\`\`\`(\w+)?\n([\s\S]*?)\`\`\`/g, (match, lang, code) => {
+              return `<pre><code class="language-${lang || 'plaintext'}">${code.trim().replace(/</g, '&lt;').replace(/>/g, '&gt;')}</code></pre>`;
+            });
+
+            addMessage(formattedResponse);
+          } catch (error) {
+            removeTypingIndicator();
+            addMessage(error.message || 'Xin lỗi, đã có lỗi xảy ra. Vui lòng thử lại sau.', false, true);
+          } finally {
+            isLoading = false;
+            sendBtn.disabled = false;
+            userInput.disabled = false;
+          }
+        }
+      }
+
+      sendBtn.addEventListener('click', handleSendMessage);
+
+      userInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter' && !e.shiftKey) {
+          e.preventDefault();
+          handleSendMessage();
+        }
+      });
+
+      settingsBtn.addEventListener('click', () => {
+        settingsPanel.classList.add('show');
+      });
+
+      closeSettingsBtn.addEventListener('click', () => {
+        settingsPanel.classList.remove('show');
+      });
+
+      function setDarkMode(isDark) {
+        document.documentElement.classList.toggle('dark', isDark);
+        localStorage.setItem('darkMode', isDark);
+
+        const themeToggleIcon = themeToggle.querySelector('i');
+        if (themeToggleIcon) {
+          themeToggleIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
+          lucide.createIcons();
+        }
+
+        document.querySelectorAll('pre code').forEach((block) => {
+          hljs.highlightElement(block);
+        });
+      }
+
+      themeToggle.addEventListener('click', () => {
+        const isDark = !document.documentElement.classList.contains('dark');
+        setDarkMode(isDark);
+      });
+
+      saveChat.addEventListener('click', () => {
+        const chatData = JSON.stringify(chatHistory, null, 2);
+        const blob = new Blob([chatData], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
+        const a = document.createElement('a');
         a.href = url;
-        a.download = "gemini-ai-chat-export.txt";
+        a.download = `chat-history-${new Date().toISOString()}.json`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-      }
+      });
 
-      function toggleAutocomplete() {
-        autocompleteEnabled = !autocompleteEnabled;
-        toggleAutocompleteButton.textContent = autocompleteEnabled
-          ? "Tắt tự động hoàn thành"
-          : "Bật tự động hoàn thành";
-        toggleAutocompleteMobile.textContent = autocompleteEnabled
-          ? "Tắt tự động hoàn thành"
-          : "Bật tự động hoàn thành";
-        if (autocompleteEnabled) {
-          userInput.setAttribute("list", "autocomplete-list");
-          if (!document.getElementById("autocomplete-list")) {
-            const datalist = document.createElement("datalist");
-            datalist.id = "autocomplete-list";
-            document.body.appendChild(datalist);
-          }
-          updateAutocomplete();
-        } else {
-          userInput.removeAttribute("list");
+      clearChat.addEventListener('click', () => {
+        if (confirm('Bạn có chắc chắn muốn xóa toàn bộ cuộc trò chuyện?')) {
+          chatArea.innerHTML = '';
+          chatHistory = [];
+          addMessage('Xin chào! Tôi là trợ lý AI được tanbaycu phát triển. Bạn có câu hỏi gì không?');
         }
-      }
+      });
 
-      function updateAutocomplete() {
-        if (!autocompleteEnabled) return;
-        const datalist = document.getElementById("autocomplete-list");
-        datalist.innerHTML = "";
-        const uniqueWords = new Set(
-          conversationHistory.flatMap((msg) => msg.content.split(/\s+/))
-        );
-        uniqueWords.forEach((word) => {
-          if (word.length > 3) {
-            const option = document.createElement("option");
-            option.value = word;
-            datalist.appendChild(option);
-          }
-        });
-      }
-
-      function updateChatHistory() {
-        chatHistory.innerHTML = "";
-        conversationHistory.forEach((msg, index) => {
-          const li = document.createElement("li");
-          li.classList.add(
-            "text-sm",
-            "truncate",
-            "cursor-pointer",
-            "hover:text-primary-500",
-            "dark:hover:text-primary-400",
-            "transition-colors",
-            "duration-300"
-          );
-          li.textContent = `${
-            msg.role === "user" ? "Bạn: " : "AI: "
-          }${msg.content.substring(0, 30)}...`;
-          li.addEventListener("click", () => scrollToMessage(index));
-          chatHistory.appendChild(li);
-        });
-      }
-
-      function scrollToMessage(index) {
-        const messages = chatContainer.querySelectorAll(".message-appear");
-        if (messages[index]) {
-          messages[index].scrollIntoView({
-            behavior: "smooth",
-            block: "center"
-          });
+      document.addEventListener('click', (e) => {
+        if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+          settingsPanel.classList.remove('show');
         }
-      }
-
-      function toggleTheme() {
-        document.documentElement.classList.toggle("dark");
-        localStorage.setItem(
-          "theme",
-          document.documentElement.classList.contains("dark") ? "dark" : "light"
-        );
-      }
-
-      function toggleMenu() {
-        sidePanel.classList.toggle("hidden");
-      }
-
-      function toggleMobileMenu() {
-        mobileMenu.classList.toggle("hidden");
-      }
-
-      // Event Listeners
-      chatForm.addEventListener("submit", (e) => {
-        e.preventDefault();
-        sendMessage();
       });
 
-      clearChatButton.addEventListener("click", clearChat);
-      exportChatButton.addEventListener("click", exportChat);
-      toggleAutocompleteButton.addEventListener("click", toggleAutocomplete);
-      themeToggle.addEventListener("click", toggleTheme);
-      menuToggle.addEventListener("click", toggleMenu);
-      fabMenu.addEventListener("click", toggleMobileMenu);
-      closeMobileMenu.addEventListener("click", toggleMobileMenu);
-      clearChatMobile.addEventListener("click", () => {
-        clearChat();
-        toggleMobileMenu();
-      });
-      exportChatMobile.addEventListener("click", () => {
-        exportChat();
-        toggleMobileMenu();
-      });
-      toggleAutocompleteMobile.addEventListener("click", () => {
-        toggleAutocomplete();
-        toggleMobileMenu();
-      });
-
-     
-      if (
-        localStorage.getItem("theme") === "dark" ||
-        (!("theme" in localStorage) &&
-          window.matchMedia("(prefers-color-scheme: dark)").matches)
-      ) {
-        document.documentElement.classList.add("dark");
+      function setInitialTheme() {
+        const savedDarkMode = localStorage.getItem('darkMode');
+        const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        const shouldBeDark = savedDarkMode === 'true' || (savedDarkMode === null && prefersDark);
+        setDarkMode(shouldBeDark);
       }
-      clearChat();
 
-      addMessage(
-        "Xin chào! Tôi là Gemini AI, trợ lý ảo thông minh. Tôi có thể giúp gì cho bạn?",
-        false
-      );
-      addMessage(
-        "Chào Gemini! Tôi muốn biết về cách sử dụng trí tuệ nhân tạo trong giáo dục.",
-        true
-      );
-      addMessage(
-        "Đó là một chủ đề rất thú vị! Trí tuệ nhân tạo (AI) đang có nhiều ứng dụng quan trọng trong lĩnh vực giáo dục. Dưới đây là một số cách AI đang được sử dụng để cải thiện trải nghiệm học tập:\n\n1. **Cá nhân hóa việc học**: AI có thể phân tích dữ liệu về hiệu suất và phong cách học tập của học sinh để tạo ra các kế hoạch học tập cá nhân hóa.\n\n2. **Hệ thống dạy học thông minh**: Các hệ thống này sử dụng AI để điều chỉnh nội dung và tốc độ học phù hợp với từng học sinh.\n\n3. **Đánh giá tự động**: AI có thể giúp chấm điểm các bài kiểm tra trắc nghiệm và thậm chí cả các bài luận.\n\n4. **Chatbots và trợ lý ảo**: Giúp học sinh giải đáp thắc mắc 24/7.\n\n5. **Phát hiện gian lận**: AI có thể phát hiện các hành vi gian lận trong bài thi và bài tập.\n\n6. **Dự đoán kết quả học tập**: AI có thể phân tích dữ liệu để dự đoán khả năng thành công của học sinh và đề xuất các biện pháp hỗ trợ kịp thời.\n\n7. **Tạo nội dung học tập**: AI có thể giúp tạo ra các bài tập, câu đố, và tài liệu học tập một cách nhanh chóng.\n\nĐây chỉ là một số ví dụ về cách AI đang được ứng dụng trong giáo dục. Bạn có muốn tìm hiểu sâu hơn về bất kỳ khía cạnh nào không?",
-        false
-      );
-    </script>
-  </body>
+      setInitialTheme();
+
+      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+        if (localStorage.getItem('darkMode') === null) {
+          setDarkMode(e.matches);
+        }
+      });
+
+      addMessage("Xin chào! Tôi là trợ lý AI được tanbaycu phát triển. Bạn có câu hỏi gì không?");
+
+      document.getElementById('help-btn').addEventListener('click', () => {
+        document.getElementById('help-modal').classList.remove('hidden');
+      });
+
+      document.getElementById('close-help').addEventListener('click', () => {
+        document.getElementById('help-modal').classList.add('hidden');
+      });
+
+      document.getElementById('custom-prompt').addEventListener('input', (e) => {
+        localStorage.setItem('customPrompt', e.target.value);
+      });
+
+      modelSelect.addEventListener('change', (e) => {
+        localStorage.setItem('selectedModel', e.target.value);
+      });
+
+      // Load custom prompt if exists
+      const savedPrompt = localStorage.getItem('customPrompt');
+      if (savedPrompt) {
+        document.getElementById('custom-prompt').value = savedPrompt;
+      }
+
+      // Load selected model if exists
+      const savedModel = localStorage.getItem('selectedModel');
+      if (savedModel) {
+        modelSelect.value = savedModel;
+      }
+
+      function saveAdvancedSettings() {
+        localStorage.setItem('temperature', temperatureInput.value);
+        localStorage.setItem('topP', topPInput.value);
+        localStorage.setItem('topK', topKInput.value);
+        localStorage.setItem('maxTokens', maxTokensInput.value);
+      }
+
+      temperatureInput.addEventListener('change', saveAdvancedSettings);
+      topPInput.addEventListener('change', saveAdvancedSettings);
+      topKInput.addEventListener('change', saveAdvancedSettings);
+      maxTokensInput.addEventListener('change', saveAdvancedSettings);
+
+      // Load saved advanced settings
+      temperatureInput.value = localStorage.getItem('temperature') || 1;
+      topPInput.value = localStorage.getItem('topP') || 0.95;
+      topKInput.value = localStorage.getItem('topK') || 64;
+      maxTokensInput.value = localStorage.getItem('maxTokens') || 8192;
+    });
+  </script>
+</body>
+
 </html>
