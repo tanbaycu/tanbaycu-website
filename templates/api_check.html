@@ -1,187 +1,414 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>API Checker Pro - Tanbaycu</title>
-  <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            primary: '#50fa7b',
-            secondary: '#6272a4',
-            background: '#282a36',
-            surface: '#44475a',
-          },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-          },
-        },
-      },
-      darkMode: 'class',
-    }
-  </script>
-  <style>
-    @keyframes gradient {
-      0% { background-position: 0% 50%; }
-      50% { background-position: 100% 50%; }
-      100% { background-position: 0% 50%; }
-    }
-    .animate-gradient {
-      background: linear-gradient(270deg, #007acc, #00d4ff, #50fa7b);
-      background-size: 200% 200%;
-      animation: gradient 15s ease infinite;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API Checker Pro - Tanbaycu</title>
+    <link rel="icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #00ffff;
+            --secondary-color: #ff00ff;
+            --accent-color: #ffff00;
+            --background-color: #000000;
+            --surface-color: #111111;
+            --text-color: #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Orbitron', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+            perspective: 1000px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            transform-style: preserve-3d;
+        }
+
+        .card {
+            background-color: var(--surface-color);
+            border-radius: 20px;
+            box-shadow: 0 0 50px rgba(0, 255, 255, 0.5);
+            overflow: hidden;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: float 5s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+            25% { transform: translateY(-20px) rotateX(5deg) rotateY(5deg); }
+            50% { transform: translateY(0) rotateX(0deg) rotateY(0deg); }
+            75% { transform: translateY(20px) rotateX(-5deg) rotateY(-5deg); }
+        }
+
+        .card::before, .card::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: conic-gradient(
+                from 0deg,
+                transparent 0deg,
+                var(--primary-color) 60deg,
+                transparent 120deg,
+                var(--secondary-color) 180deg,
+                transparent 240deg,
+                var(--accent-color) 300deg,
+                transparent 360deg
+            );
+            animation: rotate 10s linear infinite;
+            z-index: -1;
+        }
+
+        .card::after {
+            filter: blur(30px);
+        }
+
+        @keyframes rotate {
+            100% { transform: rotate(360deg); }
+        }
+
+        .card-inner {
+            background-color: var(--surface-color);
+            border-radius: 20px;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+            backdrop-filter: blur(10px);
+        }
+
+        .card-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        h1 {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px var(--primary-color),
+                         0 0 20px var(--primary-color),
+                         0 0 30px var(--primary-color);
+            animation: glow 2s ease-in-out infinite alternate;
+        }
+
+        @keyframes glow {
+            from { text-shadow: 0 0 10px var(--primary-color),
+                               0 0 20px var(--primary-color),
+                               0 0 30px var(--primary-color); }
+            to { text-shadow: 0 0 20px var(--primary-color),
+                             0 0 30px var(--primary-color),
+                             0 0 40px var(--primary-color),
+                             0 0 50px var(--primary-color),
+                             0 0 60px var(--primary-color); }
+        }
+
+        form {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        label {
+            font-weight: 500;
+            margin-bottom: 0.5rem;
+            display: block;
+            color: var(--secondary-color);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid var(--secondary-color);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-color);
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 20px rgba(255, 255, 0, 0.5);
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: var(--background-color);
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                45deg,
+                transparent,
+                transparent 40%,
+                rgba(255, 255, 255, 0.6) 40%,
+                rgba(255, 255, 255, 0.6) 60%,
+                transparent 60%,
+                transparent 100%
+            );
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { left: -50%; top: -50%; }
+            100% { left: 150%; top: 150%; }
+        }
+
+        button:hover {
+            background-color: var(--accent-color);
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255, 255, 0, 0.7);
+        }
+
+        #loading {
+            text-align: center;
+            margin-top: 2rem;
+        }
+
+        .spinner {
+            width: 100px;
+            height: 100px;
+            border: 10px solid var(--secondary-color);
+            border-top: 10px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite, pulse 2s ease-in-out infinite;
+            margin: 0 auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+        }
+
+        #response {
+            margin-top: 2rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 2px solid var(--secondary-color);
+            box-shadow: 0 0 20px rgba(255, 0, 255, 0.5);
+        }
+
+        #response h3 {
+            margin-bottom: 1rem;
+            color: var(--accent-color);
+            font-size: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        pre {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 1rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            color: var(--text-color);
+            font-family: 'Courier New', monospace;
+            border: 1px solid var(--primary-color);
+            box-shadow: inset 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .button-group {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 2rem;
+        }
+
+        .button-secondary {
+            background-color: var(--secondary-color);
+        }
+
+        .button-secondary:hover {
+            background-color: var(--accent-color);
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: var(--surface-color);
+            border-radius: 8px;
+            border: 1px solid var(--primary-color);
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.3);
+        }
+
+        footer a {
+            color: var(--primary-color);
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        footer a:hover {
+            color: var(--accent-color);
+            text-shadow: 0 0 10px var(--accent-color);
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 3rem;
+            }
+
+            .card {
+                animation: none;
+            }
+        }
+    </style>
 </head>
-
-<body class="bg-background text-gray-100 font-sans min-h-screen flex flex-col">
-  <main class="flex-grow container mx-auto px-4 py-8">
-    <div class="bg-surface rounded-lg shadow-xl p-6 md:p-8 max-w-3xl mx-auto">
-      <h2 class="text-2xl font-semibold mb-6 text-center flex items-center justify-center">
-        <i data-lucide="check-circle" class="mr-2"></i>Kiểm Tra API
-      </h2>
-      <form id="api-form" class="space-y-6">
-        <div>
-          <label for="url" class="block text-sm font-medium mb-1 flex items-center">
-            <i data-lucide="link" class="mr-2"></i>URL API:
-          </label>
-          <input type="url" id="url" name="url" required
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition duration-200"
-            placeholder="https://example.com/api">
+<body>
+    <div class="container">
+        <div class="card">
+            <div class="card-inner">
+                <div class="card-header">
+                    <h1>API Checker Pro</h1>
+                </div>
+                <form id="api-form">
+                    <div>
+                        <label for="url">URL API:</label>
+                        <input type="url" id="url" name="url" required placeholder="https://example.com/api">
+                    </div>
+                    <div>
+                        <label for="method">Phương thức:</label>
+                        <select id="method">
+                            <option value="GET">GET</option>
+                            <option value="POST">POST</option>
+                            <option value="PUT">PUT</option>
+                            <option value="DELETE">DELETE</option>
+                            <option value="PATCH">PATCH</option>
+                            <option value="HEAD">HEAD</option>
+                            <option value="OPTIONS">OPTIONS</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label for="headers">Headers:</label>
+                        <textarea id="headers" name="headers" rows="3" placeholder='{"Content-Type": "application/json"}'></textarea>
+                    </div>
+                    <div>
+                        <label for="payload">Nội dung (nếu có):</label>
+                        <textarea id="payload" name="payload" rows="3" placeholder='{"key": "value"}'></textarea>
+                    </div>
+                    <div>
+                        <label for="timeout">Timeout (giây):</label>
+                        <input type="number" id="timeout" name="timeout" min="1" max="60" value="30">
+                    </div>
+                    <button type="submit">Gửi yêu cầu</button>
+                </form>
+                <div id="loading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Đang xử lý yêu cầu...</p>
+                </div>
+                <div id="response" style="display: none;">
+                    <h3>Phản hồi:</h3>
+                    <div id="response-status"></div>
+                    <div id="response-headers"></div>
+                    <pre id="response-body"></pre>
+                </div>
+                <div class="button-group">
+                    <button id="clear-form" class="button-secondary">Xóa form</button>
+                    <a href="{{ url_for('homepage') }}" class="button button-secondary">Trang chủ</a>
+                </div>
+            </div>
         </div>
-        <div>
-          <label for="method" class="block text-sm font-medium mb-1 flex items-center">
-            <i data-lucide="git-branch" class="mr-2"></i>Phương thức:
-          </label>
-          <select id="method"
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition duration-200">
-            <option value="GET">GET</option>
-            <option value="POST">POST</option>
-            <option value="PUT">PUT</option>
-            <option value="DELETE">DELETE</option>
-            <option value="PATCH">PATCH</option>
-            <option value="HEAD">HEAD</option>
-            <option value="OPTIONS">OPTIONS</option>
-          </select>
-        </div>
-        <div>
-          <label for="headers" class="block text-sm font-medium mb-1 flex items-center">
-            <i data-lucide="list" class="mr-2"></i>Headers:
-          </label>
-          <textarea id="headers" name="headers" rows="3"
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition duration-200"
-            placeholder='{"Content-Type": "application/json"}'></textarea>
-        </div>
-        <div>
-          <label for="payload" class="block text-sm font-medium mb-1 flex items-center">
-            <i data-lucide="package" class="mr-2"></i>Nội dung (nếu có):
-          </label>
-          <textarea id="payload" name="payload" rows="3"
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition duration-200"
-            placeholder='{"key": "value"}'></textarea>
-        </div>
-        <div>
-          <label for="timeout" class="block text-sm font-medium mb-1 flex items-center">
-            <i data-lucide="clock" class="mr-2"></i>Timeout (giây):
-          </label>
-          <input type="number" id="timeout" name="timeout" min="1" max="60" value="30"
-            class="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-primary focus:border-primary transition duration-200">
-        </div>
-        <button type="submit"
-          class="w-full bg-primary text-background font-semibold py-2 px-4 rounded-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition duration-200 flex items-center justify-center">
-          <i data-lucide="send" class="mr-2"></i>Gửi yêu cầu
-        </button>
-      </form>
-      <div id="loading" class="hidden text-center mt-6">
-        <i data-lucide="loader" class="animate-spin h-8 w-8 text-primary mx-auto"></i>
-        <p class="mt-2 text-sm">Đang xử lý yêu cầu...</p>
-      </div>
-      <div id="response" class="hidden mt-6">
-        <h3 class="text-lg font-semibold mb-2 flex items-center">
-          <i data-lucide="inbox" class="mr-2"></i>Phản hồi:
-        </h3>
-        <div class="bg-gray-700 rounded-md p-4">
-          <div id="response-status" class="mb-2"></div>
-          <div id="response-headers" class="mb-2"></div>
-          <pre id="response-body" class="text-sm overflow-x-auto"></pre>
-        </div>
-      </div>
-      <div class="mt-6 flex justify-between">
-        <button id="clear-form" class="bg-red-500 text-white font-semibold py-2 px-4 rounded-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500 transition duration-200 flex items-center">
-          <i data-lucide="trash-2" class="mr-2"></i> 
-        </button>
-        <a href="{{ url_for('homepage') }}"
-          class="bg-secondary text-white font-semibold py-2 px-4 rounded-md hover:bg-opacity-90 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition duration-200 flex items-center">
-          <i data-lucide="home" class="mr-2"></i>   
-        </a>
-      </div>
     </div>
-  </main>
+    <footer>
+        <p>&copy; 2024 | API Checker Pro | <a href="{{ url_for('homepage') }}">Trang chủ</a></p>
+    </footer>
 
-  <footer class="bg-surface py-4 text-center text-sm">
-    <p>&copy; 2024 | API Checker Pro | <a href="{{ url_for('homepage') }}" class="text-primary hover:underline">Trang chủ</a></p>
-  </footer>
+    <script>
+        document.getElementById("api-form").addEventListener("submit", async function (e) {
+            e.preventDefault();
+            const url = document.getElementById("url").value;
+            const method = document.getElementById("method").value;
+            const headers = document.getElementById("headers").value;
+            const payload = document.getElementById("payload").value;
+            const timeout = document.getElementById("timeout").value;
 
-  <script>
-    // Initialize Lucide icons
-    lucide.createIcons();
+            const responseDiv = document.getElementById("response");
+            const loadingDiv = document.getElementById("loading");
+            responseDiv.style.display = "none";
+            loadingDiv.style.display = "block";
 
-    document.getElementById("api-form").addEventListener("submit", async function (e) {
-      e.preventDefault();
-      const url = document.getElementById("url").value;
-      const method = document.getElementById("method").value;
-      const headers = document.getElementById("headers").value;
-      const payload = document.getElementById("payload").value;
-      const timeout = document.getElementById("timeout").value;
+            try {
+                const response = await fetch("/api-check", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({ url, method, headers, payload, timeout })
+                });
 
-      const responseDiv = document.getElementById("response");
-      const loadingDiv = document.getElementById("loading");
-      responseDiv.style.display = "none";
-      loadingDiv.style.display = "block";
-
-      try {
-        const response = await fetch("/api-check", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({ url, method, headers, payload, timeout })
+                const data = await response.json();
+                
+                document.getElementById("response-status").innerHTML = `<strong>Status:</strong> ${data.status} ${data.statusText}`;
+                document.getElementById("response-headers").innerHTML = `<strong>Headers:</strong><br>${formatHeaders(data.headers)}`;
+                document.getElementById("response-body").textContent = JSON.stringify(data.body, null, 2);
+                
+                responseDiv.style.display = "block";
+            } catch (error) {
+                document.getElementById("response-status").innerHTML = `<strong style="color: var(--primary-color);">Lỗi:</strong>`;
+                document.getElementById("response-body").textContent = error.message;
+                responseDiv.style.display = "block";
+            } finally {
+                loadingDiv.style.display = "none";
+            }
         });
 
-        const data = await response.json();
-        
-        document.getElementById("response-status").innerHTML = `<strong>Status:</strong> ${data.status} ${data.statusText}`;
-        document.getElementById("response-headers").innerHTML = `<strong>Headers:</strong><br>${formatHeaders(data.headers)}`;
-        document.getElementById("response-body").textContent = JSON.stringify(data.body, null, 2);
-        
-        responseDiv.style.display = "block";
-      } catch (error) {
-        document.getElementById("response-status").innerHTML = `<strong class="text-red-500">Lỗi:</strong>`;
-        document.getElementById("response-body").textContent = error.message;
-        responseDiv.style.display = "block";
-      } finally {
-        loadingDiv.style.display = "none";
-      }
-    });
+        document.getElementById("clear-form").addEventListener("click", function() {
+            document.getElementById("api-form").reset();
+            document.getElementById("response").style.display = "none";
+        });
 
-    document.getElementById("clear-form").addEventListener("click", function() {
-      document.getElementById("api-form").reset();
-      document.getElementById("response").style.display = "none";
-    });
-
-    function formatHeaders(headers) {
-      return Object.entries(headers)
-        .map(([key, value]) => `${key}: ${value}`)
-        .join('<br>');
-    }
-  </script>
+        function formatHeaders(headers) {
+            return Object.entries(headers)
+                .map(([key, value]) => `${key}: ${value}`)
+                .join('<br>');
+        }
+    </script>
 </body>
-
 </html>
