@@ -1,27 +1,25 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="vi" class="light">
 
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>AI Web Chat Experience</title>
   <meta name="description"
-    content="Experience AI-powered web chat with customizable prompts and seamless interactions.">
-  <meta name="keywords" content="AI, chat, web experience, customizable prompts">
+    content="Trải nghiệm trò chuyện web được hỗ trợ bởi AI với các lời nhắc có thể tùy chỉnh và tương tác liền mạch.">
+  <meta name="keywords" content="AI, chat, trải nghiệm web, lời nhắc tùy chỉnh">
   <meta property="og:title" content="AI Web Chat Experience">
   <meta property="og:description"
-    content="Engage with our AI-powered web chat for intelligent conversations and customizable interactions.">
+    content="Tham gia trò chuyện web được hỗ trợ bởi AI của chúng tôi để có cuộc trò chuyện thông minh và tương tác có thể tùy chỉnh.">
   <meta property="og:image" content="https://i.postimg.cc/3x01h7n1/Thi-t-k-ch-a-c-t-n-10.png">
   <meta property="og:url" content="https://tanbaycu.vercel.app/aichat">
   <link rel="canonical" href="https://tanbaycu.vercel.app/aichat">
   <link rel="icon" href="https://i.postimg.cc/3x01h7n1/Thi-t-k-ch-a-c-t-n-10.png" type="image/png">
   <script src="https://cdn.tailwindcss.com"></script>
-  <script src="https://unpkg.com/lucide@latest"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github-dark.min.css">
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/dompurify@3.0.6/dist/purify.min.js"></script>
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github-dark.min.css">
   <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.8.0/build/highlight.min.js"></script>
-  <script>hljs.highlightAll();</script>
   <style>
     @keyframes gradient {
       0% {
@@ -47,7 +45,6 @@
       transition: transform 0.3s ease-in-out;
     }
 
-    /* Markdown Styles */
     .markdown-content pre {
       background: var(--bg-secondary);
       padding: 1rem;
@@ -145,7 +142,6 @@
       opacity: 1;
     }
 
-    /* Improved scrollbar styles */
     #chat-area::-webkit-scrollbar,
     #settings-panel::-webkit-scrollbar {
       width: 0.5rem;
@@ -168,7 +164,6 @@
       scrollbar-color: var(--text-secondary) var(--bg-secondary);
     }
 
-    /* Dark mode specific styles */
     .dark .markdown-content pre {
       background: #1e1e1e;
     }
@@ -178,7 +173,6 @@
       color: #d4d4d4;
     }
 
-    /* Smooth transition for dark mode */
     body,
     #settings-panel,
     .bg-primary,
@@ -187,10 +181,33 @@
     .text-secondary {
       transition: background-color 0.3s ease, color 0.3s ease;
     }
+
+    @media (max-width: 640px) {
+      #settings-panel {
+        padding-top: 1rem;
+      }
+
+      #settings-panel .container {
+        padding-bottom: 5rem;
+      }
+    }
+
+    .prevent-click {
+      pointer-events: none;
+    }
+
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
   </style>
 </head>
 
-<body class="bg-primary text-primary min-h-screen flex flex-col transition-colors duration-300">
+<body class="bg-primary text-primary min-h-screen flex flex-col transition-colors duration-300 overflow-hidden">
   <header
     class="fixed top-0 left-0 right-0 bg-secondary bg-opacity-80 backdrop-blur-md z-20 transition-colors duration-300">
     <div class="container mx-auto px-4 py-3 flex justify-between items-center">
@@ -199,18 +216,30 @@
       </a>
       <button id="settings-btn"
         class="p-2 rounded-full hover:bg-opacity-10 hover:bg-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-accent"
-        title="Settings">
-        <i data-lucide="settings" class="w-6 h-6"></i>
+        title="Cài đặt">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+          class="lucide lucide-settings">
+          <path
+            d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z">
+          </path>
+          <circle cx="12" cy="12" r="3"></circle>
+        </svg>
       </button>
     </div>
   </header>
 
-  <div id="settings-panel" class="bg-secondary bg-opacity-95">
+  <div id="settings-panel" class="bg-secondary bg-opacity-95 overflow-y-auto">
     <div class="container mx-auto px-4 py-8 h-full flex flex-col">
       <div class="flex justify-between items-center mb-8">
         <h2 class="text-3xl font-bold text-primary">Cài đặt</h2>
         <button id="close-settings" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors">
-          <i data-lucide="x" class="w-6 h-6"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-x">
+            <path d="M18 6 6 18"></path>
+            <path d="m6 6 12 12"></path>
+          </svg>
         </button>
       </div>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6 flex-grow">
@@ -228,22 +257,46 @@
         <button id="theme-toggle"
           class="p-4 rounded-lg bg-primary hover:bg-opacity-90 transition-colors flex items-center justify-between text-primary border border-accent hover:shadow-md">
           <span class="text-lg font-medium">Chế độ tối</span>
-          <i data-lucide="moon" class="w-8 h-8"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-moon">
+            <path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path>
+          </svg>
         </button>
         <button id="save-chat"
           class="p-4 rounded-lg bg-primary hover:bg-opacity-90 transition-colors flex items-center justify-between text-primary border border-accent hover:shadow-md">
           <span class="text-lg font-medium">Lưu</span>
-          <i data-lucide="download" class="w-8 h-8"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-download">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" x2="12" y1="15" y2="3"></line>
+          </svg>
         </button>
         <button id="clear-chat"
           class="p-4 rounded-lg bg-primary hover:bg-opacity-90 transition-colors flex items-center justify-between text-primary border border-accent hover:shadow-md">
           <span class="text-lg font-medium">Xóa</span>
-          <i data-lucide="trash-2" class="w-8 h-8"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-trash-2">
+            <path d="M3 6h18"></path>
+            <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
+            <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
+            <line x1="10" x2="10" y1="11" y2="17"></line>
+            <line x1="14" x2="14" y1="11" y2="17"></line>
+          </svg>
         </button>
         <button id="help-btn"
           class="p-4 rounded-lg bg-primary hover:bg-opacity-90 transition-colors flex items-center justify-between text-primary border border-accent hover:shadow-md">
           <span class="text-lg font-medium">Trợ giúp</span>
-          <i data-lucide="help-circle" class="w-8 h-8"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-help-circle">
+            <circle cx="12" cy="12" r="10"></circle>
+            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+            <path d="M12 17h.01"></path>
+          </svg>
         </button>
         <div class="col-span-2">
           <h3 class="text-lg font-medium mb-2">Tùy chỉnh prompt</h3>
@@ -279,8 +332,8 @@
     </div>
   </div>
 
-  <main class="flex-grow pt-16 pb-20">
-    <div id="chat-area" class="container mx-auto px-4 space-y-6 overflow-y-auto max-h-[calc(100vh-9rem)]">
+  <main class="flex-grow pt-16 pb-20 overflow-hidden">
+    <div id="chat-area" class="container mx-auto px-4 space-y-6 overflow-y-auto max-h-[calc(100vh-9rem)] no-scrollbar">
       <!-- Chat messages will be added here -->
     </div>
   </main>
@@ -295,7 +348,12 @@
         <button id="send-btn"
           class="p-3 hover:bg-opacity-10 hover:bg-gray-600 rounded-full transition-colors focus:outline-none mr-2"
           title="Gửi tin nhắn">
-          <i data-lucide="send" class="w-5 h-5 text-secondary transition-colors duration-300"></i>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+            class="lucide lucide-send">
+            <path d="m22 2-7 20-4-9-9-4Z"></path>
+            <path d="M22 2 11 13"></path>
+          </svg>
         </button>
       </div>
     </div>
@@ -329,9 +387,6 @@
 
   <script>
     document.addEventListener('DOMContentLoaded', () => {
-      // Initialize Lucide icons
-      lucide.createIcons();
-
       const API_KEY = 'AIzaSyAkQeHIccbPlw6lN3C9VWgdnQG-E5BBoDQ';
       const API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/';
 
@@ -366,7 +421,7 @@
         typingDiv.className = 'flex justify-start items-end space-x-2';
         typingDiv.innerHTML = `
                     <div class="w-8 h-8 rounded-full flex items-center justify-center bg-accent">
-                        <i data-lucide="bot" class="w-5 h-5"></i>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="12" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>
                     </div>
                     <div class="typing-indicator">
                         <div class="typing-dot"></div>
@@ -375,7 +430,6 @@
                     </div>
                 `;
         chatArea.appendChild(typingDiv);
-        lucide.createIcons();
         scrollToBottom();
       }
 
@@ -406,7 +460,9 @@
 
         const avatarDiv = document.createElement('div');
         avatarDiv.className = `w-8 h-8 rounded-full flex items-center justify-center ${isUser ? 'bg-accent order-2' : 'bg-accent'}`;
-        avatarDiv.innerHTML = `<i data-lucide="${isUser ? 'user' : 'bot'}" class="w-5 h-5"></i>`;
+        avatarDiv.innerHTML = isUser ?
+          '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>' :
+          '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-bot"><path d="M12 8V4H8"></path><rect width="16" height="12" x="4" y="12" rx="2"></rect><path d="M2 14h2"></path><path d="M20 14h2"></path><path d="M15 13v2"></path><path d="M9 13v2"></path></svg>';
 
         const messageBubble = document.createElement('div');
         messageBubble.className = `max-w-[75%] ${isUser ? 'text-right' : ''} markdown-content`;
@@ -432,8 +488,6 @@
         } else {
           showNewMessageIndicator();
         }
-
-        lucide.createIcons();
 
         chatHistory.push({ content, isUser, timestamp: new Date().toISOString() });
       }
@@ -549,20 +603,23 @@
 
       settingsBtn.addEventListener('click', () => {
         settingsPanel.classList.add('show');
+        document.body.style.overflow = 'hidden';
       });
 
       closeSettingsBtn.addEventListener('click', () => {
         settingsPanel.classList.remove('show');
+        document.body.style.overflow = '';
       });
 
       function setDarkMode(isDark) {
         document.documentElement.classList.toggle('dark', isDark);
         localStorage.setItem('darkMode', isDark);
 
-        const themeToggleIcon = themeToggle.querySelector('i');
+        const themeToggleIcon = themeToggle.querySelector('svg');
         if (themeToggleIcon) {
-          themeToggleIcon.setAttribute('data-lucide', isDark ? 'sun' : 'moon');
-          lucide.createIcons();
+          themeToggleIcon.outerHTML = isDark ?
+            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sun"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>' :
+            '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-moon"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>';
         }
 
         document.querySelectorAll('pre code').forEach((block) => {
@@ -599,6 +656,7 @@
       document.addEventListener('click', (e) => {
         if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
           settingsPanel.classList.remove('show');
+          document.body.style.overflow = '';
         }
       });
 
@@ -664,6 +722,31 @@
       topPInput.value = localStorage.getItem('topP') || 0.95;
       topKInput.value = localStorage.getItem('topK') || 64;
       maxTokensInput.value = localStorage.getItem('maxTokens') || 8192;
+
+      // Prevent scrolling on the main content when settings panel is open
+      settingsPanel.addEventListener('touchmove', (e) => {
+        e.stopPropagation();
+      }, { passive: false });
+
+      // Close settings panel when clicking outside
+      document.addEventListener('click', (e) => {
+        if (!settingsPanel.contains(e.target) && !settingsBtn.contains(e.target)) {
+          settingsPanel.classList.remove('show');
+          document.body.style.overflow = '';
+        }
+      });
+
+      // Improve mobile responsiveness
+      function adjustLayoutForMobile() {
+        if (window.innerWidth <= 640) {
+          chatArea.style.maxHeight = `calc(100vh - ${document.querySelector('header').offsetHeight}px - ${document.querySelector('footer').offsetHeight}px)`;
+        } else {
+          chatArea.style.maxHeight = 'calc(100vh - 9rem)';
+        }
+      }
+
+      window.addEventListener('resize', adjustLayoutForMobile);
+      adjustLayoutForMobile();
     });
   </script>
 </body>
